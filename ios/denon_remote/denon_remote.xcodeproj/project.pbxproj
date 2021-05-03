@@ -423,18 +423,18 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"denon_remote/Preview Content\"";
-				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				DEVELOPMENT_TEAM = GDN2HC539F;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = denon_remote/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-remote";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-remote.AIE";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -445,18 +445,18 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"denon_remote/Preview Content\"";
-				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				DEVELOPMENT_TEAM = GDN2HC539F;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = denon_remote/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-remote";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-remote.AIE";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

@@ -72,7 +72,10 @@ int main(int argc, char **argv)
             /* VOLUMEDOWN */
             system("irsend SEND_ONCE Denon_RC-917 KEY_VOLUMEDOWN");
             break;
-        
+        case 4:
+            /* DIMMER */
+            system("irsend SEND_ONCE Denon_RC-917 DIMMER");
+            break;
         default:
             break;
         }

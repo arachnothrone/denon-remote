@@ -43,10 +43,15 @@ struct ContentView: View {
                     .cornerRadius(40)
                 })
             }
+            Button(action: {udpSendString(textToSend: "CMD04DIMMER", address: "192.168.2.101", port: 19001)}) {
+                HStack {
+                    //Text("Dimmer").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                    Image(systemName: "rays").foregroundColor(.black).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).padding()
+                }
+                .cornerRadius(40)
+
+            }
         }
-        //var adr
-        //inet_aton("192.168.2.101", &adr)
-//        udpSend(textToSend: "privets_aaa", address: "192.168.2.101", port: 19001)
     }
 }
 
