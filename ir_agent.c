@@ -1,16 +1,14 @@
 /*
- * RPi IR-agent
+ * RPi Denon IR-agent
  */
 
 #include <stdio.h>
 #include <sys/socket.h>
 
-//#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
-//#include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
@@ -24,7 +22,6 @@ int main(int argc, char **argv)
     int sockfd;
     char buffer[RX_BUFFER_SIZE];
     char* reply_ok = "OK";
-    //struct sockaddr serverAddr, clientAddr;
     struct sockaddr_in serverAddr, clientAddr;
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
@@ -56,28 +53,97 @@ int main(int argc, char **argv)
         printf("Received request: %s\n", buffer);
 
         char rcvCmd;
-        rcvCmd = atoi(&buffer[4]);
+        //rcvCmd = atoi(&buffer[3]) * 10 + atoi(&buffer[4]);
+        // int i;
+        // for (i = 0; i < n; i++)
+        // {
+        //     printf(": %d - %d (%c), addr=%d\n", i, buffer[i], buffer[i], buffer + i * sizeof(int));
+        // }
+        char sym1, sym2;
+        sym1 = buffer[3];
+        sym2 = buffer[4];
+        // printf("===: %c, %c\n", sym1, sym2);
+        // printf("===: %d, %d\n", sym1, sym2);
+        // printf("===: %d, %d\n", atoi(&sym1), atoi(&sym2));
+        // printf("===: %d, %d\n", (int)sym1 - 48, (int)sym2 - 48);
+        // rcvCmd = atoi(&buffer[4]) + atoi(&buffer[3]);
+        // char z = '0';
+        // printf("atoi 0: %d", atoi(&z));
+        rcvCmd = (int)(sym1-48) * 10 + (int)(sym2-48);
         printf("Decoded command: %d\n", rcvCmd);
 
         switch (rcvCmd)
         {
-        case 1:
-            /* PWR */
-            break;
-        case 2:
-            /* VOLUMEUP */
-            system("irsend SEND_ONCE Denon_RC-917 KEY_VOLUMEUP");
-            break;
-        case 3:
-            /* VOLUMEDOWN */
-            system("irsend SEND_ONCE Denon_RC-917 KEY_VOLUMEDOWN");
-            break;
-        case 4:
-            /* DIMMER */
-            system("irsend SEND_ONCE Denon_RC-917 DIMMER");
-            break;
-        default:
-            break;
+            case 1:
+                /* DIMMER */
+                system("irsend SEND_ONCE Denon_RC-978 DIMMER");
+                break;
+            case 2:
+                /* VOLUMEUP */
+                system("irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEUP");
+                break;
+            case 3:
+                /* VOLUMEDOWN */
+                system("irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEDOWN");
+                break;
+            case 4:
+                /* PWR_ON */
+                system("irsend SEND_ONCE Denon_RC-978 PWR_ON");
+                break;
+            case 5:
+                /* PWR_OFF */
+                system("irsend SEND_ONCE Denon_RC-978 PWR_OFF");
+                break;
+            case 6:
+                /* MUTE */
+                system("irsend SEND_ONCE Denon_RC-978 KEY_MUTING");
+                break;
+            case 7:
+                /* 5CH7CHSTEREO */
+                system("irsend SEND_ONCE Denon_RC-978 5CH7CHSTEREO");
+                break;
+            case 8:
+                /* DSPSIMULATION */
+                system("irsend SEND_ONCE Denon_RC-978 DSPSIMULATION");
+                break;
+            case 9:
+                /* STANDARD */
+                system("irsend SEND_ONCE Denon_RC-978 STANDARD");
+                break;
+            case 10:
+                /* CINEMA */
+                system("irsend SEND_ONCE Denon_RC-978 CINEMA");
+                break;
+            case 11:
+                /* MUSIC */
+                system("irsend SEND_ONCE Denon_RC-978 MUSIC");
+                break;
+            case 12:
+                /* DIRECT */
+                system("irsend SEND_ONCE Denon_RC-978 DIRECT");
+                break;
+            case 13:
+                /* STEREO */
+                system("irsend SEND_ONCE Denon_RC-978 STEREO");
+                break;
+            case 14:
+                /* VIRTSURROUND */
+                system("irsend SEND_ONCE Denon_RC-978 VIRTSURROUND");
+                break;
+            case 15:
+                /* INPUT_MODE */
+                system("irsend SEND_ONCE Denon_RC-978 INPUT_MODE");
+                break;
+            case 16:
+                /* INPUT_ANALOG */
+                system("irsend SEND_ONCE Denon_RC-978 INPUT_ANALOG");
+                break;
+            case 17:
+                /* INPUT_EXTIN */
+                system("irsend SEND_ONCE Denon_RC-978 INPUT_EXTIN");
+                break;
+            default:
+                break;
         }
         
         sendto(sockfd, (const char *)reply_ok, strlen(reply_ok), MSG_CONFIRM, (const struct sockaddr *) &clientAddr, len);
