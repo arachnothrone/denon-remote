@@ -15,6 +15,27 @@
 #define RX_PORT         (19001)
 #define RX_BUFFER_SIZE  (1024)
 
+typedef enum
+{
+    PWRISON,
+    PWRISOFF,
+} STATE_POWER;
+
+typedef enum
+{
+    STANDARD,
+    DIRECT,
+    STEREO,
+    CH5CH7
+} STATE_MODE;
+
+typedef struct MEM_STATE_T_TAG
+{
+    int         volume;
+    STATE_MODE  stereoMode;
+    STATE_POWER powerState;
+} MEM_STATE_T;
+
 
 int main(int argc, char **argv)
 {
@@ -23,6 +44,8 @@ int main(int argc, char **argv)
     char buffer[RX_BUFFER_SIZE];
     char* reply_ok = "OK";
     struct sockaddr_in serverAddr, clientAddr;
+    MEM_STATE_T denonState;
+
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
         perror("socket creation failed");
@@ -31,6 +54,7 @@ int main(int argc, char **argv)
     
     memset(&serverAddr, 0, sizeof(serverAddr));
     memset(&clientAddr, 0, sizeof(clientAddr));
+    memset(&denonState, 0, sizeof(denonState));
 
     serverAddr.sin_family = AF_INET; // IP v4
     serverAddr.sin_addr.s_addr = INADDR_ANY;
@@ -50,7 +74,9 @@ int main(int argc, char **argv)
     {
         n = recvfrom(sockfd, (char *)buffer, RX_BUFFER_SIZE, MSG_WAITALL, (struct sockaddr *) &clientAddr, &len);
         buffer[n] = '\0';
-        printf("Received request: %s\n", buffer);
+        char clientAddrString[INET_ADDRSTRLEN];
+        printf("Received request: %s [%s:%0d]\n", 
+            buffer, inet_ntop(AF_INET, &clientAddr.sin_addr.s_addr, clientAddrString, sizeof(clientAddrString)), ntohs(clientAddr.sin_port));
 
         char rcvCmd;
         //rcvCmd = atoi(&buffer[3]) * 10 + atoi(&buffer[4]);
@@ -146,9 +172,15 @@ int main(int argc, char **argv)
                 break;
         }
         
-        sendto(sockfd, (const char *)reply_ok, strlen(reply_ok), MSG_CONFIRM, (const struct sockaddr *) &clientAddr, len);
+        // sendto(sockfd, (const char *)reply_ok, strlen(reply_ok), MSG_CONFIRM, (const struct sockaddr *) &clientAddr, len);
+        char replBuf[10];
+        sprintf(replBuf, "Volume: %d", denonState.volume);
+        sendto(sockfd, replBuf, strlen(replBuf), MSG_CONFIRM, (const struct sockaddr *) &clientAddr, len);
         printf("Response sent.\n"); 
     }
           
     return 0;
 }
+
+/// 
+
