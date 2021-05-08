@@ -17,26 +17,58 @@
 
 typedef enum
 {
-    PWRISON,
-    PWRISOFF,
-} STATE_POWER;
+    OFF,
+    ON
+} STATE_BINARY;
 
 typedef enum
 {
-    STANDARD,
+    CH5CH7,
+    DSPSIM,
+    STANDARD, 
+    CINEMA,
+    MUSIC, 
     DIRECT,
     STEREO,
-    CH5CH7
+    VIRTSURRND,
 } STATE_MODE;
+
+typedef enum
+{
+    INPUTMODE,
+    INPUTANALOG,
+    INPUTEXTIN
+} STATE_INPUT;
+
+typedef enum
+{
+    LEVEL0,     // Brightness Max
+    LEVEL1,     // Brightness Med
+    LEVEL2,     // Brightness Min
+    LEVEL3      // Screen off
+} STATE_DIM;
 
 typedef struct MEM_STATE_T_TAG
 {
-    int         volume;
-    STATE_MODE  stereoMode;
-    STATE_POWER powerState;
+    int             volume;
+    STATE_MODE      stereoMode;
+    STATE_BINARY    power;
+    STATE_BINARY    mute;
+    STATE_DIM       dimmer;
+    STATE_INPUT     input;
 } MEM_STATE_T;
 
+/**
+ * Declarations
+ */
+STATE_DIM UdpateDimmerState(const MEM_STATE_T* pDenonState);
+STATE_BINARY UpdateMuteState(const MEM_STATE_T* pDenonState);
+void SerializeDenonState(const MEM_STATE_T* pDenonState, char* buffer);
+void DenonStateInit(MEM_STATE_T* pDenonState);
 
+/**
+ * Main function
+ */
 int main(int argc, char **argv)
 {
     // CONTROL_COMMAND_T receivedCommand;
@@ -45,6 +77,7 @@ int main(int argc, char **argv)
     char* reply_ok = "OK";
     struct sockaddr_in serverAddr, clientAddr;
     MEM_STATE_T denonState;
+
 
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
@@ -55,6 +88,8 @@ int main(int argc, char **argv)
     memset(&serverAddr, 0, sizeof(serverAddr));
     memset(&clientAddr, 0, sizeof(clientAddr));
     memset(&denonState, 0, sizeof(denonState));
+
+    DenonStateInit(&denonState);
 
     serverAddr.sin_family = AF_INET; // IP v4
     serverAddr.sin_addr.s_addr = INADDR_ANY;
@@ -70,6 +105,9 @@ int main(int argc, char **argv)
   
     len = sizeof(clientAddr);
   
+    /**
+     * Main application loop
+     */
     while(1)
     {
         n = recvfrom(sockfd, (char *)buffer, RX_BUFFER_SIZE, MSG_WAITALL, (struct sockaddr *) &clientAddr, &len);
@@ -103,78 +141,96 @@ int main(int argc, char **argv)
             case 1:
                 /* DIMMER */
                 system("irsend SEND_ONCE Denon_RC-978 DIMMER");
+                denonState.dimmer = UdpateDimmerState(&denonState);
                 break;
             case 2:
                 /* VOLUMEUP */
                 system("irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEUP");
+                denonState.volume++;
                 break;
             case 3:
                 /* VOLUMEDOWN */
                 system("irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEDOWN");
+                denonState.volume--;
                 break;
             case 4:
                 /* PWR_ON */
                 system("irsend SEND_ONCE Denon_RC-978 PWR_ON");
+                denonState.power = ON;
                 break;
             case 5:
                 /* PWR_OFF */
                 system("irsend SEND_ONCE Denon_RC-978 PWR_OFF");
+                denonState.power = OFF;
                 break;
             case 6:
                 /* MUTE */
                 system("irsend SEND_ONCE Denon_RC-978 KEY_MUTING");
+                denonState.mute = UpdateMuteState(&denonState);
                 break;
             case 7:
                 /* 5CH7CHSTEREO */
                 system("irsend SEND_ONCE Denon_RC-978 5CH7CHSTEREO");
+                denonState.stereoMode = CH5CH7;
                 break;
             case 8:
                 /* DSPSIMULATION */
                 system("irsend SEND_ONCE Denon_RC-978 DSPSIMULATION");
+                denonState.stereoMode = DSPSIM;
                 break;
             case 9:
                 /* STANDARD */
                 system("irsend SEND_ONCE Denon_RC-978 STANDARD");
+                denonState.stereoMode = STANDARD;
                 break;
             case 10:
                 /* CINEMA */
                 system("irsend SEND_ONCE Denon_RC-978 CINEMA");
+                denonState.stereoMode = CINEMA;
                 break;
             case 11:
                 /* MUSIC */
                 system("irsend SEND_ONCE Denon_RC-978 MUSIC");
+                denonState.stereoMode = MUSIC;
                 break;
             case 12:
                 /* DIRECT */
                 system("irsend SEND_ONCE Denon_RC-978 DIRECT");
+                denonState.stereoMode = DIRECT;
                 break;
             case 13:
                 /* STEREO */
                 system("irsend SEND_ONCE Denon_RC-978 STEREO");
+                denonState.stereoMode = STEREO;
                 break;
             case 14:
                 /* VIRTSURROUND */
                 system("irsend SEND_ONCE Denon_RC-978 VIRTSURROUND");
+                denonState.stereoMode = VIRTSURRND;
                 break;
             case 15:
                 /* INPUT_MODE */
                 system("irsend SEND_ONCE Denon_RC-978 INPUT_MODE");
+                denonState.input = INPUTMODE;
                 break;
             case 16:
                 /* INPUT_ANALOG */
                 system("irsend SEND_ONCE Denon_RC-978 INPUT_ANALOG");
+                denonState.input = INPUTANALOG;
                 break;
             case 17:
                 /* INPUT_EXTIN */
                 system("irsend SEND_ONCE Denon_RC-978 INPUT_EXTIN");
+                denonState.input = INPUTEXTIN;
                 break;
             default:
                 break;
         }
         
         // sendto(sockfd, (const char *)reply_ok, strlen(reply_ok), MSG_CONFIRM, (const struct sockaddr *) &clientAddr, len);
-        char replBuf[10];
-        sprintf(replBuf, "Volume: %d", denonState.volume);
+        char replBuf[sizeof(denonState)];
+        SerializeDenonState(&denonState, replBuf);
+        //sprintf(replBuf, "Volume: %d", denonState.volume);
         sendto(sockfd, replBuf, strlen(replBuf), MSG_CONFIRM, (const struct sockaddr *) &clientAddr, len);
         printf("Response sent.\n"); 
     }
@@ -183,4 +239,51 @@ int main(int argc, char **argv)
 }
 
 /// 
+STATE_DIM UdpateDimmerState(const MEM_STATE_T* pDenonState)
+{
+    STATE_DIM updatedState = LEVEL0;
+    if (pDenonState->dimmer < LEVEL3)
+    {
+        updatedState = pDenonState->dimmer + 1;
+    }
+    else
+    {
+        updatedState = LEVEL0;
+    }
 
+    return updatedState;
+}
+
+STATE_BINARY UpdateMuteState(const MEM_STATE_T* pDenonState)
+{
+    STATE_BINARY updatedState = OFF;
+    if (pDenonState->mute == OFF)
+    {
+        updatedState = ON;
+    }
+
+    return updatedState;
+}
+
+void SerializeDenonState(const MEM_STATE_T* pDenonState, char* buffer)
+{
+    sprintf(buffer, "%d,%d,%d,%d,%d,%d", 
+        pDenonState->power,
+        pDenonState->volume,
+        pDenonState->mute,
+        pDenonState->stereoMode, 
+        pDenonState->input, 
+        pDenonState->dimmer
+    );
+
+}
+
+void DenonStateInit(MEM_STATE_T* pDenonState)
+{
+    pDenonState->power = OFF;
+    pDenonState->volume = -40;
+    pDenonState->mute = OFF;
+    pDenonState->stereoMode = STANDARD;
+    pDenonState->input = INPUTMODE;
+    pDenonState->dimmer = LEVEL0;
+}
