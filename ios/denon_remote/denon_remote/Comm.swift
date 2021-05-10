@@ -13,7 +13,7 @@ func htons(value: CUnsignedShort) -> CUnsignedShort {
 }
 
 func udpSendString(textToSend: String, address: String, port: CUnsignedShort) {
-
+//func udpSendString(textToSend: String, address: String, port: CUnsignedShort) -> String {
     var adr = in_addr()
     inet_pton(AF_INET, address, &adr)
 
@@ -40,8 +40,21 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort) {
 
         return sent
     }
+    
+    let rxBufSize = 15
+    var rxBuffer: Array<UInt8> = Array(repeating: 0, count: rxBufSize)
+    let rxDataLen = recv(fd, &rxBuffer, rxBufSize, 0)
+    print("Received data: \(rxBuffer)")
+    var volumeString = ""
+    for i in [2, 3, 4] {
+        let c = UnicodeScalar(rxBuffer[i])
+        //print(c)
+        volumeString = volumeString + String(c)
+    }
+    print("Vol: \(volumeString)")
 
     close(fd)
+    //return volumeString
 }
 
 // to convert String -> Bytes use: "string".bytes

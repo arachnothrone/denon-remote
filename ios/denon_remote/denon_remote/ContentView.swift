@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    var ss = ""
     var body: some View {
         
 //        Text("Denon Remote")
@@ -27,7 +28,9 @@ struct ContentView: View {
                 .foregroundColor(.white)
                 .padding(10)
                 .border(Color.purple, width: 5)
-            Text(" ").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+//            Text(" ").font(.body)
+//            Text(" ").font(.body)
+            Divider()
             
             HStack {
                 Button(action: {udpSendString(textToSend: "CMD04POWERON", address: "192.168.2.101", port: 19001)}, label: {
