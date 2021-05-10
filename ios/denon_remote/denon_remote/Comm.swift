@@ -12,8 +12,8 @@ func htons(value: CUnsignedShort) -> CUnsignedShort {
     return (value << 8) + (value >> 8);
 }
 
-func udpSendString(textToSend: String, address: String, port: CUnsignedShort) {
-//func udpSendString(textToSend: String, address: String, port: CUnsignedShort) -> String {
+//func udpSendString(textToSend: String, address: String, port: CUnsignedShort) {
+func udpSendString(textToSend: String, address: String, port: CUnsignedShort) -> String {
     var adr = in_addr()
     inet_pton(AF_INET, address, &adr)
 
@@ -54,7 +54,7 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort) {
     print("Vol: \(volumeString)")
 
     close(fd)
-    //return volumeString
+    return volumeString
 }
 
 // to convert String -> Bytes use: "string".bytes
