@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <time.h>
 
 #define RX_PORT         (19001)
 #define RX_BUFFER_SIZE  (1024)
@@ -65,6 +66,9 @@ STATE_DIM UdpateDimmerState(const MEM_STATE_T* pDenonState);
 STATE_BINARY UpdateMuteState(const MEM_STATE_T* pDenonState);
 void SerializeDenonState(const MEM_STATE_T* pDenonState, char* buffer);
 void DenonStateInit(MEM_STATE_T* pDenonState);
+void SetMinimumVolume(MEM_STATE_T* pDenonState);
+void SetVolumeTo(MEM_STATE_T* pDenonState, int value);
+
 
 /**
  * Main function
@@ -223,6 +227,11 @@ int main(int argc, char **argv)
                 system("irsend SEND_ONCE Denon_RC-978 INPUT_EXTIN");
                 denonState.input = INPUTEXTIN;
                 break;
+            case 99:
+                /* CALIBRATE_VOL */
+                SetMinimumVolume(&denonState);
+                SetVolumeTo(&denonState, -40);
+                break;
             default:
                 break;
         }
@@ -286,4 +295,47 @@ void DenonStateInit(MEM_STATE_T* pDenonState)
     pDenonState->stereoMode = STANDARD;
     pDenonState->input = INPUTMODE;
     pDenonState->dimmer = LEVEL0;
+}
+
+void SetMinimumVolume(MEM_STATE_T* pDenonState)
+{
+    struct timespec ts = {.tv_sec = 7, .tv_nsec = 5e8};         // for 4.5 sec delay
+    system("irsend SEND_START Denon_RC-978 KEY_VOLUMEDOWN");
+    nanosleep(&ts, NULL);
+    system("irsend SEND_STOP Denon_RC-978 KEY_VOLUMEDOWN");
+    ts.tv_sec = 1;
+    nanosleep(&ts, NULL);
+    system("irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEUP");
+    pDenonState->volume = -70;
+}
+
+void SetVolumeTo(MEM_STATE_T* pDenonState, int value)
+{
+    int i, deltaVol, direction;
+    char* command = "";
+    struct timespec ts = {.tv_sec = 0, .tv_nsec = 12e7};         // 120 ms delay
+    
+    if (pDenonState->volume > value)
+    {
+        command = "irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEDOWN";
+    }
+    else
+    {
+        command = "irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEUP";
+    }
+
+    deltaVol = abs(abs(pDenonState->volume) - abs(value));
+    
+    nanosleep(&ts, NULL);
+
+    for (i = 0; i < deltaVol; i++)
+    {
+        system(command);
+
+        // 100 ms pause between two steps
+        nanosleep(&ts, NULL);
+    }
+
+    pDenonState->volume = value;
+    printf("SetVolumeTo: set to %d\n", pDenonState->volume);
 }
