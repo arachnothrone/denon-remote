@@ -7,6 +7,7 @@
 
 import Foundation
 import Darwin
+import Darwin.sys
 
 func htons(value: CUnsignedShort) -> CUnsignedShort {
     return (value << 8) + (value >> 8);
@@ -41,16 +42,37 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort) ->
         return sent
     }
     
+    print("Sent \(sent) bytes")
+    
     let rxBufSize = 15
     var rxBuffer: Array<UInt8> = Array(repeating: 0, count: rxBufSize)
-    let rxDataLen = recv(fd, &rxBuffer, rxBufSize, 0)
-    print("Received data: \(rxBuffer)")
+    let numFDs: Int32 = 1
+    var rfds: fd_set = .init()
+    var wfds: fd_set = .init()
+    var efds: fd_set = .init()
+    var tv: timeval = .init(tv_sec: 1, tv_usec: 0)
+    //__DARWIN_FD_ZERO(&rfds)
+    __darwin_fd_set(fd, &rfds)
+    //rfds = .init()
+    //memset(&rfds, 0, sizeof(rfds)) // FD_SETSIZE
+    
+    //let retVal = poll()
+    //let retVal = select(numFDs, &rfds, NSNull, NSNull, &tv)
+    let retVal = select(numFDs, &rfds, &wfds, &efds, &tv)
+    print(retVal)
     var volumeString = ""
-    for i in [2, 3, 4] {
-        let c = UnicodeScalar(rxBuffer[i])
-        //print(c)
-        volumeString = volumeString + String(c)
+    if retVal != -1 {
+    //if retVal == 1 {
+        let rxDataLen = recv(fd, &rxBuffer, rxBufSize, 0)
+        print("Received data (\(rxDataLen) bytes): \(rxBuffer)")
+        //var volumeString = ""
+        for i in [2, 3, 4] {
+            let c = UnicodeScalar(rxBuffer[i])
+            //print(c)
+            volumeString = volumeString + String(c)
+        }
     }
+    
     print("Vol: \(volumeString)")
 
     close(fd)
@@ -81,3 +103,23 @@ func udpSendBytes(payload: ContiguousBytes, address: String, port: CUnsignedShor
     //sendto(fd, payload.withCString(), strlen(payload), 0, addr.sin_addr, socklen_t(addr.sin_len))
     
 }
+
+//func sizeof<t:fixedwidthinteger>(_ int:T) -> Int {
+//    return int.bitWidth/UInt8.bitWidth
+//}
+//func sizeof<t:fixedwidthinteger>(_ intType:T.Type) -> Int {
+//    return intType.bitWidth/UInt8.bitWidth
+//}
+
+//func sizeof <t> (_ : t.Type) -> Int
+//{
+//    return (MemoryLayout<t>.size)
+//}
+//func sizeof <t> (_ : t) -> Int
+//{
+//    return (MemoryLayout<t>.size)
+//}
+//func sizeof <t> (_ value : [T]) -> Int
+//{
+//    return (MemoryLayout<t>.size * value.count)
+//}
