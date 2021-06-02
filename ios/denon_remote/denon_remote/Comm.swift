@@ -46,31 +46,40 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort) ->
     
     let rxBufSize = 15
     var rxBuffer: Array<UInt8> = Array(repeating: 0, count: rxBufSize)
-    let numFDs: Int32 = 1
+    let numFDs: Int32 = 32
     var rfds: fd_set = .init()
     var wfds: fd_set = .init()
     var efds: fd_set = .init()
     var tv: timeval = .init(tv_sec: 1, tv_usec: 0)
+    var timeStamp0: timespec = .init()
+    var timeStamp1: timespec = .init()
+    
     //__DARWIN_FD_ZERO(&rfds)
+    print("socket: \(fd), rfds(before): \(rfds.fds_bits)")
     __darwin_fd_set(fd, &rfds)
+    print("socket: \(fd), rfds(after) : \(rfds.fds_bits)")
     //rfds = .init()
     //memset(&rfds, 0, sizeof(rfds)) // FD_SETSIZE
     
     //let retVal = poll()
     //let retVal = select(numFDs, &rfds, NSNull, NSNull, &tv)
+    clock_gettime(CLOCK_MONOTONIC, &timeStamp0)
     let retVal = select(numFDs, &rfds, &wfds, &efds, &tv)
-    print(retVal)
+    clock_gettime(CLOCK_MONOTONIC, &timeStamp1)
+    print("retVal=\(retVal), in \(timeStamp1.tv_sec - timeStamp0.tv_sec)s \(timeStamp1.tv_nsec - timeStamp0.tv_nsec)ns")
     var volumeString = ""
-    if retVal != -1 {
-    //if retVal == 1 {
+    if retVal == 1 {
         let rxDataLen = recv(fd, &rxBuffer, rxBufSize, 0)
-        print("Received data (\(rxDataLen) bytes): \(rxBuffer)")
-        //var volumeString = ""
+        print("Received data (\(rxDataLen) bytes): \(rxBuffer), \(tv.tv_sec)s \(tv.tv_usec)us")
         for i in [2, 3, 4] {
             let c = UnicodeScalar(rxBuffer[i])
             //print(c)
             volumeString = volumeString + String(c)
         }
+    } else if retVal == 0 {
+        print("Error: select() timeout")
+    } else {
+        print("Error: select() returned: \(retVal)")
     }
     
     print("Vol: \(volumeString)")
