@@ -14,7 +14,7 @@ func htons(value: CUnsignedShort) -> CUnsignedShort {
 }
 
 //func udpSendString(textToSend: String, address: String, port: CUnsignedShort) {
-func udpSendString(textToSend: String, address: String, port: CUnsignedShort) -> String {
+func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rxTimeoutSec: Int) -> String {
     var adr = in_addr()
     inet_pton(AF_INET, address, &adr)
 
@@ -50,7 +50,7 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort) ->
     var rfds: fd_set = .init()
     var wfds: fd_set = .init()
     var efds: fd_set = .init()
-    var tv: timeval = .init(tv_sec: 1, tv_usec: 0)
+    var tv: timeval = .init(tv_sec: rxTimeoutSec, tv_usec: 0)
     var timeStamp0: timespec = .init()
     var timeStamp1: timespec = .init()
     

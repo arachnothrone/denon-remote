@@ -29,17 +29,17 @@ struct ContentView: View {
                 .padding(10)
                 .border(Color.purple, width: 5)
 //            Text(" ").font(.body)
-            Text(volumeString).font(.body)
+            Text("Vol: \(volumeString) dB").font(.body)
             //Divider()
             
             HStack {
-                Button(action: {udpSendString(textToSend: "CMD04POWERON", address: "192.168.2.101", port: 19001)}, label: {
+                Button(action: {_ = udpSendString(textToSend: "CMD04POWERON", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
                         Text("Power ON").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.gray).padding()})
-                Button(action: {udpSendString(textToSend: "CMD05POWERON", address: "192.168.2.101", port: 19001)}, label: {
+                Button(action: {_ = udpSendString(textToSend: "CMD05POWERON", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
                         Text("Power OFF").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.gray).padding()})
             }
             HStack {
-                Button(action: {volumeString = udpSendString(textToSend: "CMD03VOLUMEDOWN", address: "192.168.2.101", port: 19001)}, label: {
+                Button(action: {volumeString = udpSendString(textToSend: "CMD03VOLUMEDOWN", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
                     HStack {
                         Text("Down").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                         Image(systemName: "arrowtriangle.down.fill").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -52,7 +52,7 @@ struct ContentView: View {
 //                Button("vol.down") {
 //                    ss = udpSendString(textToSend: "CMD03VOLUMEDOWN", address: "192.168.2.101", port: 19001)
 //                }
-                Button(action: {volumeString = udpSendString(textToSend: "CMD02VOLUMEUP__", address: "192.168.2.101", port: 19001)}, label: {
+                Button(action: {volumeString = udpSendString(textToSend: "CMD02VOLUMEUP__", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
                     HStack {
                         Image(systemName: "arrowtriangle.up.fill").foregroundColor(.orange).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                         Text("Up").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -67,23 +67,23 @@ struct ContentView: View {
             Text(" ").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
             Text("-= Stereo Settings =-").foregroundColor(.black)
             HStack {
-                Button(action: {udpSendString(textToSend: "CMD09STANDARD", address: "192.168.2.101", port: 19001)}, label: {
+                Button(action: {_ = udpSendString(textToSend: "CMD09STANDARD", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
                     Text("STANDARD").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red)
                 })
-                Button(action: {udpSendString(textToSend: "CMD12DIRECT", address: "192.168.2.101", port: 19001)}, label: {
+                Button(action: {_ = udpSendString(textToSend: "CMD12DIRECT", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
                     Text("DIRECT").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green)
                 })
-                Button(action: {udpSendString(textToSend: "CMD13STEREO", address: "192.168.2.101", port: 19001)}, label: {
+                Button(action: {_ = udpSendString(textToSend: "CMD13STEREO", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
                     Text("STEREO").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.blue)
                 })
-                Button(action: {udpSendString(textToSend: "CMD075CH7CHSTEREO", address: "192.168.2.101", port: 19001)}, label: {
+                Button(action: {_ = udpSendString(textToSend: "CMD075CH7CHSTEREO", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
                     Text("5ch/7ch").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.purple)
                 })
                 
             }
             
             Text(" ").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-            Button(action: {udpSendString(textToSend: "CMD06MUTE", address: "192.168.2.101", port: 19001)}, label: {
+            Button(action: {_ = udpSendString(textToSend: "CMD06MUTE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
                 HStack {
                     Text("Mute").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                     Image(systemName: "speaker.slash").background(Color.clear).foregroundColor(.blue).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -102,14 +102,34 @@ struct ContentView: View {
                     )
             })
             
-            Button(action: {udpSendString(textToSend: "CMD01DIMMER", address: "192.168.2.101", port: 19001)}) {
-                HStack {
-                    //Text("Dimmer").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                    Image(systemName: "rays").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).padding()
+            HStack {
+                Button(action: {_ = udpSendString(textToSend: "CMD01DIMMER", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}) {
+                    HStack {
+                        //Text("Dimmer").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                        Image(systemName: "rays").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).padding()
+                    }
+                    .cornerRadius(40)
                 }
-                .cornerRadius(40)
-
+                
+                Button(action: {volumeString = udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001, rxTimeoutSec: 25)}) {
+                    Image(systemName: "gearshape").foregroundColor(.red).font(.title).padding()
+                }.cornerRadius(40)
             }
+//            Button(action: {udpSendString(textToSend: "CMD01DIMMER", address: "192.168.2.101", port: 19001)}) {
+//                HStack {
+//                    //Text("Dimmer").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+//                    Image(systemName: "rays").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).padding()
+//                }
+//                .cornerRadius(40)
+//
+//            }
+            
+//            HStack {
+//                Button(action: {udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001)}) {
+//                    ///*@START_MENU_TOKEN@*/Text("Button")/*@END_MENU_TOKEN@*/
+//                    Image(systemName: "gearshape")
+//                }
+//            }
         }
     }
 }
