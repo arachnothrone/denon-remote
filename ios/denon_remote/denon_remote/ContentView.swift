@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ContentView: View {
     @State var volumeString = "Volume unknown"
+    @State var dimmerImage: Int8 = 0
+    @State var imageIndex: Int8 = 0
+    @State var muteButtonSize: CGFloat = 30
     var body: some View {
         
 //        Text("Denon Remote")
@@ -64,7 +67,7 @@ struct ContentView: View {
                 })
             }
             
-            Text(" ").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+            Text(" ").font(.body)
             Text("-= Stereo Settings =-").foregroundColor(.black)
             HStack {
                 Button(action: {_ = udpSendString(textToSend: "CMD09STANDARD", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
@@ -82,7 +85,8 @@ struct ContentView: View {
                 
             }
             
-            Text(" ").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+            //Text(" ").font(.body)
+            Spacer().frame(height: 10)
             Button(action: {_ = udpSendString(textToSend: "CMD06MUTE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
                 HStack {
                     Text("Mute").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -102,17 +106,40 @@ struct ContentView: View {
                     )
             })
             
+            //Spacer()
             HStack {
-                Button(action: {_ = udpSendString(textToSend: "CMD01DIMMER", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}) {
+                Button(action: {_ = udpSendString(textToSend: "CMD01DIMMER", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)
+                                dimmerImage += 1
+                                imageIndex = dimmerImage % 4
+                                print("dimmerImage=\(dimmerImage), imageIndex=\(imageIndex)")
+                }) {
                     HStack {
-                        //Text("Dimmer").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                        Image(systemName: "rays").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).padding()
+                        switch imageIndex {
+                        case 0:
+                            Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.bold)).padding()
+                                .frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
+                        case 1:
+                            Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.medium)).padding()
+                                .frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
+                        case 2:
+                            Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.light)).padding()
+                                .frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
+                        case 3:
+                            Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.ultraLight)).padding()
+                                .frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
+                        default:
+                            Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.heavy)).padding()
+                                .frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
+                        }
+                        //Image(systemName: "rays").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).padding()
+                        
                     }
                     .cornerRadius(40)
                 }
                 
                 Button(action: {volumeString = udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001, rxTimeoutSec: 25)}) {
-                    Image(systemName: "gearshape").foregroundColor(.red).font(.title).padding()
+                    Image(systemName: "gearshape").foregroundColor(.red).font(Font.title.weight(.light)).padding()
+                        //.frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
                 }.cornerRadius(40)
             }
 //            Button(action: {udpSendString(textToSend: "CMD01DIMMER", address: "192.168.2.101", port: 19001)}) {
