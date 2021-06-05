@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var volumeString = "Volume unknown"
+    @State var volumeString = "unknown"
     @State var dimmerImage: Int8 = 0
     @State var imageIndex: Int8 = 0
     @State var dimmerButtonSize: CGFloat = 30
@@ -35,6 +35,10 @@ struct ContentView: View {
                 .border(Color.purple, width: 5)
 //            Text(" ").font(.body)
             Text("Vol: \(volumeString) dB").font(.body)
+                .onAppear(perform: {
+                            volumeString = udpSendString(textToSend: "CMD98GET_STATE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)
+                            print("DEBUG: updating volume text: \(volumeString)")
+                })
             //Divider()
             
             HStack {
@@ -146,7 +150,7 @@ struct ContentView: View {
                     .cornerRadius(40)
                 }
                 
-                Button(action: {volumeString = udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001, rxTimeoutSec: 25)}) {
+                Button(action: {volumeString = "---"; volumeString = udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001, rxTimeoutSec: 25)}) {
                     Image(systemName: "gearshape").foregroundColor(.red).font(Font.title.weight(.light)).padding()
                         //.frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
                 }.cornerRadius(40)
@@ -168,6 +172,7 @@ struct ContentView: View {
 //            }
         }
     }
+    //.onAppear {volumeString = udpSendString(textToSend: "CMD98GET_STATE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}
 }
 
 struct ContentView_Previews: PreviewProvider {
