@@ -11,7 +11,9 @@ struct ContentView: View {
     @State var volumeString = "Volume unknown"
     @State var dimmerImage: Int8 = 0
     @State var imageIndex: Int8 = 0
-    @State var muteButtonSize: CGFloat = 30
+    @State var dimmerButtonSize: CGFloat = 30
+    @State var muteSpeakerImg = "speaker"
+    @State var muteImgIdx: Int8 = 1
     var body: some View {
         
 //        Text("Denon Remote")
@@ -87,10 +89,17 @@ struct ContentView: View {
             
             //Text(" ").font(.body)
             Spacer().frame(height: 10)
-            Button(action: {_ = udpSendString(textToSend: "CMD06MUTE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
+            Button(action: {_ = udpSendString(textToSend: "CMD06MUTE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)
+                muteImgIdx *= -1
+                if muteImgIdx >= 0 {
+                    muteSpeakerImg = "speaker"
+                } else {
+                    muteSpeakerImg = "speaker.slash"
+                }
+            }, label: {
                 HStack {
                     Text("Mute").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                    Image(systemName: "speaker.slash").background(Color.clear).foregroundColor(.blue).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                    Image(systemName: muteSpeakerImg).background(Color.clear).foregroundColor(.blue).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                 }
                 //.border(Color.purple, width: 5)
                 .padding()
@@ -117,19 +126,19 @@ struct ContentView: View {
                         switch imageIndex {
                         case 0:
                             Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.bold)).padding()
-                                .frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
+                                .frame(minWidth: dimmerButtonSize, maxWidth: dimmerButtonSize, minHeight: dimmerButtonSize, maxHeight: dimmerButtonSize)
                         case 1:
                             Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.medium)).padding()
-                                .frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
+                                .frame(minWidth: dimmerButtonSize, maxWidth: dimmerButtonSize, minHeight: dimmerButtonSize, maxHeight: dimmerButtonSize)
                         case 2:
                             Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.light)).padding()
-                                .frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
+                                .frame(minWidth: dimmerButtonSize, maxWidth: dimmerButtonSize, minHeight: dimmerButtonSize, maxHeight: dimmerButtonSize)
                         case 3:
                             Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.ultraLight)).padding()
-                                .frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
+                                .frame(minWidth: dimmerButtonSize, maxWidth: dimmerButtonSize, minHeight: dimmerButtonSize, maxHeight: dimmerButtonSize)
                         default:
                             Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.heavy)).padding()
-                                .frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
+                                .frame(minWidth: dimmerButtonSize, maxWidth: dimmerButtonSize, minHeight: dimmerButtonSize, maxHeight: dimmerButtonSize)
                         }
                         //Image(systemName: "rays").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).padding()
                         
