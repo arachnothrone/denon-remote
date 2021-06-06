@@ -24,7 +24,7 @@ struct ContentView: View {
 //            .foregroundColor(.white)
 //            .padding(10)
 //            .border(Color.purple, width: 5)
-        VStack (alignment: .center, spacing: 5){
+        VStack(alignment: .center, spacing: 5) {
             Text("Denon Remote")
                 .font(.title)
                 .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
@@ -150,7 +150,7 @@ struct ContentView: View {
                     .cornerRadius(40)
                 }
                 
-                Button(action: {volumeString = "---"; volumeString = udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001, rxTimeoutSec: 25)}) {
+                Button(action: {volumeString = udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001, rxTimeoutSec: 25)}) {
                     Image(systemName: "gearshape").foregroundColor(.red).font(Font.title.weight(.light)).padding()
                         //.frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
                 }.cornerRadius(40)
