@@ -9,12 +9,23 @@ import Foundation
 import Darwin
 import Darwin.sys
 
+struct MEM_STATE_T {
+    var power: String =         "0"
+    var volume: String =        "---"
+    var mute: String =          "0"
+    var stereoMode: String =    "0"
+    var input: String =         "0"
+    var dimmer: String =        "0"
+}
+
 func htons(value: CUnsignedShort) -> CUnsignedShort {
     return (value << 8) + (value >> 8);
 }
 
 //func udpSendString(textToSend: String, address: String, port: CUnsignedShort) {
+// func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rxTimeoutSec: Int) -> MEM_STATE_T {
 func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rxTimeoutSec: Int) -> String {
+    var denonState = MEM_STATE_T()
     var adr = in_addr()
     inet_pton(AF_INET, address, &adr)
 
@@ -76,6 +87,21 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rx
             //print(c)
             volumeString = volumeString + String(c)
         }
+        
+        var receivedString = ""
+        for i in 0...14 {
+            let c = UnicodeScalar(rxBuffer[i])
+            receivedString += String(c)
+        }
+        print("decoded rx string: \(receivedString)")
+        // ss[ss.startIndex..<ss.index(ss.startIndex, offsetBy: 3)]
+        denonState.power = stringSlicer(inputStr: receivedString, startIdx: 0, sliceLen: 1)
+        denonState.volume = stringSlicer(inputStr: receivedString, startIdx: 2, sliceLen: 3)
+        denonState.mute = stringSlicer(inputStr: receivedString, startIdx: 6, sliceLen: 1)
+        denonState.stereoMode = stringSlicer(inputStr: receivedString, startIdx: 8, sliceLen: 1)
+        denonState.input = stringSlicer(inputStr: receivedString, startIdx: 10, sliceLen: 1)
+        denonState.dimmer = stringSlicer(inputStr: receivedString, startIdx: 12, sliceLen: 1)
+        print("power: \(denonState.power), volume: \(denonState.volume), mute: \(denonState.mute), stereoMode: \(denonState.stereoMode), input: \(denonState.input), dimmer: \(denonState.dimmer)")
     } else if retVal == 0 {
         print("Error: select() timeout")
     } else {
@@ -86,6 +112,7 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rx
 
     close(fd)
     return volumeString
+    //return denonState
 }
 
 // to convert String -> Bytes use: "string".bytes
@@ -111,6 +138,11 @@ func udpSendBytes(payload: ContiguousBytes, address: String, port: CUnsignedShor
     
     //sendto(fd, payload.withCString(), strlen(payload), 0, addr.sin_addr, socklen_t(addr.sin_len))
     
+}
+
+func stringSlicer(inputStr: String, startIdx: Int, sliceLen: Int) -> String {
+    let res = String(inputStr[inputStr.index(inputStr.startIndex, offsetBy: startIdx)..<inputStr.index(inputStr.startIndex, offsetBy: startIdx + sliceLen)])
+    return res
 }
 
 //func sizeof<t:fixedwidthinteger>(_ int:T) -> Int {

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var denonState = MEM_STATE_T()
     @State var volumeString = "unknown"
     @State var dimmerImage: Int8 = 0
     @State var imageIndex: Int8 = 0
