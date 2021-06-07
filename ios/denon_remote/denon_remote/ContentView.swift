@@ -37,8 +37,9 @@ struct ContentView: View {
 //            Text(" ").font(.body)
             Text("Vol: \(volumeString) dB").font(.body)
                 .onAppear(perform: {
-                            volumeString = udpSendString(textToSend: "CMD98GET_STATE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)
-                            print("DEBUG: updating volume text: \(volumeString)")
+                    denonState = udpSendString(textToSend: "CMD98GET_STATE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)
+                    volumeString = denonState.volume
+                    print("DEBUG: updating volume text: \(volumeString)")
                 })
             //Divider()
             
@@ -49,7 +50,7 @@ struct ContentView: View {
                         Text("Power OFF").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.gray).padding()})
             }
             HStack {
-                Button(action: {volumeString = udpSendString(textToSend: "CMD03VOLUMEDOWN", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
+                Button(action: {denonState = udpSendString(textToSend: "CMD03VOLUMEDOWN", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1); volumeString = denonState.volume}, label: {
                     HStack {
                         Text("Down").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                         Image(systemName: "arrowtriangle.down.fill").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -62,7 +63,7 @@ struct ContentView: View {
 //                Button("vol.down") {
 //                    ss = udpSendString(textToSend: "CMD03VOLUMEDOWN", address: "192.168.2.101", port: 19001)
 //                }
-                Button(action: {volumeString = udpSendString(textToSend: "CMD02VOLUMEUP__", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
+                Button(action: {denonState = udpSendString(textToSend: "CMD02VOLUMEUP__", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1); volumeString = denonState.volume}, label: {
                     HStack {
                         Image(systemName: "arrowtriangle.up.fill").foregroundColor(.orange).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                         Text("Up").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -151,7 +152,7 @@ struct ContentView: View {
                     .cornerRadius(40)
                 }
                 
-                Button(action: {volumeString = udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001, rxTimeoutSec: 25)}) {
+                Button(action: {denonState = udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001, rxTimeoutSec: 25); volumeString = denonState.volume}) {
                     Image(systemName: "gearshape").foregroundColor(.red).font(Font.title.weight(.light)).padding()
                         //.frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
                 }.cornerRadius(40)

@@ -23,8 +23,8 @@ func htons(value: CUnsignedShort) -> CUnsignedShort {
 }
 
 //func udpSendString(textToSend: String, address: String, port: CUnsignedShort) {
-// func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rxTimeoutSec: Int) -> MEM_STATE_T {
-func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rxTimeoutSec: Int) -> String {
+func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rxTimeoutSec: Int) -> MEM_STATE_T {
+// func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rxTimeoutSec: Int) -> String {
     var denonState = MEM_STATE_T()
     var adr = in_addr()
     inet_pton(AF_INET, address, &adr)
@@ -111,8 +111,8 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rx
     print("Vol: \(volumeString)")
 
     close(fd)
-    return volumeString
-    //return denonState
+    //return volumeString
+    return denonState
 }
 
 // to convert String -> Bytes use: "string".bytes
