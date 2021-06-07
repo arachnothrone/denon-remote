@@ -14,7 +14,7 @@ struct ContentView: View {
     @State var imageIndex: Int8 = 0
     @State var dimmerButtonSize: CGFloat = 30
     @State var muteSpeakerImg = "speaker"
-    @State var muteImgIdx: Int8 = 1
+
     var body: some View {
         
 //        Text("Denon Remote")
@@ -95,9 +95,8 @@ struct ContentView: View {
             
             //Text(" ").font(.body)
             Spacer().frame(height: 10)
-            Button(action: {_ = udpSendString(textToSend: "CMD06MUTE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)
-                muteImgIdx *= -1
-                if muteImgIdx >= 0 {
+            Button(action: {denonState = udpSendString(textToSend: "CMD06MUTE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)
+                if Int(denonState.mute) == 1 {
                     muteSpeakerImg = "speaker"
                 } else {
                     muteSpeakerImg = "speaker.slash"
