@@ -37,20 +37,20 @@ struct ContentView: View {
 //            Text(" ").font(.body)
             Text("Vol: \(volumeString) dB").font(.body)
                 .onAppear(perform: {
-                    denonState = udpSendString(textToSend: "CMD98GET_STATE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)
+                    denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
                     volumeString = denonState.volume
                     print("DEBUG: updating volume text: \(volumeString)")
                 })
             //Divider()
             
             HStack {
-                Button(action: {_ = udpSendString(textToSend: "CMD04POWERON", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
+                Button(action: {_ = sendCommand(cmd: "CMD04POWERON", rxTO: 1)}, label: {
                         Text("Power ON").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.gray).padding()})
-                Button(action: {_ = udpSendString(textToSend: "CMD05POWERON", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
+                Button(action: {_ = sendCommand(cmd: "CMD05POWEROFF", rxTO: 1)}, label: {
                         Text("Power OFF").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.gray).padding()})
             }
             HStack {
-                Button(action: {denonState = udpSendString(textToSend: "CMD03VOLUMEDOWN", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1); volumeString = denonState.volume}, label: {
+                Button(action: {denonState = sendCommand(cmd: "CMD03VOLUMEDOWN", rxTO: 1); volumeString = denonState.volume}, label: {
                     HStack {
                         Text("Down").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                         Image(systemName: "arrowtriangle.down.fill").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -63,7 +63,7 @@ struct ContentView: View {
 //                Button("vol.down") {
 //                    ss = udpSendString(textToSend: "CMD03VOLUMEDOWN", address: "192.168.2.101", port: 19001)
 //                }
-                Button(action: {denonState = udpSendString(textToSend: "CMD02VOLUMEUP__", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1); volumeString = denonState.volume}, label: {
+                Button(action: {denonState = sendCommand(cmd: "CMD02VOLUMEUP__", rxTO: 1); volumeString = denonState.volume}, label: {
                     HStack {
                         Image(systemName: "arrowtriangle.up.fill").foregroundColor(.orange).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                         Text("Up").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -78,16 +78,16 @@ struct ContentView: View {
             Text(" ").font(.body)
             Text("-= Stereo Settings =-").foregroundColor(.black)
             HStack {
-                Button(action: {_ = udpSendString(textToSend: "CMD09STANDARD", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
+                Button(action: {_ = sendCommand(cmd: "CMD09STANDARD", rxTO: 1)}, label: {
                     Text("STANDARD").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red)
                 })
-                Button(action: {_ = udpSendString(textToSend: "CMD12DIRECT", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
+                Button(action: {_ = sendCommand(cmd: "CMD12DIRECT", rxTO: 1)}, label: {
                     Text("DIRECT").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green)
                 })
-                Button(action: {_ = udpSendString(textToSend: "CMD13STEREO", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
+                Button(action: {_ = sendCommand(cmd: "CMD13STEREO", rxTO: 1)}, label: {
                     Text("STEREO").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.blue)
                 })
-                Button(action: {_ = udpSendString(textToSend: "CMD075CH7CHSTEREO", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}, label: {
+                Button(action: {_ = sendCommand(cmd: "CMD075CH7CHSTEREO", rxTO: 1)}, label: {
                     Text("5ch/7ch").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.purple)
                 })
                 
@@ -95,7 +95,7 @@ struct ContentView: View {
             
             //Text(" ").font(.body)
             Spacer().frame(height: 10)
-            Button(action: {denonState = udpSendString(textToSend: "CMD06MUTE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)
+            Button(action: {denonState = sendCommand(cmd: "CMD06MUTE", rxTO: 1)
                 if Int(denonState.mute) == 1 {
                     muteSpeakerImg = "speaker"
                 } else {
@@ -122,7 +122,7 @@ struct ContentView: View {
             
             //Spacer()
             HStack {
-                Button(action: {_ = udpSendString(textToSend: "CMD01DIMMER", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)
+                Button(action: {_ = sendCommand(cmd: "CMD01DIMMER", rxTO: 1)
                                 dimmerImage += 1
                                 imageIndex = dimmerImage % 4
                                 print("dimmerImage=\(dimmerImage), imageIndex=\(imageIndex)")
@@ -151,7 +151,7 @@ struct ContentView: View {
                     .cornerRadius(40)
                 }
                 
-                Button(action: {denonState = udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001, rxTimeoutSec: 25); volumeString = denonState.volume}) {
+                Button(action: {denonState = sendCommand(cmd: "CMD99CALIBRATE_VOL", rxTO: 25); volumeString = denonState.volume}) {
                     Image(systemName: "gearshape").foregroundColor(.red).font(Font.title.weight(.light)).padding()
                         //.frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
                 }.cornerRadius(40)
