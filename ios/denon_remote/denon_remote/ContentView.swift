@@ -44,10 +44,20 @@ struct ContentView: View {
             //Divider()
             
             HStack {
-                Button(action: {_ = sendCommand(cmd: "CMD04POWERON", rxTO: 1)}, label: {
-                        Text("Power ON").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.gray).padding()})
-                Button(action: {_ = sendCommand(cmd: "CMD05POWEROFF", rxTO: 1)}, label: {
-                        Text("Power OFF").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.gray).padding()})
+                Button(action: {denonState = sendCommand(cmd: "CMD04POWERON", rxTO: 1)}, label: {
+                        if Int(denonState.power) == 1 {
+                            Text("Power ON").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green).glow(color: .green, radius: 48).padding()
+                        } else {
+                            Text("Power ON").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.gray).padding()
+                        }
+                })
+                Button(action: {denonState = sendCommand(cmd: "CMD05POWEROFF", rxTO: 1)}, label: {
+                        if Int(denonState.power) == 1 {
+                            Text("Power OFF").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.gray).padding()
+                        } else {
+                        	Text("Power OFF").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red).padding()
+                        }
+                })
             }
             HStack {
                 Button(action: {denonState = sendCommand(cmd: "CMD03VOLUMEDOWN", rxTO: 1); volumeString = denonState.volume}, label: {
@@ -179,5 +189,14 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+extension View {
+    func glow(color: Color = .red, radius: CGFloat = 20) -> some View {
+        self
+            .shadow(color: color, radius: radius / 3)
+            .shadow(color: color, radius: radius / 3)
+            .shadow(color: color, radius: radius / 3)
     }
 }
