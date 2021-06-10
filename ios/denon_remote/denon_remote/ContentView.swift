@@ -88,17 +88,33 @@ struct ContentView: View {
             Text(" ").font(.body)
             Text("-= Stereo Settings =-").foregroundColor(.black)
             HStack {
-                Button(action: {_ = sendCommand(cmd: "CMD09STANDARD", rxTO: 1)}, label: {
-                    Text("STANDARD").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red)
+                Button(action: {denonState = sendCommand(cmd: "CMD09STANDARD", rxTO: 1)}, label: {
+                    if Int(denonState.stereoMode) == 2 && Int(denonState.power) == 1 {
+                        Text("STANDARD").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red).glow(color: .red, radius: 24)
+                    } else {
+                        Text("STANDARD").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red)
+                    }
                 })
-                Button(action: {_ = sendCommand(cmd: "CMD12DIRECT", rxTO: 1)}, label: {
-                    Text("DIRECT").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green)
+                Button(action: {denonState = sendCommand(cmd: "CMD12DIRECT", rxTO: 1)}, label: {
+                    if Int(denonState.stereoMode) == 5 && Int(denonState.power) == 1 {
+                        Text("DIRECT").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green).glow(color: .green, radius: 24)
+                    } else {
+                        Text("DIRECT").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green)
+                    }
                 })
-                Button(action: {_ = sendCommand(cmd: "CMD13STEREO", rxTO: 1)}, label: {
-                    Text("STEREO").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.blue)
+                Button(action: {denonState = sendCommand(cmd: "CMD13STEREO", rxTO: 1)}, label: {
+                    if Int(denonState.stereoMode) == 6 && Int(denonState.power) == 1 {
+                        Text("STEREO").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.blue).glow(color: .blue, radius: 24)
+                    } else {
+                        Text("STEREO").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.blue)
+                    }
                 })
-                Button(action: {_ = sendCommand(cmd: "CMD075CH7CHSTEREO", rxTO: 1)}, label: {
-                    Text("5ch/7ch").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.purple)
+                Button(action: {denonState = sendCommand(cmd: "CMD075CH7CHSTEREO", rxTO: 1)}, label: {
+                    if Int(denonState.stereoMode) == 0 && Int(denonState.power) == 1 {
+                        Text("5ch/7ch").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.purple).glow(color: .purple, radius: 24)
+                    } else {
+                        Text("5ch/7ch").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.purple)
+                    }
                 })
                 
             }
