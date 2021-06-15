@@ -34,12 +34,18 @@ struct ContentView: View {
                 .foregroundColor(.white)
                 .padding(10)
                 .border(Color.purple, width: 5)
-//            Text(" ").font(.body)
+
             Text("Vol: \(volumeString) dB").font(.body)
+                // Update the state when application started
                 .onAppear(perform: {
                     denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
                     volumeString = denonState.volume
                     print("DEBUG: updating volume text: \(volumeString)")
+                })
+                // Update the state when back from background
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification), perform: { _ in
+                    denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
+                    volumeString = denonState.volume
                 })
             //Divider()
             
