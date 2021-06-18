@@ -1,0 +1,583 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BAE32D9C267C434B00D2BB86 /* denon_IR WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = BAE32D9B267C434B00D2BB86 /* denon_IR WatchKit App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BAE32DA2267C434B00D2BB86 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BAE32DA0267C434B00D2BB86 /* Interface.storyboard */; };
+		BAE32DA4267C434C00D2BB86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE32DA3267C434C00D2BB86 /* Assets.xcassets */; };
+		BAE32DAB267C434C00D2BB86 /* denon_IR WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BAE32DAA267C434C00D2BB86 /* denon_IR WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BAE32DB0267C434C00D2BB86 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE32DAF267C434C00D2BB86 /* HostingController.swift */; };
+		BAE32DB2267C434C00D2BB86 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE32DB1267C434C00D2BB86 /* ContentView.swift */; };
+		BAE32DB4267C434C00D2BB86 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE32DB3267C434C00D2BB86 /* ExtensionDelegate.swift */; };
+		BAE32DB6267C434C00D2BB86 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE32DB5267C434C00D2BB86 /* NotificationController.swift */; };
+		BAE32DB8267C434C00D2BB86 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE32DB7267C434C00D2BB86 /* NotificationView.swift */; };
+		BAE32DBA267C434C00D2BB86 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE32DB9267C434C00D2BB86 /* ComplicationController.swift */; };
+		BAE32DBC267C434D00D2BB86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE32DBB267C434D00D2BB86 /* Assets.xcassets */; };
+		BAE32DBF267C434D00D2BB86 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE32DBE267C434D00D2BB86 /* Preview Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BAE32D9D267C434B00D2BB86 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BAE32D91267C434A00D2BB86 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BAE32D9A267C434B00D2BB86;
+			remoteInfo = "denon_IR WatchKit App";
+		};
+		BAE32DAC267C434C00D2BB86 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BAE32D91267C434A00D2BB86 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BAE32DA9267C434C00D2BB86;
+			remoteInfo = "denon_IR WatchKit Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BAE32DC7267C434D00D2BB86 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BAE32DAB267C434C00D2BB86 /* denon_IR WatchKit Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAE32DCB267C434D00D2BB86 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				BAE32D9C267C434B00D2BB86 /* denon_IR WatchKit App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BAE32D97267C434A00D2BB86 /* denon_IR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = denon_IR.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAE32D9B267C434B00D2BB86 /* denon_IR WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "denon_IR WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAE32DA1267C434B00D2BB86 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		BAE32DA3267C434C00D2BB86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BAE32DA5267C434C00D2BB86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BAE32DAA267C434C00D2BB86 /* denon_IR WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "denon_IR WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAE32DAF267C434C00D2BB86 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
+		BAE32DB1267C434C00D2BB86 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BAE32DB3267C434C00D2BB86 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
+		BAE32DB5267C434C00D2BB86 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		BAE32DB7267C434C00D2BB86 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
+		BAE32DB9267C434C00D2BB86 /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
+		BAE32DBB267C434D00D2BB86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BAE32DBE267C434D00D2BB86 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		BAE32DC0267C434D00D2BB86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BAE32DC1267C434D00D2BB86 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BAE32DA7267C434C00D2BB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BAE32D90267C434A00D2BB86 = {
+			isa = PBXGroup;
+			children = (
+				BAE32D9F267C434B00D2BB86 /* denon_IR WatchKit App */,
+				BAE32DAE267C434C00D2BB86 /* denon_IR WatchKit Extension */,
+				BAE32D98267C434A00D2BB86 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BAE32D98267C434A00D2BB86 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BAE32D97267C434A00D2BB86 /* denon_IR.app */,
+				BAE32D9B267C434B00D2BB86 /* denon_IR WatchKit App.app */,
+				BAE32DAA267C434C00D2BB86 /* denon_IR WatchKit Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BAE32D9F267C434B00D2BB86 /* denon_IR WatchKit App */ = {
+			isa = PBXGroup;
+			children = (
+				BAE32DA0267C434B00D2BB86 /* Interface.storyboard */,
+				BAE32DA3267C434C00D2BB86 /* Assets.xcassets */,
+				BAE32DA5267C434C00D2BB86 /* Info.plist */,
+			);
+			path = "denon_IR WatchKit App";
+			sourceTree = "<group>";
+		};
+		BAE32DAE267C434C00D2BB86 /* denon_IR WatchKit Extension */ = {
+			isa = PBXGroup;
+			children = (
+				BAE32DAF267C434C00D2BB86 /* HostingController.swift */,
+				BAE32DB1267C434C00D2BB86 /* ContentView.swift */,
+				BAE32DB3267C434C00D2BB86 /* ExtensionDelegate.swift */,
+				BAE32DB5267C434C00D2BB86 /* NotificationController.swift */,
+				BAE32DB7267C434C00D2BB86 /* NotificationView.swift */,
+				BAE32DB9267C434C00D2BB86 /* ComplicationController.swift */,
+				BAE32DBB267C434D00D2BB86 /* Assets.xcassets */,
+				BAE32DC0267C434D00D2BB86 /* Info.plist */,
+				BAE32DC1267C434D00D2BB86 /* PushNotificationPayload.apns */,
+				BAE32DBD267C434D00D2BB86 /* Preview Content */,
+			);
+			path = "denon_IR WatchKit Extension";
+			sourceTree = "<group>";
+		};
+		BAE32DBD267C434D00D2BB86 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				BAE32DBE267C434D00D2BB86 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BAE32D96267C434A00D2BB86 /* denon_IR */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAE32DCC267C434D00D2BB86 /* Build configuration list for PBXNativeTarget "denon_IR" */;
+			buildPhases = (
+				BAE32D95267C434A00D2BB86 /* Resources */,
+				BAE32DCB267C434D00D2BB86 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BAE32D9E267C434B00D2BB86 /* PBXTargetDependency */,
+			);
+			name = denon_IR;
+			productName = denon_IR;
+			productReference = BAE32D97267C434A00D2BB86 /* denon_IR.app */;
+			productType = "com.apple.product-type.application.watchapp2-container";
+		};
+		BAE32D9A267C434B00D2BB86 /* denon_IR WatchKit App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAE32DC8267C434D00D2BB86 /* Build configuration list for PBXNativeTarget "denon_IR WatchKit App" */;
+			buildPhases = (
+				BAE32D99267C434B00D2BB86 /* Resources */,
+				BAE32DC7267C434D00D2BB86 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BAE32DAD267C434C00D2BB86 /* PBXTargetDependency */,
+			);
+			name = "denon_IR WatchKit App";
+			productName = "denon_IR WatchKit App";
+			productReference = BAE32D9B267C434B00D2BB86 /* denon_IR WatchKit App.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		BAE32DA9267C434C00D2BB86 /* denon_IR WatchKit Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAE32DC4267C434D00D2BB86 /* Build configuration list for PBXNativeTarget "denon_IR WatchKit Extension" */;
+			buildPhases = (
+				BAE32DA6267C434C00D2BB86 /* Sources */,
+				BAE32DA7267C434C00D2BB86 /* Frameworks */,
+				BAE32DA8267C434C00D2BB86 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "denon_IR WatchKit Extension";
+			productName = "denon_IR WatchKit Extension";
+			productReference = BAE32DAA267C434C00D2BB86 /* denon_IR WatchKit Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BAE32D91267C434A00D2BB86 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					BAE32D96267C434A00D2BB86 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					BAE32D9A267C434B00D2BB86 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					BAE32DA9267C434C00D2BB86 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = BAE32D94267C434A00D2BB86 /* Build configuration list for PBXProject "denon_IR" */;
+			compatibilityVersion = "Xcode 12.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BAE32D90267C434A00D2BB86;
+			productRefGroup = BAE32D98267C434A00D2BB86 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BAE32D96267C434A00D2BB86 /* denon_IR */,
+				BAE32D9A267C434B00D2BB86 /* denon_IR WatchKit App */,
+				BAE32DA9267C434C00D2BB86 /* denon_IR WatchKit Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BAE32D95267C434A00D2BB86 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAE32D99267C434B00D2BB86 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAE32DA4267C434C00D2BB86 /* Assets.xcassets in Resources */,
+				BAE32DA2267C434B00D2BB86 /* Interface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAE32DA8267C434C00D2BB86 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAE32DBF267C434D00D2BB86 /* Preview Assets.xcassets in Resources */,
+				BAE32DBC267C434D00D2BB86 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BAE32DA6267C434C00D2BB86 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAE32DB2267C434C00D2BB86 /* ContentView.swift in Sources */,
+				BAE32DB0267C434C00D2BB86 /* HostingController.swift in Sources */,
+				BAE32DB6267C434C00D2BB86 /* NotificationController.swift in Sources */,
+				BAE32DB4267C434C00D2BB86 /* ExtensionDelegate.swift in Sources */,
+				BAE32DB8267C434C00D2BB86 /* NotificationView.swift in Sources */,
+				BAE32DBA267C434C00D2BB86 /* ComplicationController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BAE32D9E267C434B00D2BB86 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BAE32D9A267C434B00D2BB86 /* denon_IR WatchKit App */;
+			targetProxy = BAE32D9D267C434B00D2BB86 /* PBXContainerItemProxy */;
+		};
+		BAE32DAD267C434C00D2BB86 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BAE32DA9267C434C00D2BB86 /* denon_IR WatchKit Extension */;
+			targetProxy = BAE32DAC267C434C00D2BB86 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BAE32DA0267C434B00D2BB86 /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BAE32DA1267C434B00D2BB86 /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BAE32DC2267C434D00D2BB86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		BAE32DC3267C434D00D2BB86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BAE32DC5267C434D00D2BB86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"denon_IR WatchKit Extension/Preview Content\"";
+				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "denon_IR WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-IR.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 7.2;
+			};
+			name = Debug;
+		};
+		BAE32DC6267C434D00D2BB86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"denon_IR WatchKit Extension/Preview Content\"";
+				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "denon_IR WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-IR.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 7.2;
+			};
+			name = Release;
+		};
+		BAE32DC9267C434D00D2BB86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				IBSC_MODULE = denon_IR_WatchKit_Extension;
+				INFOPLIST_FILE = "denon_IR WatchKit App/Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-IR.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 7.2;
+			};
+			name = Debug;
+		};
+		BAE32DCA267C434D00D2BB86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				IBSC_MODULE = denon_IR_WatchKit_Extension;
+				INFOPLIST_FILE = "denon_IR WatchKit App/Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-IR.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 7.2;
+			};
+			name = Release;
+		};
+		BAE32DCD267C434D00D2BB86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-IR";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		BAE32DCE267C434D00D2BB86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-IR";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BAE32D94267C434A00D2BB86 /* Build configuration list for PBXProject "denon_IR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAE32DC2267C434D00D2BB86 /* Debug */,
+				BAE32DC3267C434D00D2BB86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BAE32DC4267C434D00D2BB86 /* Build configuration list for PBXNativeTarget "denon_IR WatchKit Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAE32DC5267C434D00D2BB86 /* Debug */,
+				BAE32DC6267C434D00D2BB86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BAE32DC8267C434D00D2BB86 /* Build configuration list for PBXNativeTarget "denon_IR WatchKit App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAE32DC9267C434D00D2BB86 /* Debug */,
+				BAE32DCA267C434D00D2BB86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BAE32DCC267C434D00D2BB86 /* Build configuration list for PBXNativeTarget "denon_IR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAE32DCD267C434D00D2BB86 /* Debug */,
+				BAE32DCE267C434D00D2BB86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BAE32D91267C434A00D2BB86 /* Project object */;
+}
