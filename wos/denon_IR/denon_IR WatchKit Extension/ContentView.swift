@@ -14,19 +14,20 @@ struct ContentView: View {
     @State var dimmerImage: Int8 = 0
     @State var imageIndex: Int8 = 0
     @State var dimmerButtonSize: CGFloat = 20
+    @State var scrollAmount = 0.0
     
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .trailing) {
             HStack {
                 Button(action: {
-                    var cmdString = ""
-                    if Int(denonState.power) == 1 {
-                        cmdString = "CMD05POWEROFF"
-                    } else {
-                        cmdString = "CMD04POWERON"
-                    }
-                    denonState = sendCommand(cmd: cmdString, rxTO: 1)
-                },
+                        var cmdString = ""
+                        if Int(denonState.power) == 1 {
+                            cmdString = "CMD05POWEROFF"
+                        } else {
+                            cmdString = "CMD04POWERON"
+                        }
+                        denonState = sendCommand(cmd: cmdString, rxTO: 1)
+                    },
                        label: {
                         if Int(denonState.power) == 1 {
                             Text("ON").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green).glow(color: .green, radius: 48).padding()
@@ -34,8 +35,9 @@ struct ContentView: View {
                             Text("OFF").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red).padding()
                         }
                 })
+                //.frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: 50, maxWidth: 50, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: 50, maxHeight: 50)
                 
-                Text("\(volumeString)").font(.title)
+                Text("\(volumeString)").font(.title).focusable(true).digitalCrownRotation($scrollAmount, from: -20, through: -50, by: -1.0, sensitivity: .low, isContinuous: true, isHapticFeedbackEnabled: true)
                     // Update the state when application started
                     .onAppear(perform: {
                         denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
@@ -52,33 +54,33 @@ struct ContentView: View {
             HStack {
                 Button(action: {denonState = sendCommand(cmd: "CMD09STANDARD", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 2 && Int(denonState.power) == 1 {
-                        Text("STD").font(.body).fontWeight(.medium).foregroundColor(.red).glow(color: .red, radius: 24)
+                        Text("S").font(.body).fontWeight(.medium).foregroundColor(.red).glow(color: .red, radius: 24)
                     } else {
-                        Text("STD").font(.body).fontWeight(.medium).foregroundColor(.red)
+                        Text("S").font(.body).fontWeight(.medium).foregroundColor(.red)
                     }
                 })
                 Button(action: {denonState = sendCommand(cmd: "CMD12DIRECT", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 5 && Int(denonState.power) == 1 {
-                        Text("Direct").font(.body).fontWeight(.medium).foregroundColor(.green).glow(color: .green, radius: 24)
+                        Text("Di").font(.body).fontWeight(.medium).foregroundColor(.green).glow(color: .green, radius: 24)
                     } else {
-                        Text("Direct").font(.body).fontWeight(.medium).foregroundColor(.green)
+                        Text("Di").font(.body).fontWeight(.medium).foregroundColor(.green)
                     }
                 })
-            }
-            
-            HStack {
+//            }
+// Uncomment for two buttons in a row, otherwise four in a row
+//            HStack {
                 Button(action: {denonState = sendCommand(cmd: "CMD13STEREO", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 6 && Int(denonState.power) == 1 {
-                        Text("Stereo").font(.body).fontWeight(.medium).foregroundColor(.blue).glow(color: .blue, radius: 24)
+                        Text("St").font(.body).fontWeight(.medium).foregroundColor(.blue).glow(color: .blue, radius: 24)
                     } else {
-                        Text("Stereo").font(.body).fontWeight(.medium).foregroundColor(.blue)
+                        Text("St").font(.body).fontWeight(.medium).foregroundColor(.blue)
                     }
                 })
                 Button(action: {denonState = sendCommand(cmd: "CMD075CH7CHSTEREO", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 0 && Int(denonState.power) == 1 {
-                        Text("5ch/7ch").font(.body).fontWeight(.medium).foregroundColor(.purple).glow(color: .purple, radius: 24)
+                        Text("5ch").font(.body).fontWeight(.medium).foregroundColor(.purple).glow(color: .purple, radius: 24)
                     } else {
-                        Text("5ch/7ch").font(.body).fontWeight(.medium).foregroundColor(.purple)
+                        Text("5ch").font(.body).fontWeight(.medium).foregroundColor(.purple)
                     }
                 })
             }
