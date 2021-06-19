@@ -19,6 +19,7 @@
 		BAE32DBA267C434C00D2BB86 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE32DB9267C434C00D2BB86 /* ComplicationController.swift */; };
 		BAE32DBC267C434D00D2BB86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE32DBB267C434D00D2BB86 /* Assets.xcassets */; };
 		BAE32DBF267C434D00D2BB86 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE32DBE267C434D00D2BB86 /* Preview Assets.xcassets */; };
+		BAF97931267D604C009CD6AB /* Comm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF97930267D604C009CD6AB /* Comm.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +81,9 @@
 		BAE32DBE267C434D00D2BB86 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BAE32DC0267C434D00D2BB86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BAE32DC1267C434D00D2BB86 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
+		BAF9792E267D604B009CD6AB /* denon_IR-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "denon_IR-Bridging-Header.h"; sourceTree = "<group>"; };
+		BAF9792F267D604B009CD6AB /* denon_IR WatchKit App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "denon_IR WatchKit App-Bridging-Header.h"; sourceTree = "<group>"; };
+		BAF97930267D604C009CD6AB /* Comm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comm.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +139,9 @@
 				BAE32DC0267C434D00D2BB86 /* Info.plist */,
 				BAE32DC1267C434D00D2BB86 /* PushNotificationPayload.apns */,
 				BAE32DBD267C434D00D2BB86 /* Preview Content */,
+				BAF97930267D604C009CD6AB /* Comm.swift */,
+				BAF9792E267D604B009CD6AB /* denon_IR-Bridging-Header.h */,
+				BAF9792F267D604B009CD6AB /* denon_IR WatchKit App-Bridging-Header.h */,
 			);
 			path = "denon_IR WatchKit Extension";
 			sourceTree = "<group>";
@@ -212,9 +219,11 @@
 				TargetAttributes = {
 					BAE32D96267C434A00D2BB86 = {
 						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1240;
 					};
 					BAE32D9A267C434B00D2BB86 = {
 						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1240;
 					};
 					BAE32DA9267C434C00D2BB86 = {
 						CreatedOnToolsVersion = 12.4;
@@ -279,6 +288,7 @@
 				BAE32DB6267C434C00D2BB86 /* NotificationController.swift in Sources */,
 				BAE32DB4267C434C00D2BB86 /* ExtensionDelegate.swift in Sources */,
 				BAE32DB8267C434C00D2BB86 /* NotificationView.swift in Sources */,
+				BAF97931267D604C009CD6AB /* Comm.swift in Sources */,
 				BAE32DBA267C434C00D2BB86 /* ComplicationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -478,14 +488,22 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
 				IBSC_MODULE = denon_IR_WatchKit_Extension;
 				INFOPLIST_FILE = "denon_IR WatchKit App/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-IR.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "denon_IR WatchKit Extension/denon_IR WatchKit App-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 7.2;
@@ -498,14 +516,21 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
 				IBSC_MODULE = denon_IR_WatchKit_Extension;
 				INFOPLIST_FILE = "denon_IR WatchKit App/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-IR.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "denon_IR WatchKit Extension/denon_IR WatchKit App-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 7.2;
@@ -515,12 +540,20 @@
 		BAE32DCD267C434D00D2BB86 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-IR";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "denon_IR WatchKit Extension/denon_IR-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -528,12 +561,19 @@
 		BAE32DCE267C434D00D2BB86 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-IR";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "denon_IR WatchKit Extension/denon_IR-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
