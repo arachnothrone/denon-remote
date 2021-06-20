@@ -14,6 +14,18 @@
 		BA0C4919263CF81E00C23CAE /* denon_remoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0C4918263CF81E00C23CAE /* denon_remoteTests.swift */; };
 		BA0C4924263CF81E00C23CAE /* denon_remoteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0C4923263CF81E00C23CAE /* denon_remoteUITests.swift */; };
 		BA0C4935263CFE8F00C23CAE /* Comm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0C4934263CFE8F00C23CAE /* Comm.swift */; };
+		BAE8D559267FEF7400E6AAB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE8D558267FEF7400E6AAB4 /* Assets.xcassets */; };
+		BAE8D560267FEF7400E6AAB4 /* DenonControlW Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BAE8D55F267FEF7400E6AAB4 /* DenonControlW Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BAE8D567267FEF7400E6AAB4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE8D566267FEF7400E6AAB4 /* ContentView.swift */; };
+		BAE8D569267FEF7400E6AAB4 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE8D568267FEF7400E6AAB4 /* NotificationController.swift */; };
+		BAE8D56B267FEF7400E6AAB4 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE8D56A267FEF7400E6AAB4 /* NotificationView.swift */; };
+		BAE8D56D267FEF7400E6AAB4 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE8D56C267FEF7400E6AAB4 /* ComplicationController.swift */; };
+		BAE8D56F267FEF7500E6AAB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE8D56E267FEF7500E6AAB4 /* Assets.xcassets */; };
+		BAE8D572267FEF7500E6AAB4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE8D571267FEF7500E6AAB4 /* Preview Assets.xcassets */; };
+		BAE8D577267FEF7500E6AAB4 /* DenonControlW.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = BAE8D556267FEF7300E6AAB4 /* DenonControlW.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BAE8D58A267FF2BF00E6AAB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BA0C490A263CF81D00C23CAE /* Assets.xcassets */; };
+		BAE8D58B267FF2BF00E6AAB4 /* Comm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0C4934263CFE8F00C23CAE /* Comm.swift */; };
+		BAE8D58C267FF2BF00E6AAB4 /* denon_remoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0C4906263CF81D00C23CAE /* denon_remoteApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,7 +43,46 @@
 			remoteGlobalIDString = BA0C4902263CF81D00C23CAE;
 			remoteInfo = denon_remote;
 		};
+		BAE8D561267FEF7400E6AAB4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BA0C48FB263CF81D00C23CAE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BAE8D55E267FEF7400E6AAB4;
+			remoteInfo = "DenonControlW Extension";
+		};
+		BAE8D575267FEF7500E6AAB4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BA0C48FB263CF81D00C23CAE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BAE8D555267FEF7300E6AAB4;
+			remoteInfo = DenonControlW;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BAE8D578267FEF7500E6AAB4 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				BAE8D577267FEF7500E6AAB4 /* DenonControlW.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAE8D57B267FEF7500E6AAB4 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BAE8D560267FEF7400E6AAB4 /* DenonControlW Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		BA0C4903263CF81D00C23CAE /* denon_remote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = denon_remote.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -47,6 +98,18 @@
 		BA0C4923263CF81E00C23CAE /* denon_remoteUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = denon_remoteUITests.swift; sourceTree = "<group>"; };
 		BA0C4925263CF81E00C23CAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BA0C4934263CFE8F00C23CAE /* Comm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comm.swift; sourceTree = "<group>"; };
+		BAE8D556267FEF7300E6AAB4 /* DenonControlW.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DenonControlW.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAE8D558267FEF7400E6AAB4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BAE8D55A267FEF7400E6AAB4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BAE8D55F267FEF7400E6AAB4 /* DenonControlW Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "DenonControlW Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAE8D566267FEF7400E6AAB4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BAE8D568267FEF7400E6AAB4 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		BAE8D56A267FEF7400E6AAB4 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
+		BAE8D56C267FEF7400E6AAB4 /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
+		BAE8D56E267FEF7500E6AAB4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BAE8D571267FEF7500E6AAB4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		BAE8D573267FEF7500E6AAB4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BAE8D574267FEF7500E6AAB4 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +134,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BAE8D55C267FEF7400E6AAB4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -80,6 +150,8 @@
 				BA0C4905263CF81D00C23CAE /* denon_remote */,
 				BA0C4917263CF81E00C23CAE /* denon_remoteTests */,
 				BA0C4922263CF81E00C23CAE /* denon_remoteUITests */,
+				BAE8D557267FEF7300E6AAB4 /* DenonControlW */,
+				BAE8D563267FEF7400E6AAB4 /* DenonControlW Extension */,
 				BA0C4904263CF81D00C23CAE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +162,8 @@
 				BA0C4903263CF81D00C23CAE /* denon_remote.app */,
 				BA0C4914263CF81E00C23CAE /* denon_remoteTests.xctest */,
 				BA0C491F263CF81E00C23CAE /* denon_remoteUITests.xctest */,
+				BAE8D556267FEF7300E6AAB4 /* DenonControlW.app */,
+				BAE8D55F267FEF7400E6AAB4 /* DenonControlW Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -133,6 +207,38 @@
 			path = denon_remoteUITests;
 			sourceTree = "<group>";
 		};
+		BAE8D557267FEF7300E6AAB4 /* DenonControlW */ = {
+			isa = PBXGroup;
+			children = (
+				BAE8D558267FEF7400E6AAB4 /* Assets.xcassets */,
+				BAE8D55A267FEF7400E6AAB4 /* Info.plist */,
+			);
+			path = DenonControlW;
+			sourceTree = "<group>";
+		};
+		BAE8D563267FEF7400E6AAB4 /* DenonControlW Extension */ = {
+			isa = PBXGroup;
+			children = (
+				BAE8D566267FEF7400E6AAB4 /* ContentView.swift */,
+				BAE8D568267FEF7400E6AAB4 /* NotificationController.swift */,
+				BAE8D56A267FEF7400E6AAB4 /* NotificationView.swift */,
+				BAE8D56C267FEF7400E6AAB4 /* ComplicationController.swift */,
+				BAE8D56E267FEF7500E6AAB4 /* Assets.xcassets */,
+				BAE8D573267FEF7500E6AAB4 /* Info.plist */,
+				BAE8D574267FEF7500E6AAB4 /* PushNotificationPayload.apns */,
+				BAE8D570267FEF7500E6AAB4 /* Preview Content */,
+			);
+			path = "DenonControlW Extension";
+			sourceTree = "<group>";
+		};
+		BAE8D570267FEF7500E6AAB4 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				BAE8D571267FEF7500E6AAB4 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,10 +249,12 @@
 				BA0C48FF263CF81D00C23CAE /* Sources */,
 				BA0C4900263CF81D00C23CAE /* Frameworks */,
 				BA0C4901263CF81D00C23CAE /* Resources */,
+				BAE8D578267FEF7500E6AAB4 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				BAE8D576267FEF7500E6AAB4 /* PBXTargetDependency */,
 			);
 			name = denon_remote;
 			productName = denon_remote;
@@ -189,6 +297,40 @@
 			productReference = BA0C491F263CF81E00C23CAE /* denon_remoteUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		BAE8D555267FEF7300E6AAB4 /* DenonControlW */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAE8D57F267FEF7500E6AAB4 /* Build configuration list for PBXNativeTarget "DenonControlW" */;
+			buildPhases = (
+				BAE8D554267FEF7300E6AAB4 /* Resources */,
+				BAE8D57B267FEF7500E6AAB4 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BAE8D562267FEF7400E6AAB4 /* PBXTargetDependency */,
+			);
+			name = DenonControlW;
+			productName = DenonControlW;
+			productReference = BAE8D556267FEF7300E6AAB4 /* DenonControlW.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		BAE8D55E267FEF7400E6AAB4 /* DenonControlW Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BAE8D57E267FEF7500E6AAB4 /* Build configuration list for PBXNativeTarget "DenonControlW Extension" */;
+			buildPhases = (
+				BAE8D55B267FEF7400E6AAB4 /* Sources */,
+				BAE8D55C267FEF7400E6AAB4 /* Frameworks */,
+				BAE8D55D267FEF7400E6AAB4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "DenonControlW Extension";
+			productName = "DenonControlW Extension";
+			productReference = BAE8D55F267FEF7400E6AAB4 /* DenonControlW Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -209,6 +351,12 @@
 						CreatedOnToolsVersion = 12.4;
 						TestTargetID = BA0C4902263CF81D00C23CAE;
 					};
+					BAE8D555267FEF7300E6AAB4 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+					BAE8D55E267FEF7400E6AAB4 = {
+						CreatedOnToolsVersion = 12.4;
+					};
 				};
 			};
 			buildConfigurationList = BA0C48FE263CF81D00C23CAE /* Build configuration list for PBXProject "denon_remote" */;
@@ -227,6 +375,8 @@
 				BA0C4902263CF81D00C23CAE /* denon_remote */,
 				BA0C4913263CF81E00C23CAE /* denon_remoteTests */,
 				BA0C491E263CF81E00C23CAE /* denon_remoteUITests */,
+				BAE8D555267FEF7300E6AAB4 /* DenonControlW */,
+				BAE8D55E267FEF7400E6AAB4 /* DenonControlW Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -252,6 +402,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAE8D554267FEF7300E6AAB4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAE8D559267FEF7400E6AAB4 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAE8D55D267FEF7400E6AAB4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAE8D572267FEF7500E6AAB4 /* Preview Assets.xcassets in Resources */,
+				BAE8D58A267FF2BF00E6AAB4 /* Assets.xcassets in Resources */,
+				BAE8D56F267FEF7500E6AAB4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +452,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BAE8D55B267FEF7400E6AAB4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BAE8D569267FEF7400E6AAB4 /* NotificationController.swift in Sources */,
+				BAE8D567267FEF7400E6AAB4 /* ContentView.swift in Sources */,
+				BAE8D58C267FF2BF00E6AAB4 /* denon_remoteApp.swift in Sources */,
+				BAE8D56D267FEF7400E6AAB4 /* ComplicationController.swift in Sources */,
+				BAE8D58B267FF2BF00E6AAB4 /* Comm.swift in Sources */,
+				BAE8D56B267FEF7400E6AAB4 /* NotificationView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -296,6 +477,16 @@
 			isa = PBXTargetDependency;
 			target = BA0C4902263CF81D00C23CAE /* denon_remote */;
 			targetProxy = BA0C4920263CF81E00C23CAE /* PBXContainerItemProxy */;
+		};
+		BAE8D562267FEF7400E6AAB4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BAE8D55E267FEF7400E6AAB4 /* DenonControlW Extension */;
+			targetProxy = BAE8D561267FEF7400E6AAB4 /* PBXContainerItemProxy */;
+		};
+		BAE8D576267FEF7500E6AAB4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BAE8D555267FEF7300E6AAB4 /* DenonControlW */;
+			targetProxy = BAE8D575267FEF7500E6AAB4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -544,6 +735,94 @@
 			};
 			name = Release;
 		};
+		BAE8D579267FEF7500E6AAB4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				IBSC_MODULE = DenonControlW_Extension;
+				INFOPLIST_FILE = DenonControlW/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-remote.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 7.2;
+			};
+			name = Debug;
+		};
+		BAE8D57A267FEF7500E6AAB4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				IBSC_MODULE = DenonControlW_Extension;
+				INFOPLIST_FILE = DenonControlW/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-remote.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 7.2;
+			};
+			name = Release;
+		};
+		BAE8D57C267FEF7500E6AAB4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"DenonControlW Extension/Preview Content\"";
+				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "DenonControlW Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-remote.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 7.2;
+			};
+			name = Debug;
+		};
+		BAE8D57D267FEF7500E6AAB4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"DenonControlW Extension/Preview Content\"";
+				DEVELOPMENT_TEAM = 8L3TUKA6ZM;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "DenonControlW Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.marvin.ws-client.denon-remote.watchkitapp.watchkitextension";
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 7.2;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -579,6 +858,24 @@
 			buildConfigurations = (
 				BA0C492F263CF81E00C23CAE /* Debug */,
 				BA0C4930263CF81E00C23CAE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BAE8D57E267FEF7500E6AAB4 /* Build configuration list for PBXNativeTarget "DenonControlW Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAE8D57C267FEF7500E6AAB4 /* Debug */,
+				BAE8D57D267FEF7500E6AAB4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BAE8D57F267FEF7500E6AAB4 /* Build configuration list for PBXNativeTarget "DenonControlW" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BAE8D579267FEF7500E6AAB4 /* Debug */,
+				BAE8D57A267FEF7500E6AAB4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
