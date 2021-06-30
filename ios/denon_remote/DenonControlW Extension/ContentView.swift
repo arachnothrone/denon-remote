@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct ContentView: View {
     @State var denonState = MEM_STATE_T()
     @State var volumeString = "unknown"
     @State var scrollAmount = 0.0
+    
+    var phoneSession = WatchPhoneConnect()
     
     var body: some View {
         VStack {

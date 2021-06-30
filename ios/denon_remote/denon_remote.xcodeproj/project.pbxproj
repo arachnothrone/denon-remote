@@ -14,6 +14,8 @@
 		BA0C4919263CF81E00C23CAE /* denon_remoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0C4918263CF81E00C23CAE /* denon_remoteTests.swift */; };
 		BA0C4924263CF81E00C23CAE /* denon_remoteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0C4923263CF81E00C23CAE /* denon_remoteUITests.swift */; };
 		BA0C4935263CFE8F00C23CAE /* Comm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0C4934263CFE8F00C23CAE /* Comm.swift */; };
+		BAAF67A2268C0B7C00953A82 /* WatchConnect.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAF67A1268C0B7C00953A82 /* WatchConnect.swift */; };
+		BAAF67A9268C15ED00953A82 /* PhoneConnect.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAF67A8268C15ED00953A82 /* PhoneConnect.swift */; };
 		BAE8D559267FEF7400E6AAB4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BAE8D558267FEF7400E6AAB4 /* Assets.xcassets */; };
 		BAE8D560267FEF7400E6AAB4 /* DenonControlW Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BAE8D55F267FEF7400E6AAB4 /* DenonControlW Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BAE8D567267FEF7400E6AAB4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE8D566267FEF7400E6AAB4 /* ContentView.swift */; };
@@ -98,6 +100,8 @@
 		BA0C4923263CF81E00C23CAE /* denon_remoteUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = denon_remoteUITests.swift; sourceTree = "<group>"; };
 		BA0C4925263CF81E00C23CAE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BA0C4934263CFE8F00C23CAE /* Comm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comm.swift; sourceTree = "<group>"; };
+		BAAF67A1268C0B7C00953A82 /* WatchConnect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnect.swift; sourceTree = "<group>"; };
+		BAAF67A8268C15ED00953A82 /* PhoneConnect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneConnect.swift; sourceTree = "<group>"; };
 		BAE8D556267FEF7300E6AAB4 /* DenonControlW.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DenonControlW.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAE8D558267FEF7400E6AAB4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BAE8D55A267FEF7400E6AAB4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -177,6 +181,7 @@
 				BA0C490F263CF81D00C23CAE /* Info.plist */,
 				BA0C490C263CF81D00C23CAE /* Preview Content */,
 				BA0C4934263CFE8F00C23CAE /* Comm.swift */,
+				BAAF67A1268C0B7C00953A82 /* WatchConnect.swift */,
 			);
 			path = denon_remote;
 			sourceTree = "<group>";
@@ -227,6 +232,7 @@
 				BAE8D573267FEF7500E6AAB4 /* Info.plist */,
 				BAE8D574267FEF7500E6AAB4 /* PushNotificationPayload.apns */,
 				BAE8D570267FEF7500E6AAB4 /* Preview Content */,
+				BAAF67A8268C15ED00953A82 /* PhoneConnect.swift */,
 			);
 			path = "DenonControlW Extension";
 			sourceTree = "<group>";
@@ -432,6 +438,7 @@
 			files = (
 				BA0C4935263CFE8F00C23CAE /* Comm.swift in Sources */,
 				BA0C4909263CF81D00C23CAE /* ContentView.swift in Sources */,
+				BAAF67A2268C0B7C00953A82 /* WatchConnect.swift in Sources */,
 				BA0C4907263CF81D00C23CAE /* denon_remoteApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -461,6 +468,7 @@
 				BAE8D58C267FF2BF00E6AAB4 /* denon_remoteApp.swift in Sources */,
 				BAE8D56D267FEF7400E6AAB4 /* ComplicationController.swift in Sources */,
 				BAE8D58B267FF2BF00E6AAB4 /* Comm.swift in Sources */,
+				BAAF67A9268C15ED00953A82 /* PhoneConnect.swift in Sources */,
 				BAE8D56B267FEF7400E6AAB4 /* NotificationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

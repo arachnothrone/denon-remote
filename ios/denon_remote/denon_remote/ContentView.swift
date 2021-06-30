@@ -14,6 +14,9 @@ struct ContentView: View {
     @State var imageIndex: Int8 = 0
     @State var dimmerButtonSize: CGFloat = 30
     @State var muteSpeakerImg = "speaker"
+    
+    var watchSession = PhoneWatchConnect()
+    @State var watchConnected: Bool = false
 
     var body: some View {
         
@@ -35,18 +38,37 @@ struct ContentView: View {
                 .padding(10)
                 .border(Color.purple, width: 5)
 
-            Text("Vol: \(volumeString) dB").font(.body)
-                // Update the state when application started
-                .onAppear(perform: {
-                    denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
-                    volumeString = denonState.volume
-                    print("DEBUG: updating volume text: \(volumeString)")
+            HStack {
+                Text("Vol: \(volumeString) dB").font(.body)
+                    // Update the state when application started
+                    .onAppear(perform: {
+                        denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
+                        volumeString = denonState.volume
+                        print("DEBUG: updating volume text: \(volumeString)")
+                    })
+                    // Update the state when back from background
+                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification), perform: { _ in
+                        denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
+                        volumeString = denonState.volume
+                    })
+                
+//                if self.watchSession.session.isReachable {
+//                    Image(systemName: "applewatch")
+//                } else {
+//                    Image(systemName: "applewatch.slash")
+//                }
+                
+                Button(action: {watchConnected = self.watchSession.session.isReachable}, label: {
+                    if watchConnected == true {
+                        Image(systemName: "applewatch")
+                    } else {
+                        Image(systemName: "applewatch.slash")
+                    }
                 })
-                // Update the state when back from background
-                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification), perform: { _ in
-                    denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
-                    volumeString = denonState.volume
-                })
+                
+            }
+            
+            
             //Divider()
             
             HStack {
