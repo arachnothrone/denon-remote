@@ -13,7 +13,7 @@ struct ContentView: View {
     @State var volumeString = "unknown"
     @State var scrollAmount = 0.0
     
-    var phoneSession = WatchPhoneConnect()
+    @ObservedObject var phoneSession = WatchPhoneConnect()
     
     var body: some View {
         VStack {
@@ -49,6 +49,9 @@ struct ContentView: View {
 //                        volumeString = denonState.volume
 //                    })
             }
+            
+            Text(self.phoneSession.messageText)
+            
         }
     }
 }

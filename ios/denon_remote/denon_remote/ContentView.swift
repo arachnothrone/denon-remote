@@ -17,6 +17,7 @@ struct ContentView: View {
     
     var watchSession = PhoneWatchConnect()
     @State var watchConnected: Bool = false
+    @State var messageText = "_SND_"
 
     var body: some View {
         
@@ -65,6 +66,14 @@ struct ContentView: View {
                         Image(systemName: "applewatch.slash")
                     }
                 })
+                
+                Button(action: {
+                                self.watchSession.session.sendMessage(["message" : self.messageText], replyHandler: nil) { (error) in
+                                    print(error.localizedDescription)
+                                }
+                            }) {
+                            Text("Send Message")
+                            }
                 
             }
             
