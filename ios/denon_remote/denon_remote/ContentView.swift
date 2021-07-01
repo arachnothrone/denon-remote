@@ -58,7 +58,7 @@ struct ContentView: View {
 //                    Image(systemName: "applewatch.slash")
 //                }
                 
-                Button(action: {watchConnected = self.watchSession.session.isReachable}, label: {
+                Button(action: {watchConnected = self.watchSession.session.isReachable; print("DBG: watchConnected=\(watchConnected)")}, label: {
                     if watchConnected == true {
                         Image(systemName: "applewatch")
                     } else {
