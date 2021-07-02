@@ -15,6 +15,9 @@ struct ContentView: View {
     
     @ObservedObject var phoneSession = WatchPhoneConnect()
     
+    @State var phoneConnected: Bool = false
+    @State var phoneMessageText = "_SND_to_PHONE_"
+    
     var body: some View {
         VStack {
             HStack {
@@ -51,6 +54,24 @@ struct ContentView: View {
             }
             
             Text(self.phoneSession.messageText)
+            
+            HStack {
+                Button(action: {phoneConnected = self.phoneSession.session.isReachable; print("DBG: phoneConnected=\(phoneConnected)")}, label: {
+                    if phoneConnected == true {
+                        Image(systemName: "iphone")
+                    } else {
+                        Image(systemName: "iphone.slash")
+                    }
+                })
+                
+                Button(action: {
+                                self.phoneSession.session.sendMessage(["message" : self.phoneMessageText], replyHandler: nil) { (error) in
+                                    print(error.localizedDescription)
+                                }
+                            }) {
+                            Text("Send Message")
+                            }
+            }
             
         }
     }

@@ -15,7 +15,7 @@ struct ContentView: View {
     @State var dimmerButtonSize: CGFloat = 30
     @State var muteSpeakerImg = "speaker"
     
-    var watchSession = PhoneWatchConnect()
+    @ObservedObject var watchSession = PhoneWatchConnect()
     @State var watchConnected: Bool = false
     @State var messageText = "_SND_"
 
@@ -74,9 +74,8 @@ struct ContentView: View {
                             }) {
                             Text("Send Message")
                             }
-                
+                Text(self.watchSession.messageText)
             }
-            
             
             //Divider()
             
