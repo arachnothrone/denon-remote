@@ -119,6 +119,12 @@ func sendCommand(cmd: String, rxTO: Int) -> MEM_STATE_T {
     return udpSendString(textToSend: cmd, address: "192.168.2.101", port: 19001, rxTimeoutSec: rxTO)
 }
 
+// TODO: refactor udpSendString with serialize/deserialize
+// this serialization is only for phone-watch communication channel
+func serializeDenonState(ds: MEM_STATE_T) -> String {
+    return "\(ds.power), \(ds.volume), \(ds.mute), \(ds.stereoMode), \(ds.input), \(ds.dimmer)"
+}
+
 // to convert String -> Bytes use: "string".bytes
 extension StringProtocol {
     var data: Data { .init(utf8) }
