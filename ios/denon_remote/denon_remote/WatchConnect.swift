@@ -33,7 +33,10 @@ class PhoneWatchConnect: NSObject,  WCSessionDelegate, ObservableObject {
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
-            self.messageText = message["message"] as? String ?? "Unknown"
+            //self.messageText = message["message"] as? String ?? "Unknown"
+            let watchCommand = message["message"] as? String ?? "Unknown"
+            let result = sendCommand(cmd: watchCommand, rxTO: 1)
+            print("watchCommand execution result: \(result)")
         }
     }
     
