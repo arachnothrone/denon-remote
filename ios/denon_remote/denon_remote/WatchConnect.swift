@@ -35,11 +35,11 @@ class PhoneWatchConnect: NSObject,  WCSessionDelegate, ObservableObject {
         DispatchQueue.main.async {
             //self.messageText = message["message"] as? String ?? "Unknown"
             let watchCommand = message["message"] as? String ?? "Unknown"
-            let result = sendCommand(cmd: watchCommand, rxTO: 1)
+            let result = sendCommandW(cmd: watchCommand, rxTO: 1)
             print("watchCommand execution result: \(result)")
             
             // forward Raspi reply back to Watch
-            self.session.sendMessage(["message": serializeDenonState(ds: result)], replyHandler: nil) { (error) in
+            self.session.sendMessage(["message": result], replyHandler: nil) {(error) in
                 print(error.localizedDescription)
             }
         }

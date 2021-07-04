@@ -23,9 +23,9 @@ func htons(value: CUnsignedShort) -> CUnsignedShort {
 }
 
 //func udpSendString(textToSend: String, address: String, port: CUnsignedShort) {
-func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rxTimeoutSec: Int) -> MEM_STATE_T {
+func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rxTimeoutSec: Int) -> String {
 // func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rxTimeoutSec: Int) -> String {
-    var denonState = MEM_STATE_T()
+    //var denonState = MEM_STATE_T()
     var adr = in_addr()
     inet_pton(AF_INET, address, &adr)
 
@@ -65,6 +65,8 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rx
     var timeStamp0: timespec = .init()
     var timeStamp1: timespec = .init()
     
+    var receivedString = ""
+    
     //__DARWIN_FD_ZERO(&rfds)
     print("socket: \(fd), rfds(before): \(rfds.fds_bits)")
     __darwin_fd_set(fd, &rfds)
@@ -88,20 +90,20 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rx
             volumeString = volumeString + String(c)
         }
         
-        var receivedString = ""
+        //var receivedString = ""
         for i in 0...14 {
             let c = UnicodeScalar(rxBuffer[i])
             receivedString += String(c)
         }
         print("decoded rx string: \(receivedString)")
-        // ss[ss.startIndex..<ss.index(ss.startIndex, offsetBy: 3)]
-        denonState.power = stringSlicer(inputStr: receivedString, startIdx: 0, sliceLen: 1)
-        denonState.volume = stringSlicer(inputStr: receivedString, startIdx: 2, sliceLen: 3)
-        denonState.mute = stringSlicer(inputStr: receivedString, startIdx: 6, sliceLen: 1)
-        denonState.stereoMode = stringSlicer(inputStr: receivedString, startIdx: 8, sliceLen: 1)
-        denonState.input = stringSlicer(inputStr: receivedString, startIdx: 10, sliceLen: 1)
-        denonState.dimmer = stringSlicer(inputStr: receivedString, startIdx: 12, sliceLen: 1)
-        print("power: \(denonState.power), volume: \(denonState.volume), mute: \(denonState.mute), stereoMode: \(denonState.stereoMode), input: \(denonState.input), dimmer: \(denonState.dimmer)")
+//        // ss[ss.startIndex..<ss.index(ss.startIndex, offsetBy: 3)]
+//        denonState.power = stringSlicer(inputStr: receivedString, startIdx: 0, sliceLen: 1)
+//        denonState.volume = stringSlicer(inputStr: receivedString, startIdx: 2, sliceLen: 3)
+//        denonState.mute = stringSlicer(inputStr: receivedString, startIdx: 6, sliceLen: 1)
+//        denonState.stereoMode = stringSlicer(inputStr: receivedString, startIdx: 8, sliceLen: 1)
+//        denonState.input = stringSlicer(inputStr: receivedString, startIdx: 10, sliceLen: 1)
+//        denonState.dimmer = stringSlicer(inputStr: receivedString, startIdx: 12, sliceLen: 1)
+//        print("power: \(denonState.power), volume: \(denonState.volume), mute: \(denonState.mute), stereoMode: \(denonState.stereoMode), input: \(denonState.input), dimmer: \(denonState.dimmer)")
     } else if retVal == 0 {
         print("Error: select() timeout")
     } else {
@@ -112,17 +114,33 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rx
 
     close(fd)
     //return volumeString
-    return denonState
+    return receivedString
 }
 
 func sendCommand(cmd: String, rxTO: Int) -> MEM_STATE_T {
+    return deserializeDenonState(ds_string: udpSendString(textToSend: cmd, address: "192.168.2.101", port: 19001, rxTimeoutSec: rxTO))
+}
+
+func sendCommandW(cmd: String, rxTO: Int) -> String {
     return udpSendString(textToSend: cmd, address: "192.168.2.101", port: 19001, rxTimeoutSec: rxTO)
 }
 
 // TODO: refactor udpSendString with serialize/deserialize
 // this serialization is only for phone-watch communication channel
-func serializeDenonState(ds: MEM_STATE_T) -> String {
-    return "\(ds.power), \(ds.volume), \(ds.mute), \(ds.stereoMode), \(ds.input), \(ds.dimmer)"
+//func serializeDenonState(ds: MEM_STATE_T) -> String {
+//    return "\(ds.power), \(ds.volume), \(ds.mute), \(ds.stereoMode), \(ds.input), \(ds.dimmer)"
+//}
+
+func deserializeDenonState(ds_string: String) -> MEM_STATE_T {
+    var denonState: MEM_STATE_T = MEM_STATE_T()
+    denonState.power = stringSlicer(inputStr: ds_string, startIdx: 0, sliceLen: 1)
+    denonState.volume = stringSlicer(inputStr: ds_string, startIdx: 2, sliceLen: 3)
+    denonState.mute = stringSlicer(inputStr: ds_string, startIdx: 6, sliceLen: 1)
+    denonState.stereoMode = stringSlicer(inputStr: ds_string, startIdx: 8, sliceLen: 1)
+    denonState.input = stringSlicer(inputStr: ds_string, startIdx: 10, sliceLen: 1)
+    denonState.dimmer = stringSlicer(inputStr: ds_string, startIdx: 12, sliceLen: 1)
+    print("power: \(denonState.power), volume: \(denonState.volume), mute: \(denonState.mute), stereoMode: \(denonState.stereoMode), input: \(denonState.input), dimmer: \(denonState.dimmer)")
+    return denonState
 }
 
 // to convert String -> Bytes use: "string".bytes
