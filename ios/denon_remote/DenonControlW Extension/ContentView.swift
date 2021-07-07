@@ -26,10 +26,10 @@ struct ContentView: View {
                     //var cmdString = ""
                     if Int(denonState.power) == 1 {
                         self.cmdString = "CMD05POWEROFF"
-                        denonState.power = String(0)
+                        //denonState.power = String(0)
                     } else {
                         self.cmdString = "CMD04POWERON"
-                        denonState.power = String(1)
+                        //denonState.power = String(1)
                     }
                     //denonState = sendCommand(cmd: cmdString, rxTO: 1)
                     self.phoneSession.session.sendMessage(["message" : self.cmdString], replyHandler: nil) {(error) in
@@ -37,12 +37,12 @@ struct ContentView: View {
                     }
                     print("watch sent \(self.cmdString) command to the phone")
                 },
-                       label: {
-                        if Int(denonState.power) == 1 {
-                            Text("ON").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green).glow(color: .green, radius: 48).padding()
-                        } else {
-                            Text("OFF").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red).padding()
-                        }
+                   label: {
+                    if Int(denonState.power) == 1 {
+                        Text("ON").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green).glow(color: .green, radius: 48).padding()
+                    } else {
+                        Text("OFF").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red).padding()
+                    }
                 })
                 //.frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: 50, maxWidth: 50, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: 50, maxHeight: 50)
                 
@@ -113,7 +113,13 @@ struct ContentView: View {
                             }
             }
             
-        }
+        }.onAppear(perform: {
+            let cmd = "CMD98GET_STATE"
+            self.phoneSession.session.sendMessage(["message": cmd], replyHandler: nil) {(error) in
+                print(error.localizedDescription)
+            }
+            print("watch sent \(cmd) command to the phone")
+        })
     }
 }
 

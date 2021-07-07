@@ -125,12 +125,6 @@ func sendCommandW(cmd: String, rxTO: Int) -> String {
     return udpSendString(textToSend: cmd, address: "192.168.2.101", port: 19001, rxTimeoutSec: rxTO)
 }
 
-// TODO: refactor udpSendString with serialize/deserialize
-// this serialization is only for phone-watch communication channel
-//func serializeDenonState(ds: MEM_STATE_T) -> String {
-//    return "\(ds.power), \(ds.volume), \(ds.mute), \(ds.stereoMode), \(ds.input), \(ds.dimmer)"
-//}
-
 func deserializeDenonState(ds_string: String) -> MEM_STATE_T {
     var denonState: MEM_STATE_T = MEM_STATE_T()
     denonState.power = stringSlicer(inputStr: ds_string, startIdx: 0, sliceLen: 1)
