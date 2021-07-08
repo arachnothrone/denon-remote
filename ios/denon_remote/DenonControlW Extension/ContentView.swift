@@ -119,6 +119,7 @@ struct ContentView: View {
                 print(error.localizedDescription)
             }
             print("watch sent \(cmd) command to the phone")
+            denonState = deserializeDenonState(ds_string: self.phoneSession.messageText)
         })
     }
 }

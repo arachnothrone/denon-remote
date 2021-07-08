@@ -118,7 +118,9 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rx
 }
 
 func sendCommand(cmd: String, rxTO: Int) -> MEM_STATE_T {
-    return deserializeDenonState(ds_string: udpSendString(textToSend: cmd, address: "192.168.2.101", port: 19001, rxTimeoutSec: rxTO))
+    let resultString = udpSendString(textToSend: cmd, address: "192.168.2.101", port: 19001, rxTimeoutSec: rxTO)
+    print("sendCommand: cmd=\(cmd), rxTO=\(rxTO), resultString=\(resultString)")
+    return deserializeDenonState(ds_string: resultString)
 }
 
 func sendCommandW(cmd: String, rxTO: Int) -> String {
@@ -163,7 +165,13 @@ func udpSendBytes(payload: ContiguousBytes, address: String, port: CUnsignedShor
 }
 
 func stringSlicer(inputStr: String, startIdx: Int, sliceLen: Int) -> String {
-    let res = String(inputStr[inputStr.index(inputStr.startIndex, offsetBy: startIdx)..<inputStr.index(inputStr.startIndex, offsetBy: startIdx + sliceLen)])
+    print("stringSlicer: inputStr=\(inputStr), startIdx=\(startIdx), sliceLen=\(sliceLen)")
+    var res = "0"
+    
+    if inputStr != "" {
+        res = String(inputStr[inputStr.index(inputStr.startIndex, offsetBy: startIdx)..<inputStr.index(inputStr.startIndex, offsetBy: startIdx + sliceLen)])
+    }
+    
     return res
 }
 

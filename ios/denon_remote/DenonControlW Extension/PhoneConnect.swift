@@ -10,7 +10,7 @@ import WatchConnectivity
 
 class WatchPhoneConnect: NSObject,  WCSessionDelegate, ObservableObject {
     var session: WCSession
-    @Published var messageText = "..."
+    @Published var messageText = "0,-44,1,0,0,0"
     
     init(session: WCSession = .default){
         self.session = session
@@ -26,7 +26,7 @@ class WatchPhoneConnect: NSObject,  WCSessionDelegate, ObservableObject {
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
             self.messageText = message["message"] as? String ?? "Unknown"
-            print("Watch received message: \(self.messageText)")
+            print("Watch received message: \(self.messageText)", terminator: "\n")
         }
     }
     
