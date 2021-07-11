@@ -25,9 +25,16 @@ class WatchPhoneConnect: NSObject,  WCSessionDelegate, ObservableObject {
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
-            self.messageText = message["message"] as? String ?? "Unknown"
+            self.messageText = message["message2"] as? String ?? "Unknown"
             print("Watch received message: \(self.messageText)", terminator: "\n")
         }
     }
+    
+    // ----------- delegate with replyhandler
+//    func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
+//        DispatchQueue.main.async {
+//            self.messageText = message["message"] as? String ?? "Unknown"
+//        }
+//    }
     
 }

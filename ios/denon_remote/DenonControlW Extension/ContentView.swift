@@ -18,6 +18,8 @@ struct ContentView: View {
     @State var phoneConnected: Bool = false
     @State var phoneMessageText = "_SND_to_PHONE_"
     @State var cmdString = ""
+    @State var msg2reply = "*"
+    @State var replyStr: String = ""
     
     var body: some View {
         VStack {
@@ -93,7 +95,8 @@ struct ContentView: View {
 ////                    })
 //            }
             
-            Text(self.phoneSession.messageText)
+            Text(self.phoneSession.messageText).font(.body)
+            Text(msg2reply).font(.body)
             
             HStack {
                 Button(action: {phoneConnected = self.phoneSession.session.isReachable; print("DBG: phoneConnected=\(phoneConnected)")}, label: {
@@ -105,22 +108,32 @@ struct ContentView: View {
                 })
                 
                 Button(action: {
-                                self.phoneSession.session.sendMessage(["message" : self.phoneMessageText], replyHandler: nil) { (error) in
-                                    print(error.localizedDescription)
-                                }
-                            }) {
-                            Text("Send Message")
-                            }
+//                    self.phoneSession.session.sendMessage(["message" : self.phoneMessageText], replyHandler: nil) { (error) in
+//                        print(error.localizedDescription)}
+
+//                    self.phoneSession.session.sendMessage(["message": "CMD98GET_STATE"], replyHandler: {reply in replyStr = reply["message2"] as! String; print("Received reply=\(reply)")}, errorHandler: {(error) in print("---> error=\(error)")})
+//                        print("watch sent \(cmd) command to the phone")
+                    self.phoneSession.session.sendMessage(["message": "CMD98GET_STATE"], replyHandler: {reply in print("Received reply=\(reply)")}, errorHandler: {(error) in print("---> error=\(error)")})
+                    print("reply received replyStr=\(replyStr)")
+                    
+                    })
+                {
+                Text("Send Message")
+                }
             }
             
-        }.onAppear(perform: {
-            let cmd = "CMD98GET_STATE"
-            self.phoneSession.session.sendMessage(["message": cmd], replyHandler: nil) {(error) in
-                print(error.localizedDescription)
-            }
-            print("watch sent \(cmd) command to the phone")
-            denonState = deserializeDenonState(ds_string: self.phoneSession.messageText)
-        })
+        }
+//        .onAppear(perform: {
+//            let cmd = "CMD98GET_STATE"
+//            
+////            self.phoneSession.session.sendMessage(["message": cmd], replyHandler: nil {(error) in
+////                print(error.localizedDescription)
+////            }
+//            self.phoneSession.session.sendMessage(["message": cmd], replyHandler: {reply in replyStr = reply["message2"] as! String; print("Received reply=\(reply)")}, errorHandler: {(error) in print("---> error=\(error)")})
+//            print("watch sent \(cmd) command to the phone")
+//            print("reply received replyStr=\(replyStr)")
+//            denonState = deserializeDenonState(ds_string: self.phoneSession.messageText)
+//        })
     }
 }
 
