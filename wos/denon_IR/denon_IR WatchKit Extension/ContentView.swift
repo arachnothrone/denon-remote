@@ -37,7 +37,7 @@ struct ContentView: View {
                 })
                 //.frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: 50, maxWidth: 50, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: 50, maxHeight: 50)
                 
-                Text("\(volumeString)").font(.title).focusable(true).digitalCrownRotation($scrollAmount, from: -20, through: -50, by: -1.0, sensitivity: .low, isContinuous: true, isHapticFeedbackEnabled: true)
+                Text("\(volumeString)").font(.body).focusable(true).digitalCrownRotation($scrollAmount, from: -20, through: -50, by: -1.0, sensitivity: .low, isContinuous: true, isHapticFeedbackEnabled: true)
                     // Update the state when application started
                     .onAppear(perform: {
                         denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
@@ -54,35 +54,35 @@ struct ContentView: View {
             HStack {
                 Button(action: {denonState = sendCommand(cmd: "CMD09STANDARD", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 2 && Int(denonState.power) == 1 {
-                        Text("S").font(.body).fontWeight(.medium).foregroundColor(.red).glow(color: .red, radius: 24)
+                        Text("Standard").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red)//.glow(color: .red, radius: 24)
                     } else {
-                        Text("S").font(.body).fontWeight(.medium).foregroundColor(.red)
+                        Text("Standard").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red)//.font(.body).fontWeight(.medium).foregroundColor(.red)
                     }
-                })
+                }).scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)//.scaledToFit()//.buttonStyle(DefaultButtonStyle())
                 Button(action: {denonState = sendCommand(cmd: "CMD12DIRECT", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 5 && Int(denonState.power) == 1 {
-                        Text("Di").font(.body).fontWeight(.medium).foregroundColor(.green).glow(color: .green, radius: 24)
+                        Text("Direct").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.green)//.glow(color: .green, radius: 24)
                     } else {
-                        Text("Di").font(.body).fontWeight(.medium).foregroundColor(.green)
+                        Text("Direct").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.green)//.font(.body).fontWeight(.medium).foregroundColor(.green)
                     }
-                })
-//            }
+                }).scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)//.scaledToFit()//.buttonStyle(DefaultButtonStyle())
+//            }//.scaledToFit()
 // Uncomment for two buttons in a row, otherwise four in a row
 //            HStack {
                 Button(action: {denonState = sendCommand(cmd: "CMD13STEREO", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 6 && Int(denonState.power) == 1 {
-                        Text("St").font(.body).fontWeight(.medium).foregroundColor(.blue).glow(color: .blue, radius: 24)
+                        Text("Stereo").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.blue).glow(color: .blue, radius: 24)
                     } else {
-                        Text("St").font(.body).fontWeight(.medium).foregroundColor(.blue)
+                        Text("Stereo").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.blue)
                     }
-                })
+                }).scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)
                 Button(action: {denonState = sendCommand(cmd: "CMD075CH7CHSTEREO", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 0 && Int(denonState.power) == 1 {
-                        Text("5ch").font(.body).fontWeight(.medium).foregroundColor(.purple).glow(color: .purple, radius: 24)
+                        Text("5ch7ch").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.purple).glow(color: .purple, radius: 24)
                     } else {
-                        Text("5ch").font(.body).fontWeight(.medium).foregroundColor(.purple)
+                        Text("5ch7ch").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.purple)
                     }
-                })
+                }).scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)
             }
             
             HStack {
@@ -141,7 +141,7 @@ struct ContentView: View {
                 }
                 .cornerRadius(40)
             }
-        }
+        }.scaledToFit()
     }
 }
 
