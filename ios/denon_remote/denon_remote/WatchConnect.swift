@@ -32,43 +32,27 @@ class PhoneWatchConnect: NSObject,  WCSessionDelegate, ObservableObject {
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        DispatchQueue.main.async {
-            //self.messageText = message["message"] as? String ?? "Unknown"
-            let watchCommand = message["message"] as? String ?? "Unknown"
-            let result = sendCommandW(cmd: watchCommand, rxTO: 1)
-            print("watchCommand execution result: \(result)")
-            
-            // forward Raspi reply back to Watch
-            self.session.sendMessage(["message2": result], replyHandler: nil) {(error) in
-                print(error.localizedDescription)
-            }
-        }
+//        DispatchQueue.main.async {
+//            //self.messageText = message["message"] as? String ?? "Unknown"
+//            let watchCommand = message["message"] as? String ?? "Unknown"
+//            let result = sendCommandW(cmd: watchCommand, rxTO: 1)
+//            print("watchCommand execution result: \(result)")
+//
+//            // forward Raspi reply back to Watch
+//            self.session.sendMessage(["message2": result], replyHandler: nil) {(error) in
+//                print(error.localizedDescription)
+//            }
+//        }
     }
     
     // Called when a message is received and the peer needs a response.
     //
     func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: @escaping ([String: Any]) -> Void) {
         self.session(session, didReceiveMessage: message)
-        replyHandler(message) // Echo back the time stamp.
+        let watchCommand = message["wMessage"] as? String ?? "Unknown"
+        let raspiResult = sendCommandW(cmd: watchCommand, rxTO: 1)
+        print("watchCommand execution result (Raspi reply): \(raspiResult)")
+        // forward Raspi reply back to Watch
+        replyHandler(["pMessage": raspiResult])
     }
-    
-    
-//    var session: WCSession
-//    @Published var messageText = ""
-//    init(session: WCSession = .default){
-//        self.session = session
-//        super.init()
-//        self.session.delegate = self
-//        session.activate()
-//    }
-//    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-//
-//    }
-//    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-//        DispatchQueue.main.async {
-//            self.messageText = message["message"] as? String ?? "Unknown"
-//        }
-//    }
-    
-    
 }

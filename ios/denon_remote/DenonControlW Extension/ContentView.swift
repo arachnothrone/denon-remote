@@ -108,13 +108,8 @@ struct ContentView: View {
                 })
                 
                 Button(action: {
-//                    self.phoneSession.session.sendMessage(["message" : self.phoneMessageText], replyHandler: nil) { (error) in
-//                        print(error.localizedDescription)}
-
-//                    self.phoneSession.session.sendMessage(["message": "CMD98GET_STATE"], replyHandler: {reply in replyStr = reply["message2"] as! String; print("Received reply=\(reply)")}, errorHandler: {(error) in print("---> error=\(error)")})
-//                        print("watch sent \(cmd) command to the phone")
-                    self.phoneSession.session.sendMessage(["message": "CMD98GET_STATE"], replyHandler: {reply in print("Received reply=\(reply)")}, errorHandler: {(error) in print("---> error=\(error)")})
-                    print("reply received replyStr=\(replyStr)")
+                    self.phoneSession.session.sendMessage(["wMessage": "CMD98GET_STATE"], replyHandler: {reply in print("Received reply=\(reply["pMessage"] ?? "=== === ===")")}, errorHandler: {(error) in print("---> error=\(error)")})
+                    //print("reply received replyStr=\(replyStr)")
                     
                     })
                 {
