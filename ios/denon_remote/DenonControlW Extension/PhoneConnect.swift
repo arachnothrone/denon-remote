@@ -33,8 +33,25 @@ class WatchPhoneConnect: NSObject,  WCSessionDelegate, ObservableObject {
     // ----------- delegate with replyhandler
 //    func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
 //        DispatchQueue.main.async {
-//            self.messageText = message["message"] as? String ?? "Unknown"
+//            //self.messageText = message["message"] as? String ?? "Unknown"
 //        }
 //    }
     
+}
+
+// TODO: Need to wait for reply, now it returns before reply received
+func phoneCommand(ssn: WatchPhoneConnect, cmd: String) -> String {
+
+    var replyStr: String = "mmm"
+
+    ssn.session.sendMessage(
+        ["wMessage": cmd],
+        replyHandler: {
+            reply in replyStr = reply["pMessage"] as! String
+            print("---> recvd reply = \(reply)")
+        },
+        errorHandler: {(error) in print("---> error=\(error)")}
+    )
+    
+    return replyStr
 }

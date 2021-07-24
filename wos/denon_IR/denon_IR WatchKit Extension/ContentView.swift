@@ -54,18 +54,22 @@ struct ContentView: View {
             HStack {
                 Button(action: {denonState = sendCommand(cmd: "CMD09STANDARD", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 2 && Int(denonState.power) == 1 {
-                        Text("Standard").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red)//.glow(color: .red, radius: 24)
+                        Text("Std").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red)//.glow(color: .red, radius: 24)
                     } else {
-                        Text("Standard").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red)//.font(.body).fontWeight(.medium).foregroundColor(.red)
+                        Text("Std").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red)//.font(.body).fontWeight(.medium).foregroundColor(.red)
                     }
-                }).scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)//.scaledToFit()//.buttonStyle(DefaultButtonStyle())
+                })//.scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)//.scaledToFit()//.buttonStyle(DefaultButtonStyle())
+                .buttonStyle(PlainButtonStyle())
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 Button(action: {denonState = sendCommand(cmd: "CMD12DIRECT", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 5 && Int(denonState.power) == 1 {
                         Text("Direct").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.green)//.glow(color: .green, radius: 24)
                     } else {
                         Text("Direct").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.green)//.font(.body).fontWeight(.medium).foregroundColor(.green)
                     }
-                }).scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)//.scaledToFit()//.buttonStyle(DefaultButtonStyle())
+                })//.scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)//.scaledToFit()//.buttonStyle(DefaultButtonStyle())
+                .buttonStyle(PlainButtonStyle())
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
 //            }//.scaledToFit()
 // Uncomment for two buttons in a row, otherwise four in a row
 //            HStack {
@@ -75,14 +79,18 @@ struct ContentView: View {
                     } else {
                         Text("Stereo").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.blue)
                     }
-                }).scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)
+                })//.scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)
+                .buttonStyle(PlainButtonStyle())
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 Button(action: {denonState = sendCommand(cmd: "CMD075CH7CHSTEREO", rxTO: 1)}, label: {
                     if Int(denonState.stereoMode) == 0 && Int(denonState.power) == 1 {
                         Text("5ch7ch").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.purple).glow(color: .purple, radius: 24)
                     } else {
                         Text("5ch7ch").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.purple)
                     }
-                }).scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)
+                })//.scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)
+                .buttonStyle(PlainButtonStyle())
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
             }
             
             HStack {
