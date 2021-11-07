@@ -158,7 +158,7 @@ struct ContentView: View {
             //Text(" ").font(.body)
             Spacer().frame(height: 10)
             Button(action: {denonState = sendCommand(cmd: "CMD06MUTE", rxTO: 1)
-                if Int(denonState.mute) == 1 {
+                if Int(denonState.mute) == 0 {
                     muteSpeakerImg = "speaker"
                 } else {
                     muteSpeakerImg = "speaker.slash"
