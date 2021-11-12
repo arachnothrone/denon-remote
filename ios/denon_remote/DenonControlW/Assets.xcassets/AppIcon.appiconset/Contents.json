@@ -41,6 +41,7 @@
       "subtype" : "40mm"
     },
     {
+      "filename" : "denon_icon_100.png",
       "idiom" : "watch",
       "role" : "appLauncher",
       "scale" : "2x",
