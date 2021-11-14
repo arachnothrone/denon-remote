@@ -181,9 +181,9 @@ struct ContentView: View {
             HStack {
                 Button(action: {denonState = sendCommand(cmd: "CMD06MUTE", rxTO: 1)
                     if Int(denonState.mute) == 1 {
-                        muteSpeakerImg = "speaker"
-                    } else {
                         muteSpeakerImg = "speaker.slash"
+                    } else {
+                        muteSpeakerImg = "speaker"
                     }
                 }, label: {
                     HStack {
