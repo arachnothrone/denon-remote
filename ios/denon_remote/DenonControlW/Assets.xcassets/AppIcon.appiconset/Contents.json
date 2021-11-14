@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "denon_icon_48.png",
       "idiom" : "watch",
       "role" : "notificationCenter",
       "scale" : "2x",
@@ -8,6 +9,7 @@
       "subtype" : "38mm"
     },
     {
+      "filename" : "denon_icon_55.png",
       "idiom" : "watch",
       "role" : "notificationCenter",
       "scale" : "2x",
@@ -15,18 +17,21 @@
       "subtype" : "42mm"
     },
     {
+      "filename" : "denon_icon_58.png",
       "idiom" : "watch",
       "role" : "companionSettings",
       "scale" : "2x",
       "size" : "29x29"
     },
     {
+      "filename" : "denon_icon_87.png",
       "idiom" : "watch",
       "role" : "companionSettings",
       "scale" : "3x",
       "size" : "29x29"
     },
     {
+      "filename" : "denon_icon_80.png",
       "idiom" : "watch",
       "role" : "appLauncher",
       "scale" : "2x",
@@ -34,6 +39,7 @@
       "subtype" : "38mm"
     },
     {
+      "filename" : "denon_icon_88.png",
       "idiom" : "watch",
       "role" : "appLauncher",
       "scale" : "2x",
@@ -49,6 +55,7 @@
       "subtype" : "44mm"
     },
     {
+      "filename" : "denon_icon_172.png",
       "idiom" : "watch",
       "role" : "quickLook",
       "scale" : "2x",
@@ -56,6 +63,7 @@
       "subtype" : "38mm"
     },
     {
+      "filename" : "denon_icon_196.png",
       "idiom" : "watch",
       "role" : "quickLook",
       "scale" : "2x",
@@ -63,6 +71,7 @@
       "subtype" : "42mm"
     },
     {
+      "filename" : "denon_icon_216.png",
       "idiom" : "watch",
       "role" : "quickLook",
       "scale" : "2x",

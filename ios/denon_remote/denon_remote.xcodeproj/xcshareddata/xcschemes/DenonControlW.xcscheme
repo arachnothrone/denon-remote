@@ -55,8 +55,10 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
       notificationPayloadFile = "DenonControlW Extension/PushNotificationPayload.apns">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <RemoteRunnable
+         runnableDebuggingMode = "2"
+         BundleIdentifier = "com.apple.Carousel"
+         RemotePath = "/denon_remote">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BAE8D555267FEF7300E6AAB4"
@@ -64,7 +66,7 @@
             BlueprintName = "DenonControlW"
             ReferencedContainer = "container:denon_remote.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </RemoteRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -72,8 +74,10 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <RemoteRunnable
+         runnableDebuggingMode = "2"
+         BundleIdentifier = "com.apple.Carousel"
+         RemotePath = "/denon_remote">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "BAE8D555267FEF7300E6AAB4"
@@ -81,7 +85,16 @@
             BlueprintName = "DenonControlW"
             ReferencedContainer = "container:denon_remote.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </RemoteRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "BAE8D555267FEF7300E6AAB4"
+            BuildableName = "DenonControlW.app"
+            BlueprintName = "DenonControlW"
+            ReferencedContainer = "container:denon_remote.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
