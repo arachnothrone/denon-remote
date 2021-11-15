@@ -9,6 +9,7 @@ import SwiftUI
 import Foundation
 
 struct ContentView: View {
+    @Environment(\.scenePhase) var scene_phase
     @State var denonState = MEM_STATE_T()
     @State var volumeString = "unknown"
     @State var muteSpeakerImg = "speaker"
@@ -42,11 +43,16 @@ struct ContentView: View {
 //                    self.phoneSession.session.sendMessage(["message" : self.cmdString], replyHandler: nil) {(error) in
 //                        print(error.localizedDescription)
 //                    }
-                    self.phoneSession.session.sendMessage(["wMessage": "CMD98GET_STATE"], replyHandler: {
+                    
+                    
+                    self.phoneSession.session.sendMessage(["wMessage": self.cmdString], replyHandler:
+                    //self.phoneSession.session.sendMessage(["wMessage": "CMD98GET_STATE"], replyHandler:
+                                                            {
                         reply in replyStr = reply["pMessage"] as! String
                         print("---> recvd reply = \(reply)")
                         print("--->>> replyStr = \(replyStr)")
                         denonState = deserializeDenonState(ds_string: replyStr)
+                        volumeString = denonState.volume
                     }, errorHandler: {(error) in print("---> error=\(error)")})
                     print("watch sent \(self.cmdString) command to the phone")
                 },
@@ -71,6 +77,20 @@ struct ContentView: View {
 //                        denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
 //                        volumeString = denonState.volume
 //                    })
+                    .onChange(of: scene_phase, perform: { value in
+                        if value == .active {
+                            print("=====>>>>> app returned from background, in foreground now - request denon state update")
+                            self.phoneSession.session.sendMessage(["wMessage": "CMD98GET_STATE"], replyHandler: {
+                                reply in replyStr = reply["pMessage"] as! String
+                                denonState = deserializeDenonState(ds_string: replyStr)
+                                volumeString = denonState.volume
+                            })
+                        } else if value == .background {
+                            print("=====>>>>> app is in the background")
+                        } else if value == .inactive {
+                            print("======>>>> inactive - app on the screen but watch is displaying digital time")
+                        }
+                    })
             }
             // --- Sound mode buttons 4x ------------------------------------------
             HStack {
