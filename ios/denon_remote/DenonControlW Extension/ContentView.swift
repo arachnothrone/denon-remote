@@ -26,6 +26,21 @@ struct ContentView: View {
     @State var msg2reply = "*"
     @State var replyStr: String = ""
     
+    func sendMessageToPhone(msgString: String) -> MEM_STATE_T {
+        var result: MEM_STATE_T = MEM_STATE_T()
+        self.phoneSession.session.sendMessage(["wMessage": msgString], replyHandler:
+        {
+            reply in replyStr = reply["pMessage"] as! String
+            print("# ---> recvd reply = \(reply)")
+            print("# --->>> replyStr = \(replyStr)")
+            result = deserializeDenonState(ds_string: replyStr)
+            //denonState = deserializeDenonState(ds_string: replyStr)
+            //volumeString = denonState.volume
+        }, errorHandler: {(error) in print("# ---> error=\(error)")})
+        print("# watch sent \(msgString) command to the phone")
+        return result
+    }
+    
     var body: some View {
         VStack {
             // --- Power button and Volume crown ------------------------------------------
@@ -39,11 +54,6 @@ struct ContentView: View {
                         self.cmdString = "CMD04POWERON"
                         //denonState.power = String(1)
                     }
-                    //denonState = sendCommand(cmd: cmdString, rxTO: 1)
-//                    self.phoneSession.session.sendMessage(["message" : self.cmdString], replyHandler: nil) {(error) in
-//                        print(error.localizedDescription)
-//                    }
-                    
                     
                     self.phoneSession.session.sendMessage(["wMessage": self.cmdString], replyHandler:
                     //self.phoneSession.session.sendMessage(["wMessage": "CMD98GET_STATE"], replyHandler:
@@ -73,10 +83,6 @@ struct ContentView: View {
                         print("DEBUG: updating volume text: \(volumeString)")
                     })
                     // Update the state when back from background
-//                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification), perform: { _ in
-//                        denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
-//                        volumeString = denonState.volume
-//                    })
                     .onChange(of: scene_phase, perform: { value in
                         if value == .active {
                             print("=====>>>>> app returned from background, in foreground now - request denon state update")
@@ -94,7 +100,7 @@ struct ContentView: View {
             }
             // --- Sound mode buttons 4x ------------------------------------------
             HStack {
-                Button(action: {denonState = sendCommand(cmd: "CMD09STANDARD", rxTO: 1)}, label: {
+                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD09STANDARD")}, label: {
                     if Int(denonState.stereoMode) == 2 && Int(denonState.power) == 1 {
                         Text("Std").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red)//.glow(color: .red, radius: 24)
                     } else {
@@ -103,7 +109,7 @@ struct ContentView: View {
                 })//.scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)//.scaledToFit()//.buttonStyle(DefaultButtonStyle())
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                Button(action: {denonState = sendCommand(cmd: "CMD12DIRECT", rxTO: 1)}, label: {
+                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD12DIRECT")}, label: {
                     if Int(denonState.stereoMode) == 5 && Int(denonState.power) == 1 {
                         Text("Direct").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.green)//.glow(color: .green, radius: 24)
                     } else {
@@ -115,7 +121,7 @@ struct ContentView: View {
 //            }//.scaledToFit()
 // Uncomment for two buttons in a row, otherwise four in a row
 //            HStack {
-                Button(action: {denonState = sendCommand(cmd: "CMD13STEREO", rxTO: 1)}, label: {
+                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD13STEREO")}, label: {
                     if Int(denonState.stereoMode) == 6 && Int(denonState.power) == 1 {
                         Text("Stereo").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.blue).glow(color: .blue, radius: 24)
                     } else {
@@ -124,7 +130,7 @@ struct ContentView: View {
                 })//.scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                Button(action: {denonState = sendCommand(cmd: "CMD075CH7CHSTEREO", rxTO: 1)}, label: {
+                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD075CH7CHSTEREO")}, label: {
                     if Int(denonState.stereoMode) == 0 && Int(denonState.power) == 1 {
                         Text("5ch7ch").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.purple).glow(color: .purple, radius: 24)
                     } else {

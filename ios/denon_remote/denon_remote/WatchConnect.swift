@@ -52,7 +52,7 @@ class PhoneWatchConnect: NSObject,  WCSessionDelegate, ObservableObject {
         let watchCommand = message["wMessage"] as? String ?? "Unknown"
         let raspiResult = sendCommandW(cmd: watchCommand, rxTO: 1)
         print("watchCommand execution result (Raspi reply): \(raspiResult)")
-        // forward Raspi reply back to Watch
+        // forward Raspi response back to the Watch
         replyHandler(["pMessage": raspiResult])
     }
 }
