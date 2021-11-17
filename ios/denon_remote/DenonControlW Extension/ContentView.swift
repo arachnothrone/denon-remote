@@ -205,7 +205,7 @@ struct ContentView: View {
 //                }
 //            } // --------------------------------------------------------------------------------------------
             HStack {
-                Button(action: {denonState = sendCommand(cmd: "CMD06MUTE", rxTO: 1)
+                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD06MUTE")
                     if Int(denonState.mute) == 1 {
                         muteSpeakerImg = "speaker.slash"
                     } else {
@@ -230,7 +230,7 @@ struct ContentView: View {
 //                        )
                 })
                 
-                Button(action: {_ = sendCommand(cmd: "CMD01DIMMER", rxTO: 1)
+                Button(action: {_ = self.sendMessageToPhone(msgString: "CMD01DIMMER")
                                 dimmerImage += 1
                                 imageIndex = dimmerImage % 4
                                 print("dimmerImage=\(dimmerImage), imageIndex=\(imageIndex)")
@@ -254,7 +254,7 @@ struct ContentView: View {
                         }
                 })
                 
-                Button(action: {denonState = sendCommand(cmd: "CMD99CALIBRATE_VOL", rxTO: 25); volumeString = denonState.volume}) {
+                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD99CALIBRATE_VOL"); volumeString = denonState.volume}) {
                     Image(systemName: "gearshape").foregroundColor(.red).font(Font.body.weight(.light)).padding()
                         //.frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
                 }
