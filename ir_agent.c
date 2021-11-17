@@ -62,6 +62,7 @@ typedef struct MEM_STATE_T_TAG
 /**
  * Declarations
  */
+char* getTimeStamp(void);
 STATE_DIM UdpateDimmerState(const MEM_STATE_T* pDenonState);
 STATE_BINARY UpdateMuteState(const MEM_STATE_T* pDenonState);
 void SerializeDenonState(const MEM_STATE_T* pDenonState, char* buffer);
@@ -80,6 +81,7 @@ int main(int argc, char **argv)
     char buffer[RX_BUFFER_SIZE];
     char* reply_ok = "OK";
     struct sockaddr_in serverAddr, clientAddr;
+    // struct timeval timestamp;
     MEM_STATE_T denonState;
 
 
@@ -117,7 +119,7 @@ int main(int argc, char **argv)
         n = recvfrom(sockfd, (char *)buffer, RX_BUFFER_SIZE, MSG_WAITALL, (struct sockaddr *) &clientAddr, &len);
         buffer[n] = '\0';
         char clientAddrString[INET_ADDRSTRLEN];
-        printf("Received request: %s [%s:%0d]\n", 
+        printf("%s Received request: %s [%s:%0d]\n", getTimeStamp(), 
             buffer, inet_ntop(AF_INET, &clientAddr.sin_addr.s_addr, clientAddrString, sizeof(clientAddrString)), ntohs(clientAddr.sin_port));
 
         char rcvCmd;
@@ -138,7 +140,7 @@ int main(int argc, char **argv)
         // char z = '0';
         // printf("atoi 0: %d", atoi(&z));
         rcvCmd = (int)(sym1-48) * 10 + (int)(sym2-48);
-        printf("Decoded command: %d\n", rcvCmd);
+        //printf("Decoded command: %d\n", rcvCmd);
 
         switch (rcvCmd)
         {
@@ -241,7 +243,9 @@ int main(int argc, char **argv)
         SerializeDenonState(&denonState, replBuf);
         //sprintf(replBuf, "Volume: %d", denonState.volume);
         sendto(sockfd, replBuf, strlen(replBuf), MSG_CONFIRM, (const struct sockaddr *) &clientAddr, len);
-        printf("Response sent.\n"); 
+        printf("%s Response sent: power=%d, vol=%d, mode=%d, input=%d, mute=%d, dimmer=%d\n", getTimeStamp(), 
+            denonState.power, denonState.volume, denonState.stereoMode, 
+            denonState.input, denonState.mute, denonState.dimmer); 
     }
           
     return 0;
@@ -338,4 +342,23 @@ void SetVolumeTo(MEM_STATE_T* pDenonState, int value)
 
     pDenonState->volume = value;
     printf("SetVolumeTo: set to %d\n", pDenonState->volume);
+}
+
+/**
+ * @brief Get the Time Stamp
+ * 
+ * @return char* 
+ */
+char* getTimeStamp(void)
+{
+    char* timeStamp;
+    time_t currentTime;
+    struct tm* tm;
+
+    currentTime = time(NULL);
+    tm = localtime(&currentTime);
+    timeStamp = timeStamp = (char*)malloc(sizeof(char) * 16);
+    sprintf(timeStamp, "%04d-%02d-%02d %02d:%02d:%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+
+    return timeStamp;
 }
