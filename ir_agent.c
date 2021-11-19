@@ -114,13 +114,26 @@ int main(int argc, char **argv)
     /**
      * Main application loop
      */
+    char* time_stmp;
+    
     while(1)
     {
         n = recvfrom(sockfd, (char *)buffer, RX_BUFFER_SIZE, MSG_WAITALL, (struct sockaddr *) &clientAddr, &len);
         buffer[n] = '\0';
         char clientAddrString[INET_ADDRSTRLEN];
-        printf("%s Received request: %s [%s:%0d]\n", getTimeStamp(), 
-            buffer, inet_ntop(AF_INET, &clientAddr.sin_addr.s_addr, clientAddrString, sizeof(clientAddrString)), ntohs(clientAddr.sin_port));
+        
+        time_stmp = getTimeStamp();
+        
+        if (time_stmp == NULL)
+        {
+            printf("Can't allocate timestamp buffer!!!");
+        }
+        else
+        {
+            printf("%s Received request: %s [%s:%0d]\n", time_stmp, 
+                buffer, inet_ntop(AF_INET, &clientAddr.sin_addr.s_addr, clientAddrString, sizeof(clientAddrString)), ntohs(clientAddr.sin_port));
+            free(time_stmp);
+        }
 
         char rcvCmd;
         //rcvCmd = atoi(&buffer[3]) * 10 + atoi(&buffer[4]);
@@ -351,14 +364,14 @@ void SetVolumeTo(MEM_STATE_T* pDenonState, int value)
  */
 char* getTimeStamp(void)
 {
-    char* timeStamp;
+    char* pTimeStamp;
     time_t currentTime;
     struct tm* tm;
 
     currentTime = time(NULL);
     tm = localtime(&currentTime);
-    timeStamp = timeStamp = (char*)malloc(sizeof(char) * 16);
-    sprintf(timeStamp, "%04d-%02d-%02d %02d:%02d:%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
+    pTimeStamp = (char*)malloc(sizeof(char) * 16);
+    sprintf(pTimeStamp, "%04d-%02d-%02d %02d:%02d:%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
 
-    return timeStamp;
+    return pTimeStamp;
 }
