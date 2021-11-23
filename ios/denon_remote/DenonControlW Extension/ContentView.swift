@@ -230,10 +230,10 @@ struct ContentView: View {
 //                        )
                 })
                 
-                Button(action: {_ = self.sendMessageToPhone(msgString: "CMD01DIMMER")
-                                dimmerImage += 1
-                                imageIndex = dimmerImage % 4
-                                print("dimmerImage=\(dimmerImage), imageIndex=\(imageIndex)")
+                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD01DIMMER")
+                                //dimmerImage += 1
+                    imageIndex = Int8(denonState.dimmer) ?? 0 // dimmerImage % 4
+                                print("Dimmer=\(denonState.dimmer) imageIndex=\(imageIndex)")
                 }, label: {
                         switch imageIndex {
                         case 0:
