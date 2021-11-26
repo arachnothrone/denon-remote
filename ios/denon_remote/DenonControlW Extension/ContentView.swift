@@ -77,11 +77,11 @@ struct ContentView: View {
                 
                 Text("\(volumeString)").font(.body).focusable(true).digitalCrownRotation($scrollAmount, from: -20, through: -50, by: -1.0, sensitivity: .low, isContinuous: true, isHapticFeedbackEnabled: true)
                     // Update the state when application started
-                    .onAppear(perform: {
-                        denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
-                        volumeString = denonState.volume
-                        print("DEBUG: updating volume text: \(volumeString)")
-                    })
+//                    .onAppear(perform: {
+//                        denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
+//                        volumeString = denonState.volume
+//                        print("DEBUG: updating volume text: \(volumeString)")
+//                    })
                     // Update the state when back from background
                     .onChange(of: scene_phase, perform: { value in
                         if value == .active {
@@ -96,6 +96,9 @@ struct ContentView: View {
                         } else if value == .inactive {
                             print("======>>>> inactive - app on the screen but watch is displaying digital time")
                         }
+                    })
+                    .onChange(of: scrollAmount, perform: { value in
+                        print("...\(round(scrollAmount))")
                     })
             }
             // --- Sound mode buttons 4x ------------------------------------------
@@ -141,69 +144,7 @@ struct ContentView: View {
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
             }
             // ----
-//            HStack {
-//                Button(action: {
-//                        var cmdString = ""
-//                        if Int(denonState.power) == 1 {
-//                            cmdString = "CMD05POWEROFF"
-//                        } else {
-//                            cmdString = "CMD04POWERON"
-//                        }
-//                        denonState = sendCommand(cmd: cmdString, rxTO: 1)
-//                    },
-//                       label: {
-//                        if Int(denonState.power) == 1 {
-//                            Text("ON").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green).glow(color: .green, radius: 48).padding()
-//                        } else {
-//                            Text("OFF").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red).padding()
-//                        }
-//                })
-//                //.frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: 50, maxWidth: 50, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: 50, maxHeight: 50)
-//
-//                Text("\(volumeString)").font(.title).focusable(true).digitalCrownRotation($scrollAmount, from: -20, through: -50, by: -1.0, sensitivity: .low, isContinuous: true, isHapticFeedbackEnabled: true)
-//                    // Update the state when application started
-//                    .onAppear(perform: {
-//                        denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
-//                        volumeString = denonState.volume
-//                        print("DEBUG: updating volume text: \(volumeString)")
-//                    })
-//                    // Update the state when back from background
-////                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification), perform: { _ in
-////                        denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
-////                        volumeString = denonState.volume
-////                    })
-//            }
-            
-            
-//            Text(self.phoneSession.messageText).font(.body)
-//            Text(msg2reply).font(.body)
-              
-              // temp buttons: phone connection and send/receive to phone message test button
-//            HStack {
-//                Button(action: {phoneConnected = self.phoneSession.session.isReachable; print("DBG: phoneConnected=\(phoneConnected)")}, label: {
-//                    if phoneConnected == true {
-//                        Image(systemName: "iphone")
-//                    } else {
-//                        Image(systemName: "iphone.slash")
-//                    }
-//                })
-//
-//                Button(action: {
-////                    self.phoneSession.session.sendMessage(["wMessage": "CMD98GET_STATE"], replyHandler: {reply in print("Received reply=\(reply["pMessage"] ?? "=== === ===")")}, errorHandler: {(error) in print("---> error=\(error)")})
-//                    // TODO: replace with the wrapper
-//                    self.phoneSession.session.sendMessage(["wMessage": "CMD98GET_STATE"], replyHandler: {
-//                        reply in replyStr = reply["pMessage"] as! String
-//                        print("---> recvd reply = \(reply)")
-//                    }, errorHandler: {(error) in print("---> error=\(error)")})
-////                    // TODO: Find why it doesn't wait for reply
-////                    self.replyStr = phoneCommand(ssn: self.phoneSession, cmd: "CMD98GET_STATE")
-////                        print("btn recvd: \(self.replyStr)")
-//                    })
-//                {
-//                //Text("Send Message")
-//                    Text(self.replyStr)
-//                }
-//            } // --------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------
             HStack {
                 Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD06MUTE")
                     if Int(denonState.mute) == 1 {
@@ -261,17 +202,12 @@ struct ContentView: View {
                 .cornerRadius(40)
             }
         }
-//        .onAppear(perform: {
-//            let cmd = "CMD98GET_STATE"
-//            
-////            self.phoneSession.session.sendMessage(["message": cmd], replyHandler: nil {(error) in
-////                print(error.localizedDescription)
-////            }
-//            self.phoneSession.session.sendMessage(["message": cmd], replyHandler: {reply in replyStr = reply["message2"] as! String; print("Received reply=\(reply)")}, errorHandler: {(error) in print("---> error=\(error)")})
-//            print("watch sent \(cmd) command to the phone")
-//            print("reply received replyStr=\(replyStr)")
-//            denonState = deserializeDenonState(ds_string: self.phoneSession.messageText)
-//        })
+        .onAppear(perform: {
+            let cmd = "CMD98GET_STATE"
+            denonState = self.sendMessageToPhone(msgString: cmd)
+            print("watch sent \(cmd) command to the phone")
+            print("denonState=\(denonState)")
+        })
     }
 }
 
