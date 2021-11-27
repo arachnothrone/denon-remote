@@ -75,12 +75,16 @@ struct ContentView: View {
                 })
                 //.frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: 50, maxWidth: 50, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: 50, maxHeight: 50)
                 
-                Text("\(volumeString)").font(.body).focusable(true).digitalCrownRotation($scrollAmount, from: -20, through: -50, by: 1, sensitivity: .low, isContinuous: true, isHapticFeedbackEnabled: true)
-                    .onChange(of: scrollAmount, perform: { value in
-                    volumeString = String(Int(value))
-                        //print("DC value: %.2f \(value), \(volumeString)", value)
-                        print(String(format: "DC val: %.3f, \(volumeString)", value))
-                })
+                Text("\(volumeString)")
+                    .font(.body)
+                    .focusable(true)
+                    .digitalCrownRotation($scrollAmount, from: 0, through: 44, sensitivity: DigitalCrownRotationalSensitivity.medium)
+                    .onChange(of: scrollAmount, perform: {
+                        value in
+                            volumeString = String(Int(value))
+                            //print("DC value: %.2f \(value), \(volumeString)", value)
+                            print(String(format: "DC val: %.3f, \(volumeString)", value))
+                    })
                     // Update the state when application started
 //                    .onAppear(perform: {
 //                        denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
