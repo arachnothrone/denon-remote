@@ -15,6 +15,7 @@
 
 #define RX_PORT         (19001)
 #define RX_BUFFER_SIZE  (1024)
+#define CMD_ARG_SIZE        (2)
 
 typedef enum
 {
@@ -79,10 +80,12 @@ int main(int argc, char **argv)
     // CONTROL_COMMAND_T receivedCommand;
     int sockfd;
     char buffer[RX_BUFFER_SIZE];
+    char cmdArg[CMD_ARG_SIZE];
     char* reply_ok = "OK";
     struct sockaddr_in serverAddr, clientAddr;
     // struct timeval timestamp;
     MEM_STATE_T denonState;
+    int deltaVol = 0;
 
 
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
@@ -118,6 +121,12 @@ int main(int argc, char **argv)
     
     while(1)
     {
+        // Receive command into a buffer, e.g.:
+        // CMDxxDESCRyy
+        // CMD      - mandatory prefix
+        // xx       - command code (required)
+        // DESCR    - command description (required)
+        // yy       - command parameter value (required only for specific commands)
         n = recvfrom(sockfd, (char *)buffer, RX_BUFFER_SIZE, MSG_WAITALL, (struct sockaddr *) &clientAddr, &len);
         buffer[n] = '\0';
         char clientAddrString[INET_ADDRSTRLEN];
@@ -242,6 +251,20 @@ int main(int argc, char **argv)
                 system("irsend SEND_ONCE Denon_RC-978 INPUT_EXTIN");
                 denonState.input = INPUTEXTIN;
                 break;
+            case 18:
+                /* INCREASEVOL by n dB */
+                cmdArg[0] = buffer[16];
+                cmdArg[1] = buffer[17];
+                deltaVol = atoi(cmdArg);
+                SetVolumeTo(&denonState, denonState.volume - deltaVol);
+                break;
+            case 19:
+                /* DECREASEVOL by n dB */
+                cmdArg[0] = buffer[16];
+                cmdArg[1] = buffer[17];
+                deltaVol = atoi(cmdArg);
+                SetVolumeTo(&denonState, denonState.volume + deltaVol);
+                break;
             case 99:
                 /* CALIBRATE_VOL */
                 SetMinimumVolume(&denonState);
@@ -301,7 +324,6 @@ void SerializeDenonState(const MEM_STATE_T* pDenonState, char* buffer)
         pDenonState->input, 
         pDenonState->dimmer
     );
-
 }
 
 void DenonStateInit(MEM_STATE_T* pDenonState)
