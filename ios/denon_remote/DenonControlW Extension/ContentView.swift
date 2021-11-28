@@ -17,7 +17,8 @@ struct ContentView: View {
     @State var dimmerImage: Int8 = 0
     @State var imageIndex: Int8 = 0
     @State var dimmerButtonSize: CGFloat = 20
-    @State var scrollAmount = 0.0
+    @State var scrollAmount = 40.0
+    @State var scrollAmountPrev = 40.0
     
     @ObservedObject var phoneSession = WatchPhoneConnect()
     
@@ -91,25 +92,14 @@ struct ContentView: View {
             // --- Power button and Volume crown ------------------------------------------
             HStack {
                 Button(action: {
-                    //var cmdString = ""
                     if Int(denonState.power) == 1 {
                         self.cmdString = "CMD05POWEROFF"
-                        //denonState.power = String(0)
                     } else {
                         self.cmdString = "CMD04POWERON"
-                        //denonState.power = String(1)
                     }
-
-                    self.phoneSession.session.sendMessage(["wMessage": self.cmdString], replyHandler:
-                    //self.phoneSession.session.sendMessage(["wMessage": "CMD98GET_STATE"], replyHandler:
-                                                            {
-                        reply in replyStr = reply["pMessage"] as! String
-                        print("---> recvd reply = \(reply)")
-                        print("--->>> replyStr = \(replyStr)")
-                        denonState = deserializeDenonState(ds_string: replyStr)
-                        volumeString = denonState.volume
-                    }, errorHandler: {(error) in print("---> error=\(error)")})
                     print("watch sent \(self.cmdString) command to the phone")
+                    denonState = self.sendMessageToPhone(msgString: self.cmdString)
+                    volumeString = denonState.volume
                 },
                    label: {
                     if Int(denonState.power) == 1 {
@@ -123,16 +113,18 @@ struct ContentView: View {
                 Text("\(volumeString)")
                     .font(.body)
                     .focusable(true)
-                    .digitalCrownRotation($scrollAmount, from: 0, through: 44, sensitivity: DigitalCrownRotationalSensitivity.medium)
+                    .digitalCrownRotation($scrollAmount, from: 0, through: 50, sensitivity: DigitalCrownRotationalSensitivity.medium)
                     .onChange(of: scrollAmount, perform: {value in
-                        volumeString = String(Int(value))
-                        //print("DC value: %.2f \(value), \(volumeString)", value)
-                        print(String(format: "DC val: %.3f, \(volumeString)", value))
+                        volumeString = String(Int(value) * -1)
+                        //print(String(format: "DC val: %.3f, \(volumeString)", value))
                         relay.send(value)
                     })
                     .onReceive(debouncedPublisher, perform: {value in
-                        let value = String(Int(value))
-                        print("---> ready to send command to RPi \(value)")
+                        let diff = scrollAmountPrev - value
+                        scrollAmountPrev = value
+                        let valueDiff = String(Int(diff))
+                        print("---> ready to send command to RPi \(valueDiff)")
+                        // let volumeDiff = denonState.volume
                         denonState = self.sendMessageToPhone(msgString: "CMD98GET_STATE")
                         print(denonState)
                     })
@@ -146,11 +138,10 @@ struct ContentView: View {
                     .onChange(of: scene_phase, perform: { value in
                         if value == .active {
                             print("=====>>>>> app returned from background, in foreground now - request denon state update")
-                            self.phoneSession.session.sendMessage(["wMessage": "CMD98GET_STATE"], replyHandler: {
-                                reply in replyStr = reply["pMessage"] as! String
-                                denonState = deserializeDenonState(ds_string: replyStr)
-                                volumeString = denonState.volume
-                            })
+                            denonState = self.sendMessageToPhone(msgString: "CMD98GET_STATE")
+                            volumeString = denonState.volume
+                            scrollAmount = Double(denonState.volume) ?? -47.0
+                            scrollAmountPrev = Double(denonState.volume) ?? -47.0
                         } else if value == .background {
                             print("=====>>>>> app is in the background")
                         } else if value == .inactive {
@@ -182,8 +173,6 @@ struct ContentView: View {
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
 //            }//.scaledToFit()
-// Uncomment for two buttons in a row, otherwise four in a row
-//            HStack {
                 Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD13STEREO")}, label: {
                     if Int(denonState.stereoMode) == 6 && Int(denonState.power) == 1 {
                         Text("Stereo").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.blue).glow(color: .blue, radius: 24)
@@ -203,8 +192,6 @@ struct ContentView: View {
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
             }
-            // ----
-// --------------------------------------------------------------------------------------------
             HStack {
                 Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD06MUTE")
                     if Int(denonState.mute) == 1 {
@@ -265,8 +252,11 @@ struct ContentView: View {
         .onAppear(perform: {
             let cmd = "CMD98GET_STATE"
             denonState = self.sendMessageToPhone(msgString: cmd)
+            volumeString = denonState.volume
+            scrollAmountPrev = Double(denonState.volume) ?? -43.0
+            scrollAmount = Double(Int(denonState.volume) ?? -44)
             print("watch sent \(cmd) command to the phone")
-            print("denonState=\(denonState)")
+            print("denonState=\(denonState), scroolAmount=\(scrollAmount)")
         })
     }
 }
