@@ -13,6 +13,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) var scene_phase
     @State var denonState = MEM_STATE_T()
     @State var volumeString = "unknown"
+    @State var volumeString2 = ""
     @State var muteSpeakerImg = "speaker"
     @State var dimmerImage: Int8 = 0
     @State var imageIndex: Int8 = 0
@@ -80,8 +81,8 @@ struct ContentView: View {
             print("# ---> recvd reply = \(reply)")
             print("# --->>> replyStr = \(replyStr)")
             result = deserializeDenonState(ds_string: replyStr)
-            //denonState = deserializeDenonState(ds_string: replyStr)
-            //volumeString = denonState.volume
+            denonState = deserializeDenonState(ds_string: replyStr)
+            volumeString = denonState.volume
         }, errorHandler: {(error) in print("# ---> error=\(error)")})
         print("# watch sent \(msgString) command to the phone")
         return result
@@ -110,7 +111,7 @@ struct ContentView: View {
                 })
                 //.frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: 50, maxWidth: 50, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: 50, maxHeight: 50)
 
-                Text("\(volumeString)")
+                Text("\(volumeString2)")
                     .font(.body)
                     .focusable(true)
                     .digitalCrownRotation($scrollAmount, from: 0, through: 50, sensitivity: DigitalCrownRotationalSensitivity.medium)
@@ -148,6 +149,7 @@ struct ContentView: View {
                             print("======>>>> inactive - app on the screen but watch is displaying digital time")
                         }
                     })
+                    .onChange(of: volumeString, perform: {value in volumeString2 = value})
 //                    .onChange(of: scrollAmount, perform: { value in
 //                        print("...\(round(scrollAmount))")
 //                    })

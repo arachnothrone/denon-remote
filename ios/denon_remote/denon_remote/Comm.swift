@@ -9,6 +9,29 @@ import Foundation
 import Darwin
 import Darwin.sys
 
+class AsyncOperation {
+
+    private let semaphore: DispatchSemaphore
+    private let dispatchQueue: DispatchQueue
+    typealias CompleteClosure = ()->()
+
+    init(numberOfSimultaneousActions: Int, dispatchQueueLabel: String) {
+        semaphore = DispatchSemaphore(value: numberOfSimultaneousActions)
+        dispatchQueue = DispatchQueue(label: dispatchQueueLabel)
+    }
+
+    func run(closure: @escaping (@escaping CompleteClosure)->()) {
+        dispatchQueue.async {
+            self.semaphore.wait()
+            closure {
+                self.semaphore.signal()
+            }
+        }
+    }
+}
+
+let asyncOperation = AsyncOperation(numberOfSimultaneousActions: 1, dispatchQueueLabel: "AnyString")
+
 struct MEM_STATE_T {
     var power: String =         "0"
     var volume: String =        "---"
@@ -119,6 +142,14 @@ func udpSendString(textToSend: String, address: String, port: CUnsignedShort, rx
 
 func sendCommand(cmd: String, rxTO: Int) -> MEM_STATE_T {
     let resultString = udpSendString(textToSend: cmd, address: "192.168.2.101", port: 19001, rxTimeoutSec: rxTO)
+//    var resultString = ""
+//    print("[sendCommand] \(cmd) sent...")
+//    
+//    asyncOperation.run {completeClosure in
+//        DispatchQueue.global(qos: .background).async {
+//        resultString = udpSendString(textToSend: cmd, address: "192.168.2.101", port: 19001, rxTimeoutSec: rxTO)
+//            completeClosure()}
+//    }
     print("sendCommand: cmd=\(cmd), rxTO=\(rxTO), resultString=\(resultString)")
     return deserializeDenonState(ds_string: resultString)
 }
