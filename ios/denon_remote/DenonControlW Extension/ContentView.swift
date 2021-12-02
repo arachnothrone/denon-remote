@@ -87,6 +87,19 @@ struct ContentView: View {
         print("# watch sent \(msgString) command to the phone")
         return result
     }
+    func sendMessageToPhone2(msgString: String) -> Void {
+        //var result: MEM_STATE_T = MEM_STATE_T()
+        self.phoneSession.session.sendMessage(["wMessage": msgString], replyHandler:
+        {
+            reply in replyStr = reply["pMessage"] as! String
+            print("\(getTimeStamp()) # ---> recvd reply = \(reply)")
+            print("\(getTimeStamp()) # --->>> replyStr = \(replyStr)")
+            //result = deserializeDenonState(ds_string: replyStr)
+            self.denonState = deserializeDenonState(ds_string: replyStr)
+            // self.volumeString = denonState.volume
+        }, errorHandler: {(error) in print("\(getTimeStamp()) # ---> error=\(error)")})
+    }
+
     
     var body: some View {
         VStack {
@@ -100,6 +113,7 @@ struct ContentView: View {
                     }
                     print("watch sent \(self.cmdString) command to the phone")
                     denonState = self.sendMessageToPhone(msgString: self.cmdString)
+                    print("===++++> denonstate=\(denonState)")
                     volumeString = denonState.volume
                 },
                    label: {
@@ -108,7 +122,9 @@ struct ContentView: View {
                     } else {
                         Text("OFF").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red).padding()
                     }
-                })
+                   }).onChange(of: denonState.power, perform: {value in
+                        let ts = getTimeStamp()
+                        print("\(ts) Onchange Power button = \(value)")})
                 //.frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: 50, maxWidth: 50, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: 50, maxHeight: 50)
 
                 Text("\(volumeString2)")
@@ -252,13 +268,15 @@ struct ContentView: View {
             }
         }
         .onAppear(perform: {
+            print("\(getTimeStamp()) -----> APPEAR")
             let cmd = "CMD98GET_STATE"
-            denonState = self.sendMessageToPhone(msgString: cmd)
-            volumeString = denonState.volume
-            scrollAmountPrev = Double(denonState.volume) ?? -43.0
-            scrollAmount = Double(Int(denonState.volume) ?? -44)
-            print("watch sent \(cmd) command to the phone")
-            print("denonState=\(denonState), scroolAmount=\(scrollAmount)")
+            //denonState = self.sendMessageToPhone(msgString: cmd)
+            self.sendMessageToPhone2(msgString: cmd)
+//            volumeString = denonState.volume
+//            scrollAmountPrev = Double(denonState.volume) ?? -43.0
+//            scrollAmount = Double(Int(denonState.volume) ?? -44)
+//            print("watch sent \(cmd) command to the phone")
+//            print("denonState=\(denonState), scroolAmount=\(scrollAmount)")
         })
     }
 }

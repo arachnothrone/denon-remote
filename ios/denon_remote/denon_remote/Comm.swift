@@ -196,7 +196,7 @@ func udpSendBytes(payload: ContiguousBytes, address: String, port: CUnsignedShor
 }
 
 func stringSlicer(inputStr: String, startIdx: Int, sliceLen: Int) -> String {
-    print("stringSlicer: inputStr=\(inputStr), startIdx=\(startIdx), sliceLen=\(sliceLen)")
+    //print("stringSlicer: inputStr=\(inputStr), startIdx=\(startIdx), sliceLen=\(sliceLen)")
     var res = "0"
     
     if inputStr != "" {
@@ -225,3 +225,13 @@ func stringSlicer(inputStr: String, startIdx: Int, sliceLen: Int) -> String {
 //{
 //    return (MemoryLayout<t>.size * value.count)
 //}
+
+func getTimeStamp() -> String {
+    let date = Date()
+    let calendar = Calendar.current
+    let hour = calendar.component(.hour, from: date)
+    let minutes = calendar.component(.minute, from: date)
+    let seconds = calendar.component(.second, from: date)
+    let ms = Int(calendar.component(.nanosecond, from: date) / 1000000)
+    return String(format: "%02d:%02d:%02d.%03d", hour, minutes, seconds, ms)
+}
