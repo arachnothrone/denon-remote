@@ -12,6 +12,8 @@ import Combine
 struct ContentView: View {
     @Environment(\.scenePhase) var scene_phase
     @State var denonState = MEM_STATE_T()
+    @State var powerCommand = ""
+    //@State var powerLabel: some View
     @State var volumeString = "unknown"
     @State var volumeString2 = ""
     @State var muteSpeakerImg = "speaker"
@@ -105,16 +107,18 @@ struct ContentView: View {
         VStack {
             // --- Power button and Volume crown ------------------------------------------
             HStack {
+                // Power button
                 Button(action: {
-                    if Int(denonState.power) == 1 {
-                        self.cmdString = "CMD05POWEROFF"
-                    } else {
-                        self.cmdString = "CMD04POWERON"
-                    }
-                    print("watch sent \(self.cmdString) command to the phone")
-                    denonState = self.sendMessageToPhone(msgString: self.cmdString)
-                    print("===++++> denonstate=\(denonState)")
-                    volumeString = denonState.volume
+//                    if Int(denonState.power) == 1 {
+//                        self.cmdString = "CMD05POWEROFF"
+//                    } else {
+//                        self.cmdString = "CMD04POWERON"
+//                    }
+//                    print("watch sent \(self.cmdString) command to the phone")
+//                    denonState = self.sendMessageToPhone(msgString: self.cmdString)
+//                    print("===++++> denonstate=\(denonState)")
+//                    volumeString = denonState.volume
+                    sendMessageToPhone2(msgString: self.powerCommand)
                 },
                    label: {
                     if Int(denonState.power) == 1 {
@@ -122,11 +126,23 @@ struct ContentView: View {
                     } else {
                         Text("OFF").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red).padding()
                     }
-                   }).onChange(of: denonState.power, perform: {value in
-                        let ts = getTimeStamp()
-                        print("\(ts) Onchange Power button = \(value)")})
+                    //self.powerLabel
+                   })
+                .onChange(of: denonState.power, perform: {value in
+                    let ts = getTimeStamp()
+                    print("\(ts) Onchange Power button = \(value)")
+                    
+                    if Int(denonState.power) == 1 {
+                        self.powerCommand = "CMD05POWEROFF"
+                        //self.powerLabel = Text("ON").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.green).glow(color: .green, radius: 48).padding()
+                    } else {
+                        self.powerCommand = "CMD04POWERON"
+                        //self.powerLabel = Text("OFF").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red).padding() as! Text
+                    }
+                })
                 //.frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: 50, maxWidth: 50, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: 50, maxHeight: 50)
 
+                // Volume value
                 Text("\(volumeString2)")
                     .font(.body)
                     .focusable(true)
@@ -174,7 +190,7 @@ struct ContentView: View {
             HStack {
                 Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD09STANDARD")}, label: {
                     if Int(denonState.stereoMode) == 2 && Int(denonState.power) == 1 {
-                        Text("Std").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red)//.glow(color: .red, radius: 24)
+                        Text("Std").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red).glow(color: .red, radius: 24)
                     } else {
                         Text("Std").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red)//.font(.body).fontWeight(.medium).foregroundColor(.red)
                     }
@@ -183,7 +199,7 @@ struct ContentView: View {
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD12DIRECT")}, label: {
                     if Int(denonState.stereoMode) == 5 && Int(denonState.power) == 1 {
-                        Text("Direct").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.green)//.glow(color: .green, radius: 24)
+                        Text("Direct").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.green).glow(color: .green, radius: 24)
                     } else {
                         Text("Direct").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.green)//.font(.body).fontWeight(.medium).foregroundColor(.green)
                     }
@@ -210,17 +226,19 @@ struct ContentView: View {
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
             }
+            
+            // Mute, dimmer, calibration buttons
             HStack {
-                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD06MUTE")
-                    if Int(denonState.mute) == 1 {
-                        muteSpeakerImg = "speaker.slash"
-                    } else {
-                        muteSpeakerImg = "speaker"
-                    }
+                Button(action: {self.sendMessageToPhone2(msgString: "CMD06MUTE")
+//                    if Int(denonState.mute) == 1 {
+//                        muteSpeakerImg = "speaker.slash"
+//                    } else {
+//                        muteSpeakerImg = "speaker"
+//                    }
                 }, label: {
                     HStack {
                         //Text("Mute").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-                        Image(systemName: muteSpeakerImg).background(Color.clear).foregroundColor(.blue).font(Font.body.weight(.medium))
+                        Image(systemName: self.muteSpeakerImg).background(Color.clear).foregroundColor(.blue).font(Font.body.weight(.medium))
                     }
                     //.border(Color.purple, width: 5)
                     .padding()
@@ -235,11 +253,19 @@ struct ContentView: View {
 //                                .stroke(Color.gray, lineWidth: 5)
 //                        )
                 })
+                .onChange(of: denonState.mute, perform: {mute in
+                    if Int(mute) == 1 {
+                        self.muteSpeakerImg = "speaker.slash"
+                    } else {
+                        self.muteSpeakerImg = "speaker"
+                    }
+                })
 
-                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD01DIMMER")
+                // Mute button
+                Button(action: {self.sendMessageToPhone2(msgString: "CMD01DIMMER")
                                 //dimmerImage += 1
                     imageIndex = Int8(denonState.dimmer) ?? 0 // dimmerImage % 4
-                                print("Dimmer=\(denonState.dimmer) imageIndex=\(imageIndex)")
+                                print("\(getTimeStamp()) Dimmer=\(denonState.dimmer) imageIndex=\(imageIndex)")
                 }, label: {
                         switch imageIndex {
                         case 0:
@@ -260,7 +286,8 @@ struct ContentView: View {
                         }
                 })
 
-                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD99CALIBRATE_VOL"); volumeString = denonState.volume}) {
+                // Calibration button
+                Button(action: {self.sendMessageToPhone2(msgString: "CMD99CALIBRATE_VOL"); volumeString = denonState.volume}) {
                     Image(systemName: "gearshape").foregroundColor(.red).font(Font.body.weight(.light)).padding()
                         //.frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
                 }

@@ -166,7 +166,7 @@ func deserializeDenonState(ds_string: String) -> MEM_STATE_T {
     denonState.stereoMode = stringSlicer(inputStr: ds_string, startIdx: 8, sliceLen: 1)
     denonState.input = stringSlicer(inputStr: ds_string, startIdx: 10, sliceLen: 1)
     denonState.dimmer = stringSlicer(inputStr: ds_string, startIdx: 12, sliceLen: 1)
-    print("power: \(denonState.power), volume: \(denonState.volume), mute: \(denonState.mute), stereoMode: \(denonState.stereoMode), input: \(denonState.input), dimmer: \(denonState.dimmer)")
+    print("\(getTimeStamp()) power: \(denonState.power), volume: \(denonState.volume), mute: \(denonState.mute), stereoMode: \(denonState.stereoMode), input: \(denonState.input), dimmer: \(denonState.dimmer)")
     return denonState
 }
 
