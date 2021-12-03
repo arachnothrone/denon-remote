@@ -256,14 +256,14 @@ int main(int argc, char **argv)
                 cmdArg[0] = buffer[16];
                 cmdArg[1] = buffer[17];
                 deltaVol = atoi(cmdArg);
-                SetVolumeTo(&denonState, denonState.volume - deltaVol);
+                SetVolumeTo(&denonState, denonState.volume + deltaVol);
                 break;
             case 19:
                 /* DECREASEVOL by n dB */
                 cmdArg[0] = buffer[16];
                 cmdArg[1] = buffer[17];
                 deltaVol = atoi(cmdArg);
-                SetVolumeTo(&denonState, denonState.volume + deltaVol);
+                SetVolumeTo(&denonState, denonState.volume - deltaVol);
                 break;
             case 99:
                 /* CALIBRATE_VOL */
