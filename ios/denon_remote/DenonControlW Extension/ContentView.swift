@@ -12,7 +12,7 @@ import Combine
 struct ContentView: View {
     @Environment(\.scenePhase) var scene_phase
     @State var denonState = MEM_STATE_T()
-    @State var powerCommand = ""
+    @State var powerCommand = "CMD04POWERON"
     //@State var powerLabel: some View
     @State var volumeString = "unknown"
     @State var volumeString2 = ""
@@ -75,22 +75,21 @@ struct ContentView: View {
 //    }
     // ============================
     
-    func sendMessageToPhone(msgString: String) -> MEM_STATE_T {
-        var result: MEM_STATE_T = MEM_STATE_T()
-        self.phoneSession.session.sendMessage(["wMessage": msgString], replyHandler:
-        {
-            reply in replyStr = reply["pMessage"] as! String
-            print("# ---> recvd reply = \(reply)")
-            print("# --->>> replyStr = \(replyStr)")
-            result = deserializeDenonState(ds_string: replyStr)
-            denonState = deserializeDenonState(ds_string: replyStr)
-            volumeString = denonState.volume
-        }, errorHandler: {(error) in print("# ---> error=\(error)")})
-        print("# watch sent \(msgString) command to the phone")
-        return result
-    }
+//    func sendMessageToPhone(msgString: String) -> MEM_STATE_T {
+//        var result: MEM_STATE_T = MEM_STATE_T()
+//        self.phoneSession.session.sendMessage(["wMessage": msgString], replyHandler:
+//        {
+//            reply in replyStr = reply["pMessage"] as! String
+//            print("# ---> recvd reply = \(reply)")
+//            print("# --->>> replyStr = \(replyStr)")
+//            result = deserializeDenonState(ds_string: replyStr)
+//            denonState = deserializeDenonState(ds_string: replyStr)
+//            volumeString = denonState.volume
+//        }, errorHandler: {(error) in print("# ---> error=\(error)")})
+//        print("# watch sent \(msgString) command to the phone")
+//        return result
+//    }
     func sendMessageToPhone2(msgString: String) -> Void {
-        //var result: MEM_STATE_T = MEM_STATE_T()
         self.phoneSession.session.sendMessage(["wMessage": msgString], replyHandler:
         {
             reply in replyStr = reply["pMessage"] as! String
@@ -102,22 +101,12 @@ struct ContentView: View {
         }, errorHandler: {(error) in print("\(getTimeStamp()) # ---> error=\(error)")})
     }
 
-    
     var body: some View {
         VStack {
             // --- Power button and Volume crown ------------------------------------------
             HStack {
                 // Power button
                 Button(action: {
-//                    if Int(denonState.power) == 1 {
-//                        self.cmdString = "CMD05POWEROFF"
-//                    } else {
-//                        self.cmdString = "CMD04POWERON"
-//                    }
-//                    print("watch sent \(self.cmdString) command to the phone")
-//                    denonState = self.sendMessageToPhone(msgString: self.cmdString)
-//                    print("===++++> denonstate=\(denonState)")
-//                    volumeString = denonState.volume
                     sendMessageToPhone2(msgString: self.powerCommand)
                 },
                    label: {
@@ -127,7 +116,7 @@ struct ContentView: View {
                         Text("OFF").font(.body).fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red).padding()
                     }
                     //self.powerLabel
-                   })
+                })
                 .onChange(of: denonState.power, perform: {value in
                     let ts = getTimeStamp()
                     print("\(ts) Onchange Power button = \(value)")
@@ -143,52 +132,52 @@ struct ContentView: View {
                 //.frame(minWidth: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealWidth: 50, maxWidth: 50, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: 50, maxHeight: 50)
 
                 // Volume value
-                Text("\(volumeString2)")
+                Text("\(volumeString)")
                     .font(.body)
                     .focusable(true)
-                    .digitalCrownRotation($scrollAmount, from: 0, through: 50, sensitivity: DigitalCrownRotationalSensitivity.medium)
+                    .digitalCrownRotation($scrollAmount, from: 0, through: 60, sensitivity: DigitalCrownRotationalSensitivity.medium)
                     .onChange(of: scrollAmount, perform: {value in
                         volumeString = String(Int(value) * -1)
                         //print(String(format: "DC val: %.3f, \(volumeString)", value))
                         relay.send(value)
                     })
                     .onReceive(debouncedPublisher, perform: {value in
-                        let diff = scrollAmountPrev - value
-                        scrollAmountPrev = value
-                        let valueDiff = String(Int(diff))
-                        print("---> ready to send command to RPi \(valueDiff)")
-                        // let volumeDiff = denonState.volume
-                        denonState = self.sendMessageToPhone(msgString: "CMD98GET_STATE")
-                        print(denonState)
+                        print(denonState.volume, value, Int(value))
+                        let diff = (Int(denonState.volume) ?? (-40)) - (Int(value) * (-1))
+                        print(diff)
+                        var cmdCode: Int = 19
+                        var cmdName: String = "DECREASE"
+                        if diff < 0 {
+                            cmdCode = 18
+                            cmdName = "INCREASE"
+                        } else {
+                            cmdCode = 19
+                            cmdName = "DECREASE"
+                        }
+                        let cmd = String(format: "CMD%02d\(cmdName)VOL%02d", cmdCode, abs(diff))
+                        print("\(getTimeStamp()) ---> ready to send command to RPi: \(cmd)")
+                        self.sendMessageToPhone2(msgString: cmd)
+                        self.sendMessageToPhone2(msgString: "CMD98GET_STATE")
+                        //print(denonState)
                     })
-                    // Update the state when application started
-//                    .onAppear(perform: {
-//                        denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
-//                        volumeString = denonState.volume
-//                        print("DEBUG: updating volume text: \(volumeString)")
-//                    })
                     // Update the state when back from background
                     .onChange(of: scene_phase, perform: { value in
                         if value == .active {
-                            print("=====>>>>> app returned from background, in foreground now - request denon state update")
-                            denonState = self.sendMessageToPhone(msgString: "CMD98GET_STATE")
-                            volumeString = denonState.volume
-                            scrollAmount = Double(denonState.volume) ?? -47.0
-                            scrollAmountPrev = Double(denonState.volume) ?? -47.0
+                            print("\(getTimeStamp()) ===> app returned from background, in foreground now - request denon state update")
+                            self.sendMessageToPhone2(msgString: "CMD98GET_STATE")
+//                            scrollAmount = Double(denonState.volume) ?? -47.0
+//                            scrollAmountPrev = Double(denonState.volume) ?? -47.0
                         } else if value == .background {
-                            print("=====>>>>> app is in the background")
+                            print("\(getTimeStamp()) ===> app is in the background")
                         } else if value == .inactive {
-                            print("======>>>> inactive - app on the screen but watch is displaying digital time")
+                            print("\(getTimeStamp()) ===> inactive - app on the screen but watch is displaying digital time")
                         }
                     })
-                    .onChange(of: volumeString, perform: {value in volumeString2 = value})
-//                    .onChange(of: scrollAmount, perform: { value in
-//                        print("...\(round(scrollAmount))")
-//                    })
+                    .onChange(of: denonState.volume, perform: {value in volumeString = value})
             }
             // --- Sound mode buttons 4x ------------------------------------------
             HStack {
-                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD09STANDARD")}, label: {
+                Button(action: {self.sendMessageToPhone2(msgString: "CMD09STANDARD")}, label: {
                     if Int(denonState.stereoMode) == 2 && Int(denonState.power) == 1 {
                         Text("Std").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red).glow(color: .red, radius: 24)
                     } else {
@@ -197,7 +186,7 @@ struct ContentView: View {
                 })//.scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)//.scaledToFit()//.buttonStyle(DefaultButtonStyle())
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD12DIRECT")}, label: {
+                Button(action: {self.sendMessageToPhone2(msgString: "CMD12DIRECT")}, label: {
                     if Int(denonState.stereoMode) == 5 && Int(denonState.power) == 1 {
                         Text("Direct").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.green).glow(color: .green, radius: 24)
                     } else {
@@ -207,7 +196,7 @@ struct ContentView: View {
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
 //            }//.scaledToFit()
-                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD13STEREO")}, label: {
+                Button(action: {self.sendMessageToPhone2(msgString: "CMD13STEREO")}, label: {
                     if Int(denonState.stereoMode) == 6 && Int(denonState.power) == 1 {
                         Text("Stereo").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.blue).glow(color: .blue, radius: 24)
                     } else {
@@ -216,7 +205,7 @@ struct ContentView: View {
                 })//.scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                Button(action: {denonState = self.sendMessageToPhone(msgString: "CMD075CH7CHSTEREO")}, label: {
+                Button(action: {self.sendMessageToPhone2(msgString: "CMD075CH7CHSTEREO")}, label: {
                     if Int(denonState.stereoMode) == 0 && Int(denonState.power) == 1 {
                         Text("5ch7ch").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.purple).glow(color: .purple, radius: 24)
                     } else {
@@ -297,13 +286,7 @@ struct ContentView: View {
         .onAppear(perform: {
             print("\(getTimeStamp()) -----> APPEAR")
             let cmd = "CMD98GET_STATE"
-            //denonState = self.sendMessageToPhone(msgString: cmd)
             self.sendMessageToPhone2(msgString: cmd)
-//            volumeString = denonState.volume
-//            scrollAmountPrev = Double(denonState.volume) ?? -43.0
-//            scrollAmount = Double(Int(denonState.volume) ?? -44)
-//            print("watch sent \(cmd) command to the phone")
-//            print("denonState=\(denonState), scroolAmount=\(scrollAmount)")
         })
     }
 }
