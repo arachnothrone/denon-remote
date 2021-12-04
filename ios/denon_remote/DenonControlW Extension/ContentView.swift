@@ -173,7 +173,7 @@ struct ContentView: View {
                             print("\(getTimeStamp()) ===> inactive - app on the screen but watch is displaying digital time")
                         }
                     })
-                    .onChange(of: denonState.volume, perform: {value in volumeString = value})
+                    .onChange(of: denonState.volume, perform: {value in volumeString = value; print("Updating vol to \(value)")})
             }
             // --- Sound mode buttons 4x ------------------------------------------
             HStack {
