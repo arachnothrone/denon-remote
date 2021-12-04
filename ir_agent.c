@@ -279,9 +279,11 @@ int main(int argc, char **argv)
         SerializeDenonState(&denonState, replBuf);
         //sprintf(replBuf, "Volume: %d", denonState.volume);
         sendto(sockfd, replBuf, strlen(replBuf), MSG_CONFIRM, (const struct sockaddr *) &clientAddr, len);
-        printf("%s Response sent: power=%d, vol=%d, mode=%d, input=%d, mute=%d, dimmer=%d\n", getTimeStamp(), 
+        printf("%s Response sent: power=%d, vol=%d, mode=%d, input=%d, mute=%d, dimmer=%d [%s:%0d]\n", getTimeStamp(), 
             denonState.power, denonState.volume, denonState.stereoMode, 
-            denonState.input, denonState.mute, denonState.dimmer); 
+            denonState.input, denonState.mute, denonState.dimmer, 
+            inet_ntop(AF_INET, &clientAddr.sin_addr.s_addr, clientAddrString, sizeof(clientAddrString)), 
+            ntohs(clientAddr.sin_port));
     }
           
     return 0;
