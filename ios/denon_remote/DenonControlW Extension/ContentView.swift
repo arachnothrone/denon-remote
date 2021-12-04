@@ -21,7 +21,7 @@ struct ContentView: View {
     @State var imageIndex: Int8 = 0
     @State var dimmerButtonSize: CGFloat = 20
     @State var scrollAmount = 40.0
-    @State var scrollAmountPrev = 40.0
+//    @State var scrollAmountPrev = 40.0
     
     @ObservedObject var phoneSession = WatchPhoneConnect()
     
@@ -157,7 +157,7 @@ struct ContentView: View {
                         let cmd = String(format: "CMD%02d\(cmdName)VOL%02d", cmdCode, abs(diff))
                         print("\(getTimeStamp()) ---> ready to send command to RPi: \(cmd)")
                         self.sendMessageToPhone2(msgString: cmd)
-                        self.sendMessageToPhone2(msgString: "CMD98GET_STATE")
+                        //self.sendMessageToPhone2(msgString: "CMD98GET_STATE")
                         //print(denonState)
                     })
                     // Update the state when back from background
