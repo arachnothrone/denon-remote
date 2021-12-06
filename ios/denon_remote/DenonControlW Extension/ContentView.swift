@@ -13,16 +13,13 @@ struct ContentView: View {
     @Environment(\.scenePhase) var scene_phase
     @State var denonState = MEM_STATE_T()
     @State var powerCommand = "CMD04POWERON"
-    //@State var powerLabel: some View
     @State var volumeString = "unknown"
-    @State var volumeString2 = ""
     @State var muteSpeakerImg = "speaker"
     @State var dimmerImage: Int8 = 0
     @State var imageIndex: Int8 = 0
     @State var dimmerButtonSize: CGFloat = 20
-    @State var scrollAmount = 40.0
-//    @State var scrollAmountPrev = 40.0
-    
+    @State var scrollAmount = 0.0
+
     @ObservedObject var phoneSession = WatchPhoneConnect()
     
     @State var phoneConnected: Bool = false
@@ -30,12 +27,7 @@ struct ContentView: View {
     @State var cmdString = ""
     @State var msg2reply = "*"
     @State var replyStr: String = ""
-    
-    // =================================
-//    @State var date: Date = Date()
-//    @State var scroll: Double = 0.0
-//    @State var scrolling: Bool = false
-    
+        
     private let relay = PassthroughSubject<Double, Never>()
     private let debouncedPublisher: AnyPublisher<Double, Never>
     init() {
@@ -45,59 +37,13 @@ struct ContentView: View {
             .eraseToAnyPublisher()
     }
     
-//    var body: some View {
-//        VStack {
-//            Text("\(date)")
-//                .focusable(true)
-//                .opacity(scrolling ? 1 : 0)
-//                .digitalCrownRotation($scroll, from: 0, through: 365, by: 1, sensitivity: .low, isContinuous: false, isHapticFeedbackEnabled: true)
-//                .onChange(of: scroll) { value in
-//                    withAnimation {
-//                        scrolling = true
-//                    }
-//                    relay.send(value)
-//                    print("+++ \(value)")
-//                    date = Calendar.current.date(byAdding: .day, value: Int(value), to: Date())!
-//                }
-//                .onReceive(
-//                    debouncedPublisher,
-//                    perform: { value in
-//                        withAnimation {
-//                            scrolling = false
-//                        }
-//                        print("--------->>>>>> \(value)")
-//                    }
-//                )
-//        }
-////        .onAppear {
-////            self.date = Date()
-////        }
-//    }
-    // ============================
-    
-//    func sendMessageToPhone(msgString: String) -> MEM_STATE_T {
-//        var result: MEM_STATE_T = MEM_STATE_T()
-//        self.phoneSession.session.sendMessage(["wMessage": msgString], replyHandler:
-//        {
-//            reply in replyStr = reply["pMessage"] as! String
-//            print("# ---> recvd reply = \(reply)")
-//            print("# --->>> replyStr = \(replyStr)")
-//            result = deserializeDenonState(ds_string: replyStr)
-//            denonState = deserializeDenonState(ds_string: replyStr)
-//            volumeString = denonState.volume
-//        }, errorHandler: {(error) in print("# ---> error=\(error)")})
-//        print("# watch sent \(msgString) command to the phone")
-//        return result
-//    }
-    func sendMessageToPhone2(msgString: String) -> Void {
+    func sendMessageToPhone(msgString: String) -> Void {
         self.phoneSession.session.sendMessage(["wMessage": msgString], replyHandler:
         {
             reply in replyStr = reply["pMessage"] as! String
             print("\(getTimeStamp()) # ---> recvd reply = \(reply)")
             print("\(getTimeStamp()) # --->>> replyStr = \(replyStr)")
-            //result = deserializeDenonState(ds_string: replyStr)
             self.denonState = deserializeDenonState(ds_string: replyStr)
-            // self.volumeString = denonState.volume
         }, errorHandler: {(error) in print("\(getTimeStamp()) # ---> error=\(error)")})
     }
 
@@ -107,7 +53,7 @@ struct ContentView: View {
             HStack {
                 // Power button
                 Button(action: {
-                    sendMessageToPhone2(msgString: self.powerCommand)
+                    sendMessageToPhone(msgString: self.powerCommand)
                 },
                    label: {
                     if Int(denonState.power) == 1 {
@@ -138,7 +84,6 @@ struct ContentView: View {
                     .digitalCrownRotation($scrollAmount, from: 0, through: 60, sensitivity: DigitalCrownRotationalSensitivity.medium)
                     .onChange(of: scrollAmount, perform: {value in
                         volumeString = String(Int(value) * -1)
-                        //print(String(format: "DC val: %.3f, \(volumeString)", value))
                         relay.send(value)
                     })
                     .onReceive(debouncedPublisher, perform: {value in
@@ -156,7 +101,7 @@ struct ContentView: View {
                         }
                         let cmd = String(format: "CMD%02d\(cmdName)VOL%02d", cmdCode, abs(diff))
                         print("\(getTimeStamp()) ---> ready to send command to RPi: \(cmd)")
-                        self.sendMessageToPhone2(msgString: cmd)
+                        self.sendMessageToPhone(msgString: cmd)
                         //self.sendMessageToPhone2(msgString: "CMD98GET_STATE")
                         //print(denonState)
                     })
@@ -164,9 +109,7 @@ struct ContentView: View {
                     .onChange(of: scene_phase, perform: { value in
                         if value == .active {
                             print("\(getTimeStamp()) ===> app returned from background, in foreground now - request denon state update")
-                            self.sendMessageToPhone2(msgString: "CMD98GET_STATE")
-//                            scrollAmount = Double(denonState.volume) ?? -47.0
-//                            scrollAmountPrev = Double(denonState.volume) ?? -47.0
+                            self.sendMessageToPhone(msgString: "CMD98GET_STATE")
                         } else if value == .background {
                             print("\(getTimeStamp()) ===> app is in the background")
                         } else if value == .inactive {
@@ -177,7 +120,7 @@ struct ContentView: View {
             }
             // --- Sound mode buttons 4x ------------------------------------------
             HStack {
-                Button(action: {self.sendMessageToPhone2(msgString: "CMD09STANDARD")}, label: {
+                Button(action: {self.sendMessageToPhone(msgString: "CMD09STANDARD")}, label: {
                     if Int(denonState.stereoMode) == 2 && Int(denonState.power) == 1 {
                         Text("Std").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.red).glow(color: .red, radius: 24)
                     } else {
@@ -186,7 +129,7 @@ struct ContentView: View {
                 })//.scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)//.scaledToFit()//.buttonStyle(DefaultButtonStyle())
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                Button(action: {self.sendMessageToPhone2(msgString: "CMD12DIRECT")}, label: {
+                Button(action: {self.sendMessageToPhone(msgString: "CMD12DIRECT")}, label: {
                     if Int(denonState.stereoMode) == 5 && Int(denonState.power) == 1 {
                         Text("Direct").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.green).glow(color: .green, radius: 24)
                     } else {
@@ -196,7 +139,7 @@ struct ContentView: View {
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
 //            }//.scaledToFit()
-                Button(action: {self.sendMessageToPhone2(msgString: "CMD13STEREO")}, label: {
+                Button(action: {self.sendMessageToPhone(msgString: "CMD13STEREO")}, label: {
                     if Int(denonState.stereoMode) == 6 && Int(denonState.power) == 1 {
                         Text("Stereo").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.blue).glow(color: .blue, radius: 24)
                     } else {
@@ -205,7 +148,7 @@ struct ContentView: View {
                 })//.scaleEffect(CGSize(width: 0.7, height: 0.7), anchor: .center)
                 .buttonStyle(PlainButtonStyle())
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                Button(action: {self.sendMessageToPhone2(msgString: "CMD075CH7CHSTEREO")}, label: {
+                Button(action: {self.sendMessageToPhone(msgString: "CMD075CH7CHSTEREO")}, label: {
                     if Int(denonState.stereoMode) == 0 && Int(denonState.power) == 1 {
                         Text("5ch7ch").font(.custom("Arial", size: 12)).fontWeight(.medium).foregroundColor(.purple).glow(color: .purple, radius: 24)
                     } else {
@@ -218,7 +161,7 @@ struct ContentView: View {
             
             // Mute, dimmer, calibration buttons
             HStack {
-                Button(action: {self.sendMessageToPhone2(msgString: "CMD06MUTE")
+                Button(action: {self.sendMessageToPhone(msgString: "CMD06MUTE")
 //                    if Int(denonState.mute) == 1 {
 //                        muteSpeakerImg = "speaker.slash"
 //                    } else {
@@ -251,7 +194,7 @@ struct ContentView: View {
                 })
 
                 // Mute button
-                Button(action: {self.sendMessageToPhone2(msgString: "CMD01DIMMER")
+                Button(action: {self.sendMessageToPhone(msgString: "CMD01DIMMER")
                                 //dimmerImage += 1
                     imageIndex = Int8(denonState.dimmer) ?? 0 // dimmerImage % 4
                                 print("\(getTimeStamp()) Dimmer=\(denonState.dimmer) imageIndex=\(imageIndex)")
@@ -276,7 +219,7 @@ struct ContentView: View {
                 })
 
                 // Calibration button
-                Button(action: {self.sendMessageToPhone2(msgString: "CMD99CALIBRATE_VOL"); volumeString = denonState.volume}) {
+                Button(action: {self.sendMessageToPhone(msgString: "CMD99CALIBRATE_VOL"); volumeString = denonState.volume}) {
                     Image(systemName: "gearshape").foregroundColor(.red).font(Font.body.weight(.light)).padding()
                         //.frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
                 }
@@ -286,7 +229,7 @@ struct ContentView: View {
         .onAppear(perform: {
             print("\(getTimeStamp()) -----> APPEAR")
             let cmd = "CMD98GET_STATE"
-            self.sendMessageToPhone2(msgString: cmd)
+            self.sendMessageToPhone(msgString: cmd)
         })
     }
 }
