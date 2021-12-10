@@ -162,11 +162,6 @@ struct ContentView: View {
             // Mute, dimmer, calibration buttons
             HStack {
                 Button(action: {self.sendMessageToPhone(msgString: "CMD06MUTE")
-//                    if Int(denonState.mute) == 1 {
-//                        muteSpeakerImg = "speaker.slash"
-//                    } else {
-//                        muteSpeakerImg = "speaker"
-//                    }
                 }, label: {
                     HStack {
                         //Text("Mute").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -176,14 +171,6 @@ struct ContentView: View {
                     .padding()
                     .foregroundColor(.gray)
                     .background(Color.clear)
-                    //.border(Color.purple, width: 5)
-                    //.cornerRadius(20)
-                    //.padding()
-                    //.border(Color.purple, width: 5)
-//                    .overlay(
-//                            RoundedRectangle(cornerRadius: 40)
-//                                .stroke(Color.gray, lineWidth: 5)
-//                        )
                 })
                 .onChange(of: denonState.mute, perform: {mute in
                     if Int(mute) == 1 {
@@ -195,7 +182,6 @@ struct ContentView: View {
 
                 // Mute button
                 Button(action: {self.sendMessageToPhone(msgString: "CMD01DIMMER")
-                                //dimmerImage += 1
                     imageIndex = Int8(denonState.dimmer) ?? 0 // dimmerImage % 4
                                 print("\(getTimeStamp()) Dimmer=\(denonState.dimmer) imageIndex=\(imageIndex)")
                 }, label: {

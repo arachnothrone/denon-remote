@@ -21,14 +21,6 @@ struct ContentView: View {
 
     var body: some View {
         
-//        Text("Denon Remote")
-//            .font(.title)
-//            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-//            .padding()
-//            .background(Color.purple)
-//            .foregroundColor(.white)
-//            .padding(10)
-//            .border(Color.purple, width: 5)
         VStack(alignment: .center, spacing: 5) {
             Text("Denon Remote")
                 .font(.title)
@@ -52,13 +44,7 @@ struct ContentView: View {
                         denonState = sendCommand(cmd: "CMD98GET_STATE", rxTO: 1)
                         volumeString = denonState.volume
                     })
-                
-//                if self.watchSession.session.isReachable {
-//                    Image(systemName: "applewatch")
-//                } else {
-//                    Image(systemName: "applewatch.slash")
-//                }
-                
+                                
                 Button(action: {watchConnected = self.watchSession.session.isReachable; print("DBG: watchConnected=\(watchConnected)")}, label: {
                     if watchConnected == true {
                         Image(systemName: "applewatch")
@@ -71,9 +57,7 @@ struct ContentView: View {
                                 self.watchSession.session.sendMessage(["message" : self.messageText], replyHandler: nil) { (error) in
                                     print(error.localizedDescription)
                                 }
-                            }) {
-                            Text("Send Message")
-                            }
+                            }) {Text("Send Message")}
                 Text(self.watchSession.messageText)
             }
             
@@ -106,9 +90,7 @@ struct ContentView: View {
                     .background(Color.yellow)
                     .cornerRadius(40)
                 })
-//                Button("vol.down") {
-//                    ss = udpSendString(textToSend: "CMD03VOLUMEDOWN", address: "192.168.2.101", port: 19001)
-//                }
+
                 Button(action: {denonState = sendCommand(cmd: "CMD02VOLUMEUP__", rxTO: 1); volumeString = denonState.volume}, label: {
                     HStack {
                         Image(systemName: "arrowtriangle.up.fill").foregroundColor(.orange).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -155,7 +137,6 @@ struct ContentView: View {
                 
             }
             
-            //Text(" ").font(.body)
             Spacer().frame(height: 10)
             Button(action: {denonState = sendCommand(cmd: "CMD06MUTE", rxTO: 1)
                 if Int(denonState.mute) == 0 {
@@ -168,14 +149,10 @@ struct ContentView: View {
                     Text("Mute").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                     Image(systemName: muteSpeakerImg).background(Color.clear).foregroundColor(.blue).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
                 }
-                //.border(Color.purple, width: 5)
                 .padding()
                 .foregroundColor(.gray)
                 .background(Color.clear)
-                //.border(Color.purple, width: 5)
                 .cornerRadius(20)
-                //.padding()
-                //.border(Color.purple, width: 5)
                 .overlay(
                         RoundedRectangle(cornerRadius: 40)
                             .stroke(Color.gray, lineWidth: 5)
@@ -207,35 +184,16 @@ struct ContentView: View {
                             Image(systemName: "rays").foregroundColor(.green).font(Font.title.weight(.heavy)).padding()
                                 .frame(minWidth: dimmerButtonSize, maxWidth: dimmerButtonSize, minHeight: dimmerButtonSize, maxHeight: dimmerButtonSize)
                         }
-                        //Image(systemName: "rays").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).padding()
-                        
                     }
                     .cornerRadius(40)
                 }
                 
                 Button(action: {denonState = sendCommand(cmd: "CMD99CALIBRATE_VOL", rxTO: 25); volumeString = denonState.volume}) {
                     Image(systemName: "gearshape").foregroundColor(.red).font(Font.title.weight(.light)).padding()
-                        //.frame(minWidth: muteButtonSize, maxWidth: muteButtonSize, minHeight: muteButtonSize, maxHeight: muteButtonSize)
                 }.cornerRadius(40)
             }
-//            Button(action: {udpSendString(textToSend: "CMD01DIMMER", address: "192.168.2.101", port: 19001)}) {
-//                HStack {
-//                    //Text("Dimmer").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
-//                    Image(systemName: "rays").foregroundColor(.green).font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/).padding()
-//                }
-//                .cornerRadius(40)
-//
-//            }
-            
-//            HStack {
-//                Button(action: {udpSendString(textToSend: "CMD99CALIBRATE_VOL", address: "192.168.2.101", port: 19001)}) {
-//                    ///*@START_MENU_TOKEN@*/Text("Button")/*@END_MENU_TOKEN@*/
-//                    Image(systemName: "gearshape")
-//                }
-//            }
         }
     }
-    //.onAppear {volumeString = udpSendString(textToSend: "CMD98GET_STATE", address: "192.168.2.101", port: 19001, rxTimeoutSec: 1)}
 }
 
 struct ContentView_Previews: PreviewProvider {
