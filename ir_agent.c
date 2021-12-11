@@ -15,7 +15,8 @@
 
 #define RX_PORT         (19001)
 #define RX_BUFFER_SIZE  (1024)
-#define CMD_ARG_SIZE        (2)
+#define CMD_ARG_SIZE    (2)
+#define VOL_MAX_LIMIT   (-15)
 
 typedef enum
 {
@@ -371,10 +372,18 @@ void SetVolumeTo(MEM_STATE_T* pDenonState, int value)
 
     for (i = 0; i < deltaVol; i++)
     {
-        system(command);
+        if (pDenonState->volume >= VOL_MAX_LIMIT)
+        {
+            printf("SetVolumeTo: Maximum reached (%d dB)\n", VOL_MAX_LIMIT);
+            break;
+        }
+        else
+        {
+            system(command);
 
-        // 100 ms pause between two steps
-        nanosleep(&ts, NULL);
+            // 100 ms pause between two steps
+            nanosleep(&ts, NULL);
+        }
     }
 
     pDenonState->volume = value;
