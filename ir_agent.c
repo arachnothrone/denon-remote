@@ -82,7 +82,7 @@ int main(int argc, char **argv)
     int sockfd;
     char buffer[RX_BUFFER_SIZE];
     char cmdArg[CMD_ARG_SIZE];
-    char* reply_ok = "OK";
+    // char* reply_ok = "OK";
     struct sockaddr_in serverAddr, clientAddr;
     // struct timeval timestamp;
     MEM_STATE_T denonState;
@@ -111,7 +111,7 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-    int len, n;
+    unsigned int len, n;
   
     len = sizeof(clientAddr);
   
@@ -353,17 +353,17 @@ void SetMinimumVolume(MEM_STATE_T* pDenonState)
 
 void SetVolumeTo(MEM_STATE_T* pDenonState, int value)
 {
-    int i, deltaVol, direction;
-    char* command = "";
+    int i, deltaVol;
+    char command[50];
     struct timespec ts = {.tv_sec = 0, .tv_nsec = 12e7};         // 120 ms delay
     
     if (pDenonState->volume > value)
     {
-        command = "irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEDOWN";
+        strcpy(command, "irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEDOWN");
     }
     else
     {
-        command = "irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEUP";
+        strcpy(command, "irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEUP");
     }
 
     deltaVol = abs(abs(pDenonState->volume) - abs(value));
@@ -380,6 +380,7 @@ void SetVolumeTo(MEM_STATE_T* pDenonState, int value)
         else
         {
             system(command);
+            printf("Executing: %s (%d)\n", command, strlen(command));
 
             // 100 ms pause between two steps
             nanosleep(&ts, NULL);
