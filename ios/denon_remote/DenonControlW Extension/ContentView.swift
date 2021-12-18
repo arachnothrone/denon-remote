@@ -81,14 +81,14 @@ struct ContentView: View {
                 Text("\(volumeString)")
                     .font(.body)
                     .focusable(true)
-                    .digitalCrownRotation($scrollAmount, from: 0, through: 60, sensitivity: DigitalCrownRotationalSensitivity.medium)
+                    .digitalCrownRotation($scrollAmount, from: 10, through: 60, sensitivity: DigitalCrownRotationalSensitivity.medium)
                     .onChange(of: scrollAmount, perform: {value in
                         volumeString = String(Int(value) * -1)
                         relay.send(value)
                     })
                     .onReceive(debouncedPublisher, perform: {value in
                         print(denonState.volume, value, Int(value))
-                        let diff = (Int(denonState.volume) ?? (-40)) - (Int(value) * (-1))
+                        var diff = (Int(denonState.volume) ?? (-40)) - (Int(value) * (-1))
                         print(diff)
                         var cmdCode: Int = 19
                         var cmdName: String = "DECREASE"
@@ -99,11 +99,13 @@ struct ContentView: View {
                             cmdCode = 19
                             cmdName = "DECREASE"
                         }
-                        let cmd = String(format: "CMD%02d\(cmdName)VOL%02d", cmdCode, abs(diff))
+                        diff = abs(diff)
+                        if diff > 6 {
+                            diff = 6
+                        }
+                        let cmd = String(format: "CMD%02d\(cmdName)VOL%02d", cmdCode, diff)
                         print("\(getTimeStamp()) ---> ready to send command to RPi: \(cmd)")
                         self.sendMessageToPhone(msgString: cmd)
-                        //self.sendMessageToPhone2(msgString: "CMD98GET_STATE")
-                        //print(denonState)
                     })
                     // Update the state when back from background
                     .onChange(of: scene_phase, perform: { value in
