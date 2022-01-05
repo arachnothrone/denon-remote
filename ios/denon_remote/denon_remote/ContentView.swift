@@ -80,6 +80,17 @@ struct ContentView: View {
                 })
             }
             HStack {
+                Button(action: {
+                    denonState = sendCommand(cmd: "CMD19DECREASEVOL03", rxTO: 2);
+                    volumeString = denonState.volume
+                }, label: {
+                    Text("-3").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.red)
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.yellow)
+                        .cornerRadius(40)
+                })
+                
                 Button(action: {denonState = sendCommand(cmd: "CMD03VOLUMEDOWN", rxTO: 1); volumeString = denonState.volume}, label: {
                     HStack {
                         Text("Down").font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -101,8 +112,20 @@ struct ContentView: View {
                     .background(Color.red)
                     .cornerRadius(40)
                 })
+                
+                Button(action: {
+                    denonState = sendCommand(cmd: "CMD18INCREASEVOL03", rxTO: 2);
+                    volumeString = denonState.volume
+                }, label: {
+                    Text("+3").fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/).foregroundColor(.white)
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.red)
+                        .cornerRadius(40)
+                })
             }
             
+            //Divider()
             Text(" ").font(.body)
             Text("-= Stereo Settings =-").foregroundColor(.black)
             HStack {
