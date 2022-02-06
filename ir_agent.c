@@ -69,7 +69,7 @@ STATE_DIM UdpateDimmerState(const MEM_STATE_T* pDenonState);
 STATE_BINARY UpdateMuteState(const MEM_STATE_T* pDenonState);
 void SerializeDenonState(const MEM_STATE_T* pDenonState, char* buffer);
 void DenonStateInit(MEM_STATE_T* pDenonState);
-void SetMinimumVolume(MEM_STATE_T* pDenonState);
+void SetMinimumVolume(MEM_STATE_T* pDenonState, double timeIntervalSec);
 void SetVolumeTo(MEM_STATE_T* pDenonState, int value);
 
 
@@ -268,8 +268,10 @@ int main(int argc, char **argv)
                 break;
             case 99:
                 /* CALIBRATE_VOL */
-                SetMinimumVolume(&denonState);
-                SetVolumeTo(&denonState, -40);
+                SetMinimumVolume(&denonState, 3.75); // 3.75 sec - time interval of sending continuous volume down command:
+                                                    // ~ 75 ms / 1 dB, lower bound = -70 dB => from -20 to -70 (50 dB): 3750 ms
+                SetVolumeTo(&denonState, -40);      // set calibrated level to -40 dB, from -70 it takes ~9 sec
+                                                    // Calibration cycle takes ~14 sec
                 break;
             default:
                 break;
@@ -339,13 +341,15 @@ void DenonStateInit(MEM_STATE_T* pDenonState)
     pDenonState->dimmer = LEVEL0;
 }
 
-void SetMinimumVolume(MEM_STATE_T* pDenonState)
+void SetMinimumVolume(MEM_STATE_T* pDenonState, double timeIntervalSec)
 {
-    struct timespec ts = {.tv_sec = 7, .tv_nsec = 5e8};         // for 4.5 sec delay
+    //struct timespec ts = {.tv_sec = 7, .tv_nsec = 5e8};         // for 4.5 sec delay
+    struct timespec ts = {.tv_sec = (int) timeIntervalSec, .tv_nsec = (timeIntervalSec - ((int) timeIntervalSec)) * 1e9};
     system("irsend SEND_START Denon_RC-978 KEY_VOLUMEDOWN");
     nanosleep(&ts, NULL);
     system("irsend SEND_STOP Denon_RC-978 KEY_VOLUMEDOWN");
-    ts.tv_sec = 1;
+    ts.tv_sec = 0;
+    ts.tv_nsec = 5e8;
     nanosleep(&ts, NULL);
     system("irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEUP");
     pDenonState->volume = -70;
@@ -355,7 +359,7 @@ void SetVolumeTo(MEM_STATE_T* pDenonState, int value)
 {
     int i, deltaVol;
     char command[50];
-    struct timespec ts = {.tv_sec = 0, .tv_nsec = 12e7};         // 120 ms delay
+    struct timespec ts = {.tv_sec = 0, .tv_nsec = 80e6};         // 80 ms (was 120 ms = 12e7) delay
     
     if (pDenonState->volume > value)
     {
