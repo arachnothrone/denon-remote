@@ -10,6 +10,7 @@
  */
 
 #include <iostream>
+#include "rpi_ir_agent.h"
 
 using namespace std;
 
@@ -34,4 +35,3 @@ class Denon {
     private:
         //
 };
-
