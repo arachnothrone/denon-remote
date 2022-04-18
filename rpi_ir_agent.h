@@ -1,5 +1,9 @@
 #pragma once
 
+#define RX_PORT         (19001)
+#define RX_BUFFER_SIZE  (1024)
+#define CMD_ARG_SIZE    (2)
+#define VOL_MAX_LIMIT   (-15)
 
 typedef enum
 {
@@ -43,3 +47,11 @@ typedef struct MEM_STATE_T_TAG
     STATE_DIM       dimmer;
     STATE_INPUT     input;
 } MEM_STATE_T;
+
+struct RX_MSG_T {
+    ;
+};
+
+struct TX_MSG_T {
+    ;
+};

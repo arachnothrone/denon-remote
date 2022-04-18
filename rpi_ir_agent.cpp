@@ -14,24 +14,20 @@
 
 using namespace std;
 
-class RequestMessage {
-    private:
-        /* data */
-    public:
-        RequestMessage (/* args */);
-        ~RequestMessage ();
-};
-
-class ResponseMessage {
-    public:
-        //
-    private:
-        //
-};
 
 class Denon {
-    public:
-        //
-    private:
-        //
+public:
+private:
+    MEM_STATE_T _state;
+};
+
+class IRServer {
+public:
+    bool ReceiveMessage();
+    bool SendMessage();
+    bool SendIrCommand();
+private:
+    RX_MSG_T _rxMessage;
+    TX_MSG_T _txMessage;
+    char rawMessage[RX_BUFFER_SIZE];
 };
