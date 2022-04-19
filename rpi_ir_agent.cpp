@@ -10,6 +10,10 @@
  */
 
 #include <iostream>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include "rpi_ir_agent.h"
 
 using namespace std;
@@ -23,6 +27,9 @@ private:
 
 class IRServer {
 public:
+    IRServer() {
+        ;
+    }
     bool ReceiveMessage();
     bool SendMessage();
     bool SendIrCommand();
@@ -31,3 +38,21 @@ private:
     TX_MSG_T _txMessage;
     char rawMessage[RX_BUFFER_SIZE];
 };
+
+class SocketConnection {
+public:
+    SocketConnection() {
+        ;
+    }
+    void Bind();
+    void Recv();
+    void Send();
+private:
+    int _sockfd;
+    struct sockaddr_in _serverAddr;
+    struct sockaddr_in _clientAddr;
+};
+
+int main() {
+    return 0;
+}
