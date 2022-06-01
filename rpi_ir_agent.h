@@ -1,9 +1,31 @@
 #pragma once
 
+#include <string>
+
 #define RX_PORT         (19001)
 #define RX_BUFFER_SIZE  (1024)
 #define CMD_ARG_SIZE    (2)
 #define VOL_MAX_LIMIT   (-15)
+
+#ifdef __APPLE__
+//    MSG_EOR         0x8             /* data completes record */ 
+// or MSG_EOF         0x100           /* data completes connection */
+#define SOCK_SND_FLAG MSG_EOR
+#else
+// MSG_CONFIRM
+#define SOCK_SND_FLAG (0x800)
+#endif
+
+// RX Message
+#define RXMSGPREF        0
+#define RXMSGPREFSZ        3
+#define RXMSGCMDCODE     3
+#define RXMSGCMDCODESZ     2
+#define RXMSGCMDDESCR    5
+#define RXMSGCMDDESCRSZ    11
+#define RXMSGCMDPARVAL   16
+#define RXMSGCMDPARVALSZ   2
+
 
 typedef enum
 {
@@ -49,9 +71,14 @@ typedef struct MEM_STATE_T_TAG
 } MEM_STATE_T;
 
 struct RX_MSG_T {
-    ;
+    std::string msgPrefix;
+    int         cmdCode;
+    std::string cmdDescription;
+    uint8_t     cmdParamValue;
 };
 
 struct TX_MSG_T {
     ;
 };
+
+void getTimeStamp(char* pTimeStamp);

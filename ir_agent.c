@@ -17,6 +17,7 @@
 #define RX_BUFFER_SIZE  (1024)
 #define CMD_ARG_SIZE    (2)
 #define VOL_MAX_LIMIT   (-15)
+#define TS_BUF_SIZE     (19)
 
 typedef enum
 {
@@ -64,7 +65,7 @@ typedef struct MEM_STATE_T_TAG
 /**
  * Declarations
  */
-char* getTimeStamp(void);
+void getTimeStamp(char* pTimeStamp, int buffSize);
 STATE_DIM UdpateDimmerState(const MEM_STATE_T* pDenonState);
 STATE_BINARY UpdateMuteState(const MEM_STATE_T* pDenonState);
 void SerializeDenonState(const MEM_STATE_T* pDenonState, char* buffer);
@@ -78,16 +79,12 @@ void SetVolumeTo(MEM_STATE_T* pDenonState, int value);
  */
 int main(int argc, char **argv)
 {
-    // CONTROL_COMMAND_T receivedCommand;
     int sockfd;
     char buffer[RX_BUFFER_SIZE];
     char cmdArg[CMD_ARG_SIZE];
-    // char* reply_ok = "OK";
     struct sockaddr_in serverAddr, clientAddr;
-    // struct timeval timestamp;
     MEM_STATE_T denonState;
     int deltaVol = 0;
-
 
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
@@ -105,25 +102,25 @@ int main(int argc, char **argv)
     serverAddr.sin_addr.s_addr = INADDR_ANY;
     serverAddr.sin_port = htons(RX_PORT);
 
-    if (bind(sockfd, (const struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
+    if (bind(sockfd, (const struct sockaddr *) &serverAddr, sizeof(serverAddr)) < 0)
     {
         perror("UDP port binding failed");
         exit(EXIT_FAILURE);
     }
 
     unsigned int len, n;
-  
     len = sizeof(clientAddr);
   
     /**
      * Main application loop
      */
-    char* time_stmp;
+    char time_stmp[] = "0000-00-00 00:00:00";
     
-    while(1)
+    int runServer = 1;
+    while(runServer)
     {
         // Receive command into a buffer, e.g.:
-        // CMDxxDESCRyy
+        // CMDxxDESCR......yy
         // CMD      - mandatory prefix
         // xx       - command code (required)
         // DESCR    - command description (required)
@@ -132,38 +129,25 @@ int main(int argc, char **argv)
         buffer[n] = '\0';
         char clientAddrString[INET_ADDRSTRLEN];
         
-        time_stmp = getTimeStamp();
-        
-        if (time_stmp == NULL)
-        {
-            printf("Can't allocate timestamp buffer!!!");
-        }
-        else
-        {
-            printf("%s Received request: %s [%s:%0d]\n", time_stmp, 
-                buffer, inet_ntop(AF_INET, &clientAddr.sin_addr.s_addr, clientAddrString, sizeof(clientAddrString)), ntohs(clientAddr.sin_port));
-            free(time_stmp);
-        }
+        getTimeStamp(time_stmp, sizeof(time_stmp));
+        printf(
+            "%s Received request: %s [%s:%0d]\n", 
+            time_stmp, 
+            buffer, 
+            inet_ntop(
+                AF_INET, 
+                &clientAddr.sin_addr.s_addr, 
+                clientAddrString, 
+                sizeof(clientAddrString)
+                ), 
+            ntohs(clientAddr.sin_port)
+            );
 
         char rcvCmd;
-        //rcvCmd = atoi(&buffer[3]) * 10 + atoi(&buffer[4]);
-        // int i;
-        // for (i = 0; i < n; i++)
-        // {
-        //     printf(": %d - %d (%c), addr=%d\n", i, buffer[i], buffer[i], buffer + i * sizeof(int));
-        // }
         char sym1, sym2;
         sym1 = buffer[3];
         sym2 = buffer[4];
-        // printf("===: %c, %c\n", sym1, sym2);
-        // printf("===: %d, %d\n", sym1, sym2);
-        // printf("===: %d, %d\n", atoi(&sym1), atoi(&sym2));
-        // printf("===: %d, %d\n", (int)sym1 - 48, (int)sym2 - 48);
-        // rcvCmd = atoi(&buffer[4]) + atoi(&buffer[3]);
-        // char z = '0';
-        // printf("atoi 0: %d", atoi(&z));
         rcvCmd = (int)(sym1-48) * 10 + (int)(sym2-48);
-        //printf("Decoded command: %d\n", rcvCmd);
 
         switch (rcvCmd)
         {
@@ -266,6 +250,9 @@ int main(int argc, char **argv)
                 deltaVol = atoi(cmdArg);
                 SetVolumeTo(&denonState, denonState.volume - deltaVol);
                 break;
+            // case 40:
+            //     runServer = 0;
+            //     break;
             case 99:
                 /* CALIBRATE_VOL */
                 SetMinimumVolume(&denonState, 3.75); // 3.75 sec - time interval of sending continuous volume down command:
@@ -277,16 +264,28 @@ int main(int argc, char **argv)
                 break;
         }
         
-        // sendto(sockfd, (const char *)reply_ok, strlen(reply_ok), MSG_CONFIRM, (const struct sockaddr *) &clientAddr, len);
         char replBuf[sizeof(denonState)];
         SerializeDenonState(&denonState, replBuf);
-        //sprintf(replBuf, "Volume: %d", denonState.volume);
+        // sendto(sockfd, replBuf, strlen(replBuf), MSG_EOR, (const struct sockaddr *) &clientAddr, len);
         sendto(sockfd, replBuf, strlen(replBuf), MSG_CONFIRM, (const struct sockaddr *) &clientAddr, len);
-        printf("%s Response sent: power=%d, vol=%d, mode=%d, input=%d, mute=%d, dimmer=%d [%s:%0d]\n", getTimeStamp(), 
-            denonState.power, denonState.volume, denonState.stereoMode, 
-            denonState.input, denonState.mute, denonState.dimmer, 
-            inet_ntop(AF_INET, &clientAddr.sin_addr.s_addr, clientAddrString, sizeof(clientAddrString)), 
-            ntohs(clientAddr.sin_port));
+        getTimeStamp(time_stmp, sizeof(time_stmp));
+        printf(
+            "%s Response sent: power=%d, vol=%d, mode=%d, input=%d, mute=%d, dimmer=%d [%s:%0d]\n", 
+            time_stmp, 
+            denonState.power, 
+            denonState.volume, 
+            denonState.stereoMode, 
+            denonState.input, 
+            denonState.mute, 
+            denonState.dimmer, 
+            inet_ntop(
+                AF_INET, 
+                &clientAddr.sin_addr.s_addr, 
+                clientAddrString, 
+                sizeof(clientAddrString)
+                ), 
+            ntohs(clientAddr.sin_port)
+            );
     }
           
     return 0;
@@ -398,18 +397,24 @@ void SetVolumeTo(MEM_STATE_T* pDenonState, int value)
 /**
  * @brief Get the Time Stamp
  * 
- * @return char* 
+ * @return void
  */
-char* getTimeStamp(void)
+void getTimeStamp(char* pTimeStamp, int buffSize)
 {
-    char* pTimeStamp;
-    time_t currentTime;
-    struct tm* tm;
+    if (buffSize >= TS_BUF_SIZE) {
+        time_t currentTime;
+        struct tm* tm;
 
-    currentTime = time(NULL);
-    tm = localtime(&currentTime);
-    pTimeStamp = (char*)malloc(sizeof(char) * 16);
-    sprintf(pTimeStamp, "%04d-%02d-%02d %02d:%02d:%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec);
-
-    return pTimeStamp;
+        currentTime = time(NULL);
+        tm = localtime(&currentTime);
+        sprintf(
+            pTimeStamp, 
+            "%04d-%02d-%02d %02d:%02d:%02d", 
+            tm->tm_year + 1900, 
+            tm->tm_mon + 1, 
+            tm->tm_mday, 
+            tm->tm_hour, 
+            tm->tm_min, 
+            tm->tm_sec);
+    }
 }
