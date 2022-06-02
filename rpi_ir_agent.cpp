@@ -23,7 +23,14 @@ using namespace std;
 
 class Denon {
 public:
-    Denon() {};
+    Denon() {
+        _state.volume = -40;
+        _state.stereoMode = STANDARD;
+        _state.power = OFF;
+        _state.mute = OFF;
+        _state.dimmer = LEVEL0;
+        _state.input = INPUTMODE;
+    };
 private:
     MEM_STATE_T _state;
 };
@@ -59,8 +66,8 @@ public:
         _buffer[n] = '\0';
         //char clientAddrString[INET_ADDRSTRLEN];
         //char* time_stmp = getTimeStamp();
-        char time_stmp[16];
-        getTimeStamp(time_stmp);
+        char time_stmp[] = "0000-00-00 00:00:00";
+        getTimeStamp(time_stmp, sizeof(time_stmp));
         printf("%s Received request: %s [%s:%0d]\n", 
             time_stmp, 
             _buffer, 
@@ -87,8 +94,8 @@ public:
         //strcpy(char_array, s.c_str());
         //replBuf = &replyString[0];
 
-        char time_stmp[16];
-        getTimeStamp(time_stmp);
+        char time_stmp[] = "0000-00-00 00:00:00";
+        getTimeStamp(time_stmp, sizeof(time_stmp));
 
         printf("SOCK_SND_FLAG=%0x\n", SOCK_SND_FLAG);
         sendto(_sockfd, &replyString[0], replyString.size(), /*MSG_CONFIRM*/SOCK_SND_FLAG, (const struct sockaddr *) &_clientAddr, sizeof(_clientAddr)); // <-- err, close sock
@@ -111,7 +118,7 @@ private:
 
 class IRServer : public SocketConnection {
 public:
-    IRServer(const int rxport): SocketConnection(rxport) {};
+    IRServer(const int rxport, Denon& dstate): SocketConnection(rxport) {};
     void Deserialize(const string& msg) {
         std::string::size_type sz;
         cout << msg << endl;
@@ -142,6 +149,8 @@ public:
     void Serialize() {}
     bool ReceiveMessage() {
         Deserialize(Recv());
+        SendIrCommand(_rxMessage.cmdCode);
+
         return true;
     }
     bool SendMessage() {
@@ -152,7 +161,11 @@ public:
     int GetCmdCode() {
         return _rxMessage.cmdCode;
     }
-    bool SendIrCommand();
+    bool SendIrCommand(int commandCode) {
+        bool result = true;
+        
+        return result;
+    };
 private:
     //SocketConnection _socket;
     RX_MSG_T _rxMessage;
@@ -163,21 +176,17 @@ private:
 /**
  * @brief Get the Time Stamp
  * 
- * @return char* 
+ * @param pTimeStamp 
+ * @param buffSize 
  */
-void getTimeStamp(char* pTimeStamp)
+void getTimeStamp(char* pTimeStamp, int buffSize)
 {
-    //char* pTimeStamp;
     time_t currentTime;
     struct tm* tm;
-
-    // char emtpyTS[] = "0000-00-00 00:00:00";
-
     currentTime = time(NULL);
     tm = localtime(&currentTime);
-    //pTimeStamp = (char*) malloc(sizeof(char) * 16);
     
-    if (pTimeStamp != NULL) { 
+    if (buffSize >= TS_BUF_SIZE) { 
         sprintf(pTimeStamp, "%04d-%02d-%02d %02d:%02d:%02d", 
             tm->tm_year + 1900, 
             tm->tm_mon + 1, 
@@ -185,16 +194,12 @@ void getTimeStamp(char* pTimeStamp)
             tm->tm_hour, 
             tm->tm_min, 
             tm->tm_sec);
-    } else {
-        // return emtpyTS;
     }
-
-    //return pTimeStamp;
 }
 
 int main() {
-    IRServer Server(RX_PORT);
     Denon Denon;
+    IRServer Server(RX_PORT, Denon);
 
     bool shutDownServer = false;
     while (!shutDownServer) {

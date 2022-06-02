@@ -1,11 +1,13 @@
 #pragma once
 
 #include <string>
+#include <map>
 
 #define RX_PORT         (19001)
 #define RX_BUFFER_SIZE  (1024)
 #define CMD_ARG_SIZE    (2)
 #define VOL_MAX_LIMIT   (-15)
+#define TS_BUF_SIZE     (19)
 
 #ifdef __APPLE__
 //    MSG_EOR         0x8             /* data completes record */ 
@@ -81,4 +83,50 @@ struct TX_MSG_T {
     ;
 };
 
-void getTimeStamp(char* pTimeStamp);
+enum class AVRCommand {
+    DUMMY,
+    DIMMER, 
+    KEY_VOLUMEUP, 
+    KEY_VOLUMEDOWN, 
+    PWR_ON,
+    PWR_OFF,
+    KEY_MUTING,
+    CH5CH7STEREO,
+    DSPSIMULATION,
+    STANDARD,
+    CINEMA, 
+    MUSIC,
+    DIRECT,
+    STEREO,
+    VIRTSURROUND,
+    INPUT_MODE,
+    INPUT_ANALOG,
+    INPUT_EXTIN,
+    INCREASEVOL, 
+    DECREASEVOL, 
+    SERVERSTOP = 40,
+    CALIBRATE_VOL = 99
+};
+
+static const std::map<AVRCommand, std::string> AVRCMDMAP = {
+    {AVRCommand::DUMMY, "DUMMY"},
+    {AVRCommand::DIMMER, "DIMMER"}, 
+    {AVRCommand::KEY_VOLUMEUP, "KEY_VOLUMEUP"}, 
+    {AVRCommand::KEY_VOLUMEDOWN, "KEY_VOLUMEDOWN"}, 
+    {AVRCommand::PWR_ON, "PWR_ON"}, 
+    {AVRCommand::PWR_OFF, "PWR_OFF"}, 
+    {AVRCommand::KEY_MUTING, "KEY_MUTING"}, 
+    {AVRCommand::CH5CH7STEREO, "5CH7CHSTEREO"}, 
+    {AVRCommand::DSPSIMULATION, "DSPSIMULATION"}, 
+    {AVRCommand::STANDARD, "STANDARD"}, 
+    {AVRCommand::CINEMA, "CINEMA"}, 
+    {AVRCommand::MUSIC, "MUSIC"}, 
+    {AVRCommand::DIRECT, "DIRECT"}, 
+    {AVRCommand::STEREO, "STEREO"}, 
+    {AVRCommand::VIRTSURROUND, "VIRTSURROUND"}, 
+    {AVRCommand::INPUT_MODE, "INPUT_MODE"}, 
+    {AVRCommand::INPUT_ANALOG, "INPUT_ANALOG"}, 
+    {AVRCommand::INPUT_EXTIN, "INPUT_EXTIN"}
+};
+
+void getTimeStamp(char* pTimeStamp, int buffSize);
