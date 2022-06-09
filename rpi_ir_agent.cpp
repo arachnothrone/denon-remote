@@ -36,7 +36,6 @@ void Denon::UpdateDimmer() {
     } else {
         _dimmer = LEVEL0;
     }
-    //cout << "Dimmer updated to: " << _dimmer << endl;
 }
 
 void Denon::VolumeChangeDb(int dbDelta) {
@@ -53,7 +52,6 @@ void Denon::VolumeChangeDb(int dbDelta) {
 
 void Denon::SetPower(STATE_BINARY pwr) {
     _power = pwr;
-    //cout << "---> Denon::SetPower set to: " << to_string((int)pwr) << endl;
 }
 
 void Denon::UpdateMute(void) {
@@ -64,7 +62,24 @@ void Denon::UpdateMute(void) {
     }
 }
 
+void Denon::SetStereoMode(STATE_MODE mode) {
+    _stereoMode = mode;
+}
 
+void Denon::SetInput(STATE_INPUT input) {
+    _input = input;
+}
+
+void Denon::PrintState() {
+    cout << 
+        "Current state: volume=" << _volume << 
+        ", stereoMode=" << _stereoMode << 
+        ", power=" << _power <<
+        ", mute=" << _mute <<
+        ", dimmer=" << _dimmer <<
+        ", input=" << _input <<
+        endl;
+}
 
 string Denon::SerializeDenonState() {
     return string("" + 
@@ -80,6 +95,7 @@ string Denon::SerializeDenonState() {
 SocketConnection::SocketConnection(const int rxport) {
     _rxPort = rxport;
     _sockfd = socket(AF_INET, SOCK_DGRAM, 0); // <---- err
+    
     memset(&_serverAddr, 0, sizeof(_serverAddr));
     memset(&_clientAddr, 0, sizeof(_clientAddr));
 
@@ -91,17 +107,32 @@ SocketConnection::SocketConnection(const int rxport) {
         perror("UDP port binding failed");
         exit(EXIT_FAILURE);
     }
-    
 }
+
 int SocketConnection::Bind() {
-    int result = ::bind(_sockfd, (const struct sockaddr *)&_serverAddr, sizeof(_serverAddr)); // <--- err, close sock
+    int result = ::bind(
+        _sockfd, 
+        (const struct sockaddr *)&_serverAddr, 
+        sizeof(_serverAddr)
+    ); // <--- err, close sock
+    
     return result;
-};
+}
+
 string SocketConnection::Recv() {
     unsigned int len, n;
     string result;
     len = sizeof(_clientAddr);
-    n = recvfrom(_sockfd, (char *)_buffer, RX_BUFFER_SIZE, MSG_WAITALL, (struct sockaddr *) &_clientAddr, &len);
+
+    n = recvfrom(
+        _sockfd, 
+        (char *)_buffer, 
+        RX_BUFFER_SIZE,
+        MSG_WAITALL, 
+        (struct sockaddr *) &_clientAddr, 
+        &len
+    );
+
     if (n >= RX_BUFFER_SIZE) n = RX_BUFFER_SIZE - 1; // <--- err if <0, close sock
     _buffer[n] = '\0';
 
@@ -116,65 +147,86 @@ string SocketConnection::Recv() {
             _clientAddrString, 
             sizeof(_clientAddrString)
         ), 
-        ntohs(_clientAddr.sin_port));
+        ntohs(_clientAddr.sin_port)
+    );
 
     // struct timespec ts = {.tv_sec = 1, .tv_nsec = 80e6};  
     // nanosleep(&ts, NULL);
 
-    // Send();
     result = _buffer;
     return result;
-};
+}
+
 void SocketConnection::Send(const string msgString, const int msgStrSize) {
     char time_stmp[] = "0000-00-00 00:00:00";
     getTimeStamp(time_stmp, sizeof(time_stmp));
 
-    sendto(_sockfd, &msgString[0], msgStrSize, /*MSG_CONFIRM*/SOCK_SND_FLAG, (const struct sockaddr *) &_clientAddr, sizeof(_clientAddr)); // <-- err, close sock
+    sendto(
+        _sockfd, 
+        &msgString[0], 
+        msgStrSize, 
+        /*MSG_CONFIRM*/SOCK_SND_FLAG, 
+        (const struct sockaddr *) &_clientAddr, 
+        sizeof(_clientAddr)
+    ); // <-- err, close sock
+    
     printf("%s Response sent: %s [%s:%0d]\n", 
         time_stmp, 
         msgString.c_str(),
         inet_ntop(AF_INET, &_clientAddr.sin_addr.s_addr, _clientAddrString, sizeof(_clientAddrString)), 
-        ntohs(_clientAddr.sin_port));
+        ntohs(_clientAddr.sin_port)
+    );
 }
 
 IRServer::IRServer(const int rxport, Denon& dstate): SocketConnection(rxport), _denonState(dstate) {};
+
 void IRServer::Deserialize(const string& msg) {
     std::string::size_type sz;
     _rxMessage.msgPrefix = msg.substr(RXMSGPREF, RXMSGPREFSZ);
     _rxMessage.cmdCode = stoi(msg.substr(RXMSGCMDCODE, RXMSGCMDCODESZ));
     _rxMessage.cmdDescription = msg.substr(RXMSGCMDDESCR, RXMSGCMDDESCRSZ);
 }
+
 void IRServer::Serialize() {}
+
 bool IRServer::ReceiveMessage() {
     Deserialize(Recv());
     SendIrCommand(_rxMessage.cmdCode);
+    
     return true;
 }
+
 bool IRServer::SendMessage() {
     const string replyStr = _denonState.SerializeDenonState();
     Send(replyStr, replyStr.size());
     
     return true;
 }
+
 int IRServer::GetCmdCode() {
     return _rxMessage.cmdCode;
 }
+
 bool IRServer::SendIrCommand(int commandCode) {
     bool result = true;
+
     switch (commandCode) {
+        case CMD_GETSTATE:
+            _denonState.PrintState();
+            break;
         case CMD_DIMMER ... CMD_INPUT_EXTIN:
+            // Execute LIRC IR command
             //system("irsend SEND_ONCE Denon_RC-978 DIMMER");
             cout << 
                 "irsend SEND_ONCE Denon_RC-978 " << 
                 _AVRCMDMAP.at(commandCode).first << endl;
-            // Execute command
+            // Call corresponding function, pass it the state pointer
             _AVRCMDMAP.at(commandCode).second(_denonState);
             break;
         default:
             break;
-
     }
-    
+
     return result;
 };
 
@@ -197,7 +249,8 @@ void getTimeStamp(char* pTimeStamp, int buffSize) {
             tm->tm_mday, 
             tm->tm_hour, 
             tm->tm_min, 
-            tm->tm_sec);
+            tm->tm_sec
+        );
     }
 }
 
@@ -209,16 +262,13 @@ int main() {
     while (!shutDownServer) {
         Server.ReceiveMessage();
         Server.SendMessage();
-        if (Server.GetCmdCode() == 5) {
+        if (Server.GetCmdCode() == 17) {
             shutDownServer = true;
         }
     }
-
     return 0;
 }
 
-void FuncDummy(Denon& dState) {
-}
 
 void FuncDimmer(Denon& dState) {
     dState.UpdateDimmer();
@@ -241,48 +291,48 @@ void FuncPowerOff(Denon& dState) {
 }
 
 void FuncMuting(Denon& dState) {
-
+    dState.UpdateMute();
 }
 
 void FuncSoundModeStereo5ch7ch(Denon& dState) {
-
+    dState.SetStereoMode(CH5CH7);
 }
 
 void FuncSoundModeDspSimulation(Denon& dState) {
-
+    dState.SetStereoMode(DSPSIM);
 }
 
 void FuncSoundModeStandard(Denon& dState) {
-
+    dState.SetStereoMode(STANDARD);
 }
 
 void FuncSoundModeCinema(Denon& dState) {
-
+    dState.SetStereoMode(CINEMA);
 }
 
 void FuncSoundModeMusic(Denon& dState) {
-
+    dState.SetStereoMode(MUSIC);
 }
 
 void FuncSoundModeDirect(Denon& dState) {
-
+    dState.SetStereoMode(DIRECT);
 }
 void FuncSoundModeStereo(Denon& dState) {
-
+    dState.SetStereoMode(STEREO);
 }
 
 void FuncSoundModeVirtSurround(Denon& dState) {
-
+    dState.SetStereoMode(VIRTSURRND);
 }
 
 void FuncInputMode(Denon& dState) {
-
+    dState.SetInput(INPUTMODE);
 }
 
 void FuncInputAnalog(Denon& dState) {
-
+    dState.SetInput(INPUTANALOG);
 }
 
 void FuncInputExtIn(Denon& dState) {
-
+    dState.SetInput(INPUTEXTIN);
 }

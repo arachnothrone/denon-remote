@@ -18,8 +18,8 @@ else:
     dest_port = 19001
 
 s = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-for i in range(5):
-    s.sendto(b'CMD' + "{:02d}".format(cmd_code).encode() + b'Description88745_asdf', (dest_addr, dest_port))
+for i in range(18):
+    s.sendto(b'CMD' + "{:02d}".format(cmd_code).encode() + b'Description', (dest_addr, dest_port))
     resp = s.recvfrom(1280)
     print(resp)
     cmd_code += 1

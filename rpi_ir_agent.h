@@ -21,15 +21,14 @@
 #endif
 
 // RX Message
-#define RXMSGPREF        0
-#define RXMSGPREFSZ        3
-#define RXMSGCMDCODE     3
-#define RXMSGCMDCODESZ     2
-#define RXMSGCMDDESCR    5
-#define RXMSGCMDDESCRSZ    11
-#define RXMSGCMDPARVAL   16
-#define RXMSGCMDPARVALSZ   2
-
+#define RXMSGPREF           0
+#define RXMSGPREFSZ         3
+#define RXMSGCMDCODE        3
+#define RXMSGCMDCODESZ      2
+#define RXMSGCMDDESCR       5
+#define RXMSGCMDDESCRSZ     11
+#define RXMSGCMDPARVAL      16
+#define RXMSGCMDPARVALSZ    2
 
 typedef enum
 {
@@ -86,7 +85,7 @@ struct TX_MSG_T {
 };
 
 typedef enum {
-    CMD_DUMMY,
+    CMD_GETSTATE,
     CMD_DIMMER, 
     CMD_KEY_VOLUMEUP, 
     CMD_KEY_VOLUMEDOWN, 
@@ -110,30 +109,18 @@ typedef enum {
     CMD_CALIBRATE_VOL = 99
 } AVRCMD_E;
 
-
-//static void func2();
-
 class Denon {
 public:
     Denon();
-    // {
-    //     _state.volume = -40;
-    //     _state.stereoMode = STANDARD;
-    //     _state.power = OFF;
-    //     _state.mute = OFF;
-    //     _state.dimmer = LEVEL0;
-    //     _state.input = INPUTMODE;
-    // };
     void UpdateDimmer();
     void VolumeChangeDb(int dbDelta);
     void SetPower(STATE_BINARY pwr);
     void UpdateMute();
-
+    void SetStereoMode(STATE_MODE mode);
+    void SetInput(STATE_INPUT input);
+    void PrintState();
     std::string SerializeDenonState();
-    
 private:
-    //MEM_STATE_T _state;
-    //-----------------
     int             _volume;
     STATE_MODE      _stereoMode;
     STATE_BINARY    _power;
@@ -144,7 +131,6 @@ private:
 
 using CmdExecutor = void (*)(Denon& dstate);
 
-void FuncDummy(Denon& dState);
 void FuncDimmer(Denon& dState);
 void FuncVolumeUp(Denon& dState);
 void FuncVolumeDown(Denon& dState);
@@ -180,21 +166,19 @@ private:
 
 class IRServer : public SocketConnection {
 public:
-    IRServer(const int rxport, Denon& dstate)/*: SocketConnection(rxport)*/;
-    //void func1();
-    void Deserialize(const std::string& msg);
-    void Serialize();
-    bool ReceiveMessage();
-    bool SendMessage();
-    int GetCmdCode();
-    bool SendIrCommand(int commandCode);
+    IRServer(const int rxport, Denon& dstate);
+    void    Deserialize(const std::string& msg);
+    void    Serialize();
+    bool    ReceiveMessage();
+    bool    SendMessage();
+    int     GetCmdCode();
+    bool    SendIrCommand(int commandCode);
 private:
-    RX_MSG_T _rxMessage;
-    TX_MSG_T _txMessage;
-    char rawMessage[RX_BUFFER_SIZE];
-    Denon& _denonState;
+    RX_MSG_T    _rxMessage;
+    TX_MSG_T    _txMessage;
+    char        rawMessage[RX_BUFFER_SIZE];
+    Denon&      _denonState;
     const std::map<int, std::pair<const std::string, CmdExecutor>> _AVRCMDMAP = {
-        {CMD_DUMMY, std::make_pair("DUMMY", &FuncDummy)},
         {CMD_DIMMER, std::make_pair("DIMMER", &FuncDimmer)},
         {CMD_KEY_VOLUMEUP, std::make_pair("KEY_VOLUMEUP", &FuncVolumeUp)}, 
         {CMD_KEY_VOLUMEDOWN, std::make_pair("KEY_VOLUMEDOWN", &FuncVolumeDown)}, 
