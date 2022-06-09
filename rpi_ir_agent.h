@@ -2,11 +2,13 @@
 
 #include <string>
 #include <map>
+#include <exception>
 
 #define RX_PORT         (19001)
 #define RX_BUFFER_SIZE  (1024)
 #define CMD_ARG_SIZE    (2)
 #define VOL_MAX_LIMIT   (-15)
+#define VOL_MIN_LIMIT   (-70)
 #define TS_BUF_SIZE     (19)
 
 #ifdef __APPLE__
@@ -83,50 +85,134 @@ struct TX_MSG_T {
     ;
 };
 
-enum class AVRCommand {
-    DUMMY,
-    DIMMER, 
-    KEY_VOLUMEUP, 
-    KEY_VOLUMEDOWN, 
-    PWR_ON,
-    PWR_OFF,
-    KEY_MUTING,
-    CH5CH7STEREO,
-    DSPSIMULATION,
-    STANDARD,
-    CINEMA, 
-    MUSIC,
-    DIRECT,
-    STEREO,
-    VIRTSURROUND,
-    INPUT_MODE,
-    INPUT_ANALOG,
-    INPUT_EXTIN,
-    INCREASEVOL, 
-    DECREASEVOL, 
-    SERVERSTOP = 40,
-    CALIBRATE_VOL = 99
+typedef enum {
+    CMD_DUMMY,
+    CMD_DIMMER, 
+    CMD_KEY_VOLUMEUP, 
+    CMD_KEY_VOLUMEDOWN, 
+    CMD_PWR_ON,
+    CMD_PWR_OFF,
+    CMD_KEY_MUTING,
+    CMD_CH5CH7STEREO,
+    CMD_DSPSIMULATION,
+    CMD_STANDARD,
+    CMD_CINEMA, 
+    CMD_MUSIC,
+    CMD_DIRECT,
+    CMD_STEREO,
+    CMD_VIRTSURROUND,
+    CMD_INPUT_MODE,
+    CMD_INPUT_ANALOG,
+    CMD_INPUT_EXTIN,
+    CMD_INCREASEVOL, 
+    CMD_DECREASEVOL, 
+    CMD_SERVERSTOP = 40,
+    CMD_CALIBRATE_VOL = 99
+} AVRCMD_E;
+
+
+//static void func2();
+
+class Denon {
+public:
+    Denon();
+    // {
+    //     _state.volume = -40;
+    //     _state.stereoMode = STANDARD;
+    //     _state.power = OFF;
+    //     _state.mute = OFF;
+    //     _state.dimmer = LEVEL0;
+    //     _state.input = INPUTMODE;
+    // };
+    void UpdateDimmer();
+    void VolumeChangeDb(int dbDelta);
+    void SetPower(STATE_BINARY pwr);
+    void UpdateMute();
+
+    std::string SerializeDenonState();
+    
+private:
+    //MEM_STATE_T _state;
+    //-----------------
+    int             _volume;
+    STATE_MODE      _stereoMode;
+    STATE_BINARY    _power;
+    STATE_BINARY    _mute;
+    STATE_DIM       _dimmer;
+    STATE_INPUT     _input;
 };
 
-static const std::map<AVRCommand, std::string> AVRCMDMAP = {
-    {AVRCommand::DUMMY, "DUMMY"},
-    {AVRCommand::DIMMER, "DIMMER"}, 
-    {AVRCommand::KEY_VOLUMEUP, "KEY_VOLUMEUP"}, 
-    {AVRCommand::KEY_VOLUMEDOWN, "KEY_VOLUMEDOWN"}, 
-    {AVRCommand::PWR_ON, "PWR_ON"}, 
-    {AVRCommand::PWR_OFF, "PWR_OFF"}, 
-    {AVRCommand::KEY_MUTING, "KEY_MUTING"}, 
-    {AVRCommand::CH5CH7STEREO, "5CH7CHSTEREO"}, 
-    {AVRCommand::DSPSIMULATION, "DSPSIMULATION"}, 
-    {AVRCommand::STANDARD, "STANDARD"}, 
-    {AVRCommand::CINEMA, "CINEMA"}, 
-    {AVRCommand::MUSIC, "MUSIC"}, 
-    {AVRCommand::DIRECT, "DIRECT"}, 
-    {AVRCommand::STEREO, "STEREO"}, 
-    {AVRCommand::VIRTSURROUND, "VIRTSURROUND"}, 
-    {AVRCommand::INPUT_MODE, "INPUT_MODE"}, 
-    {AVRCommand::INPUT_ANALOG, "INPUT_ANALOG"}, 
-    {AVRCommand::INPUT_EXTIN, "INPUT_EXTIN"}
+using CmdExecutor = void (*)(Denon& dstate);
+
+void FuncDummy(Denon& dState);
+void FuncDimmer(Denon& dState);
+void FuncVolumeUp(Denon& dState);
+void FuncVolumeDown(Denon& dState);
+void FuncPowerOn(Denon& dState);
+void FuncPowerOff(Denon& dState);
+void FuncMuting(Denon& dState);
+void FuncSoundModeStereo5ch7ch(Denon& dState);
+void FuncSoundModeDspSimulation(Denon& dState);
+void FuncSoundModeStandard(Denon& dState);
+void FuncSoundModeCinema(Denon& dState);
+void FuncSoundModeMusic(Denon& dState);
+void FuncSoundModeDirect(Denon& dState);
+void FuncSoundModeStereo(Denon& dState);
+void FuncSoundModeVirtSurround(Denon& dState);
+void FuncInputMode(Denon& dState);
+void FuncInputAnalog(Denon& dState);
+void FuncInputExtIn(Denon& dState);
+
+class SocketConnection {
+public:
+    SocketConnection(const int rxport);
+    int Bind();
+    std::string Recv();
+    void Send(const std::string msgString, const int msgStrSize);
+private:
+    int _rxPort;
+    int _sockfd;
+    struct sockaddr_in _serverAddr;
+    struct sockaddr_in _clientAddr;
+    char _buffer[RX_BUFFER_SIZE];
+    char _clientAddrString[INET_ADDRSTRLEN];
+};
+
+class IRServer : public SocketConnection {
+public:
+    IRServer(const int rxport, Denon& dstate)/*: SocketConnection(rxport)*/;
+    //void func1();
+    void Deserialize(const std::string& msg);
+    void Serialize();
+    bool ReceiveMessage();
+    bool SendMessage();
+    int GetCmdCode();
+    bool SendIrCommand(int commandCode);
+private:
+    RX_MSG_T _rxMessage;
+    TX_MSG_T _txMessage;
+    char rawMessage[RX_BUFFER_SIZE];
+    Denon& _denonState;
+    const std::map<int, std::pair<const std::string, CmdExecutor>> _AVRCMDMAP = {
+        {CMD_DUMMY, std::make_pair("DUMMY", &FuncDummy)},
+        {CMD_DIMMER, std::make_pair("DIMMER", &FuncDimmer)},
+        {CMD_KEY_VOLUMEUP, std::make_pair("KEY_VOLUMEUP", &FuncVolumeUp)}, 
+        {CMD_KEY_VOLUMEDOWN, std::make_pair("KEY_VOLUMEDOWN", &FuncVolumeDown)}, 
+        {CMD_PWR_ON, std::make_pair("PWR_ON", &FuncPowerOn)}, 
+        {CMD_PWR_OFF, std::make_pair("PWR_OFF", &FuncPowerOff)}, 
+        {CMD_KEY_MUTING, std::make_pair("KEY_MUTING", &FuncMuting)}, 
+        {CMD_CH5CH7STEREO, std::make_pair("5CH7CHSTEREO", &FuncSoundModeStereo5ch7ch)}, 
+        {CMD_DSPSIMULATION, std::make_pair("DSPSIMULATION", &FuncSoundModeDspSimulation)}, 
+        {CMD_STANDARD, std::make_pair("STANDARD", &FuncSoundModeStandard)}, 
+        {CMD_CINEMA, std::make_pair("CINEMA", &FuncSoundModeCinema)}, 
+        {CMD_MUSIC,std::make_pair( "MUSIC", &FuncSoundModeMusic)}, 
+        {CMD_DIRECT, std::make_pair("DIRECT", &FuncSoundModeDirect)}, 
+        {CMD_STEREO, std::make_pair("STEREO", &FuncSoundModeStereo)}, 
+        {CMD_VIRTSURROUND, std::make_pair("VIRTSURROUND", &FuncSoundModeVirtSurround)}, 
+        {CMD_INPUT_MODE, std::make_pair("INPUT_MODE", &FuncInputMode)}, 
+        {CMD_INPUT_ANALOG, std::make_pair("INPUT_ANALOG", &FuncInputAnalog)}, 
+        {CMD_INPUT_EXTIN, std::make_pair("INPUT_EXTIN", &FuncInputExtIn)}
+    };
 };
 
 void getTimeStamp(char* pTimeStamp, int buffSize);
