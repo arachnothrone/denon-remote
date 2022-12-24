@@ -77,7 +77,7 @@ struct RX_MSG_T {
     std::string msgPrefix;
     int         cmdCode;
     std::string cmdDescription;
-    uint8_t     cmdParamValue;
+    int         cmdParamValue;
 };
 
 struct TX_MSG_T {

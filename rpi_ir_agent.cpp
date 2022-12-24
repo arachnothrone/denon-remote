@@ -39,14 +39,16 @@ void Denon::UpdateDimmer() {
 }
 
 void Denon::VolumeChangeDb(int dbDelta) {
-    _volume += dbDelta;
-    if (_volume > VOL_MAX_LIMIT || _volume < VOL_MIN_LIMIT) {
+    
+    if ((_volume + dbDelta) > VOL_MAX_LIMIT || (_volume + dbDelta) < VOL_MIN_LIMIT) {
         throw invalid_argument(
             "Trying to set the volume outside limits: (" + 
             to_string(_volume) + " dB. Limits: " + 
             to_string(VOL_MIN_LIMIT) + ", " + 
             to_string(VOL_MAX_LIMIT) + ")"
         );
+    } else {
+        _volume += dbDelta;
     }
 }
 
@@ -190,11 +192,13 @@ IRServer::IRServer(const int rxport, Denon& dstate): SocketConnection(rxport), _
 
 void IRServer::Deserialize(const string& msg) {
     std::string::size_type sz;
+    int diffVolSign = 1;
     _rxMessage.msgPrefix = msg.substr(RXMSGPREF, RXMSGPREFSZ);
     _rxMessage.cmdCode = stoi(msg.substr(RXMSGCMDCODE, RXMSGCMDCODESZ));
     _rxMessage.cmdDescription = msg.substr(RXMSGCMDDESCR, RXMSGCMDDESCRSZ);
     if (_rxMessage.cmdCode >= CMD_INCREASEVOL && _rxMessage.cmdCode <= CMD_DECREASEVOL) {
-        _rxMessage.cmdParamValue = stoi(msg.substr(RXMSGCMDPARVAL, RXMSGCMDPARVALSZ));
+        if (_rxMessage.cmdCode == CMD_DECREASEVOL) {diffVolSign = -1;}
+        _rxMessage.cmdParamValue = stoi(msg.substr(RXMSGCMDPARVAL, RXMSGCMDPARVALSZ)) * diffVolSign;
     }
 }
 
@@ -293,13 +297,15 @@ bool IRServer::SendIrCommand(int commandCode) {
             // Call corresponding function, pass it the state pointer
             _AVRCMDMAP.at(commandCode).second(_denonState);
             break;
-        case CMD_INCREASEVOL:
+        case CMD_INCREASEVOL ... CMD_DECREASEVOL:
             SetVolumeTo(_denonState.GetVolume() + _rxMessage.cmdParamValue);
             break;
-        case CMD_DECREASEVOL:
-            SetVolumeTo(_denonState.GetVolume() - _rxMessage.cmdParamValue);
+        case CMD_CALIBRATE_VOL:
+            SetMinimumVolume(3.75);     // 3.75 sec - time interval of sending continuous volume down command:
+                                        // ~ 75 ms / 1 dB, lower bound = -70 dB => from -20 to -70 (50 dB): 3750 ms
+            SetVolumeTo(-40);           // set calibrated level to -40 dB, from -70 it takes ~9 sec
+                                        // Calibration cycle takes ~13 sec
             break;
-        
         default:
             /* Unknown command */
             break;
