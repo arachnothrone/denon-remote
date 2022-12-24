@@ -92,6 +92,10 @@ string Denon::SerializeDenonState() {
     );
 }
 
+int Denon::GetVolume() {
+    return _volume;
+}
+
 SocketConnection::SocketConnection(const int rxport) {
     _rxPort = rxport;
     _sockfd = socket(AF_INET, SOCK_DGRAM, 0); // <---- err
@@ -185,6 +189,9 @@ void IRServer::Deserialize(const string& msg) {
     _rxMessage.msgPrefix = msg.substr(RXMSGPREF, RXMSGPREFSZ);
     _rxMessage.cmdCode = stoi(msg.substr(RXMSGCMDCODE, RXMSGCMDCODESZ));
     _rxMessage.cmdDescription = msg.substr(RXMSGCMDDESCR, RXMSGCMDDESCRSZ);
+    if (_rxMessage.cmdCode >= CMD_INCREASEVOL && _rxMessage.cmdCode <= CMD_DECREASEVOL) {
+        _rxMessage.cmdParamValue = stoi(msg.substr(RXMSGCMDPARVAL, RXMSGCMDPARVALSZ));
+    }
 }
 
 void IRServer::Serialize() {}
@@ -207,8 +214,49 @@ int IRServer::GetCmdCode() {
     return _rxMessage.cmdCode;
 }
 
+void IRServer::SetVolumeTo(int value) {
+    int i, deltaVol;
+    //char command[50];
+    //struct timespec ts = {.tv_sec = 0, .tv_nsec = 80e6};         // 80 ms (was 120 ms = 12e7) delay
+    struct timespec ts;
+    ts.tv_sec = 0;
+    ts.tv_nsec = 80e6;
+    string command;
+
+    if (_denonState.GetVolume() > value) {
+        command = "irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEDOWN";
+    } else {
+        command = "irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEUP";
+    }
+
+    deltaVol = abs(abs(_denonState.GetVolume()) - abs(value));
+    
+    nanosleep(&ts, NULL);
+
+    for (i = 0; i < deltaVol; i++) {
+        if (_denonState.GetVolume() >= VOL_MAX_LIMIT) {
+            //printf("SetVolumeTo: Maximum reached (%d dB)\n", VOL_MAX_LIMIT);
+            cout << "SetVolumeTo: Maximum reached (" << VOL_MAX_LIMIT << " dB)" << endl;
+            break;
+        } else {
+            system(command.c_str());
+            //printf("Executing: %s (%d)\n", command, strlen(command));
+            cout << "Executing: " << command << ", length=" << command.length() << endl;
+
+            // 80 ms pause between two steps
+            nanosleep(&ts, NULL);
+        }
+    }
+
+    // pDenonState->volume = value;
+    // printf("SetVolumeTo: set to %d\n", pDenonState->volume);
+    _denonState.VolumeChangeDb(value - _denonState.GetVolume());
+    cout << "SetVolumeTo: set to " << _denonState.GetVolume() << endl;
+}
+
 bool IRServer::SendIrCommand(int commandCode) {
     bool result = true;
+    string command;
 
     switch (commandCode) {
         case CMD_GETSTATE:
@@ -216,14 +264,25 @@ bool IRServer::SendIrCommand(int commandCode) {
             break;
         case CMD_DIMMER ... CMD_INPUT_EXTIN:
             // Execute LIRC IR command
-            //system("irsend SEND_ONCE Denon_RC-978 DIMMER");
-            cout << 
-                "irsend SEND_ONCE Denon_RC-978 " << 
-                _AVRCMDMAP.at(commandCode).first << endl;
+            // system("irsend SEND_ONCE Denon_RC-978 DIMMER");
+            command = "irsend SEND_ONCE Denon_RC-978 " + _AVRCMDMAP.at(commandCode).first;
+            system(command.c_str());
+            // cout << command << endl;
+            // cout << 
+            //     "irsend SEND_ONCE Denon_RC-978 " << 
+            //     _AVRCMDMAP.at(commandCode).first << endl;
             // Call corresponding function, pass it the state pointer
             _AVRCMDMAP.at(commandCode).second(_denonState);
             break;
+        case CMD_INCREASEVOL:
+            SetVolumeTo(_denonState.GetVolume() + _rxMessage.cmdParamValue);
+            break;
+        case CMD_DECREASEVOL:
+            SetVolumeTo(_denonState.GetVolume() - _rxMessage.cmdParamValue);
+            break;
+        
         default:
+            /* Unknown command */
             break;
     }
 

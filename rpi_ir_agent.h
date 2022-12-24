@@ -120,6 +120,7 @@ public:
     void SetInput(STATE_INPUT input);
     void PrintState();
     std::string SerializeDenonState();
+    int GetVolume();
 private:
     int             _volume;
     STATE_MODE      _stereoMode;
@@ -173,11 +174,13 @@ public:
     bool    SendMessage();
     int     GetCmdCode();
     bool    SendIrCommand(int commandCode);
+    void    SetVolumeTo(int value);
 private:
     RX_MSG_T    _rxMessage;
     TX_MSG_T    _txMessage;
     char        rawMessage[RX_BUFFER_SIZE];
     Denon&      _denonState;
+    /* Direct key mapping from the remote: key pressing triggers 'irsend' command */
     const std::map<int, std::pair<const std::string, CmdExecutor>> _AVRCMDMAP = {
         {CMD_DIMMER, std::make_pair("DIMMER", &FuncDimmer)},
         {CMD_KEY_VOLUMEUP, std::make_pair("KEY_VOLUMEUP", &FuncVolumeUp)}, 
