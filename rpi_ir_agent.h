@@ -121,6 +121,7 @@ public:
     void PrintState();
     std::string SerializeDenonState();
     int GetVolume();
+    void SetVolume(int vol);
 private:
     int             _volume;
     STATE_MODE      _stereoMode;
@@ -175,6 +176,7 @@ public:
     int     GetCmdCode();
     bool    SendIrCommand(int commandCode);
     void    SetVolumeTo(int value);
+    void    SetMinimumVolume(double timeIntervalSec);
 private:
     RX_MSG_T    _rxMessage;
     TX_MSG_T    _txMessage;

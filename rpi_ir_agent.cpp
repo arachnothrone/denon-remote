@@ -96,6 +96,10 @@ int Denon::GetVolume() {
     return _volume;
 }
 
+void Denon::SetVolume(int vol) {
+    _volume = vol;
+}
+
 SocketConnection::SocketConnection(const int rxport) {
     _rxPort = rxport;
     _sockfd = socket(AF_INET, SOCK_DGRAM, 0); // <---- err
@@ -252,6 +256,21 @@ void IRServer::SetVolumeTo(int value) {
     // printf("SetVolumeTo: set to %d\n", pDenonState->volume);
     _denonState.VolumeChangeDb(value - _denonState.GetVolume());
     cout << "SetVolumeTo: set to " << _denonState.GetVolume() << endl;
+}
+
+void IRServer::SetMinimumVolume(double timeIntervalSec) {
+    //struct timespec ts = {.tv_sec = 7, .tv_nsec = 5e8};         // for 4.5 sec delay
+    struct timespec ts; // = {.tv_sec = (int) timeIntervalSec, .tv_nsec = (timeIntervalSec - ((int) timeIntervalSec)) * 1e9};
+    ts.tv_sec = (int) timeIntervalSec;
+    ts.tv_nsec = (timeIntervalSec - ((int) timeIntervalSec)) * 1e9;
+    system("irsend SEND_START Denon_RC-978 KEY_VOLUMEDOWN");
+    nanosleep(&ts, NULL);
+    system("irsend SEND_STOP Denon_RC-978 KEY_VOLUMEDOWN");
+    ts.tv_sec = 0;
+    ts.tv_nsec = 5e8;
+    nanosleep(&ts, NULL);
+    system("irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEUP");
+    _denonState.SetVolume(-70);
 }
 
 bool IRServer::SendIrCommand(int commandCode) {
