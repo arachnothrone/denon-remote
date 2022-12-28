@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <string.h>
 #include <map>
 #include <exception>
 
@@ -154,6 +154,7 @@ void FuncInputExtIn(Denon& dState);
 class SocketConnection {
 public:
     SocketConnection(const int rxport);
+    int GetSocketFdId();
     int Bind();
     std::string Recv();
     void Send(const std::string msgString, const int msgStrSize);

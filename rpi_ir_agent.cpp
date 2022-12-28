@@ -12,13 +12,14 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <sys/select.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <time.h>
 #include <cstring>
 #include "rpi_ir_agent.h"
 
-using namespace std;
+#include <unistd.h>     // close socket
 
 
 Denon::Denon() {
@@ -41,11 +42,11 @@ void Denon::UpdateDimmer() {
 void Denon::VolumeChangeDb(int dbDelta) {
     
     if ((_volume + dbDelta) > VOL_MAX_LIMIT || (_volume + dbDelta) < VOL_MIN_LIMIT) {
-        throw invalid_argument(
+        throw std::invalid_argument(
             "Trying to set the volume outside limits: (" + 
-            to_string(_volume) + " dB. Limits: " + 
-            to_string(VOL_MIN_LIMIT) + ", " + 
-            to_string(VOL_MAX_LIMIT) + ")"
+            std::to_string(_volume) + " dB. Limits: " + 
+            std::to_string(VOL_MIN_LIMIT) + ", " + 
+            std::to_string(VOL_MAX_LIMIT) + ")"
         );
     } else {
         _volume += dbDelta;
@@ -73,24 +74,24 @@ void Denon::SetInput(STATE_INPUT input) {
 }
 
 void Denon::PrintState() {
-    cout << 
+    std::cout << 
         "Current state: volume=" << _volume << 
         ", stereoMode=" << _stereoMode << 
         ", power=" << _power <<
         ", mute=" << _mute <<
         ", dimmer=" << _dimmer <<
         ", input=" << _input <<
-        endl;
+        std::endl;
 }
 
-string Denon::SerializeDenonState() {
-    return string("" + 
-        to_string(_power) + "," +
-        to_string(_volume) + "," +
-        to_string(_mute) + "," + 
-        to_string(_stereoMode) + "," + 
-        to_string(_input) + "," + 
-        to_string(_dimmer)
+std::string Denon::SerializeDenonState() {
+    return std::string("" + 
+        std::to_string(_power) + "," +
+        std::to_string(_volume) + "," +
+        std::to_string(_mute) + "," + 
+        std::to_string(_stereoMode) + "," + 
+        std::to_string(_input) + "," + 
+        std::to_string(_dimmer)
     );
 }
 
@@ -120,7 +121,7 @@ SocketConnection::SocketConnection(const int rxport) {
 }
 
 int SocketConnection::Bind() {
-    int result = ::bind(
+    int result = bind(
         _sockfd, 
         (const struct sockaddr *)&_serverAddr, 
         sizeof(_serverAddr)
@@ -129,9 +130,13 @@ int SocketConnection::Bind() {
     return result;
 }
 
-string SocketConnection::Recv() {
+int SocketConnection::GetSocketFdId() {
+    return _sockfd;
+}
+
+std::string SocketConnection::Recv() {
     unsigned int len, n;
-    string result;
+    std::string result;
     len = sizeof(_clientAddr);
 
     n = recvfrom(
@@ -160,14 +165,11 @@ string SocketConnection::Recv() {
         ntohs(_clientAddr.sin_port)
     );
 
-    // struct timespec ts = {.tv_sec = 1, .tv_nsec = 80e6};  
-    // nanosleep(&ts, NULL);
-
     result = _buffer;
     return result;
 }
 
-void SocketConnection::Send(const string msgString, const int msgStrSize) {
+void SocketConnection::Send(const std::string msgString, const int msgStrSize) {
     char time_stmp[] = "0000-00-00 00:00:00";
     getTimeStamp(time_stmp, sizeof(time_stmp));
 
@@ -190,7 +192,7 @@ void SocketConnection::Send(const string msgString, const int msgStrSize) {
 
 IRServer::IRServer(const int rxport, Denon& dstate): SocketConnection(rxport), _denonState(dstate) {};
 
-void IRServer::Deserialize(const string& msg) {
+void IRServer::Deserialize(const std::string& msg) {
     std::string::size_type sz;
     int diffVolSign = 1;
     _rxMessage.msgPrefix = msg.substr(RXMSGPREF, RXMSGPREFSZ);
@@ -212,7 +214,7 @@ bool IRServer::ReceiveMessage() {
 }
 
 bool IRServer::SendMessage() {
-    const string replyStr = _denonState.SerializeDenonState();
+    const std::string replyStr = _denonState.SerializeDenonState();
     Send(replyStr, replyStr.size());
     
     return true;
@@ -223,13 +225,11 @@ int IRServer::GetCmdCode() {
 }
 
 void IRServer::SetVolumeTo(int value) {
-    int i, deltaVol;
-    //char command[50];
-    //struct timespec ts = {.tv_sec = 0, .tv_nsec = 80e6};         // 80 ms (was 120 ms = 12e7) delay
-    struct timespec ts;
+    int i, deltaVol;      
+    struct timespec ts;     // 80 ms (was 120 ms = 12e7) delay
     ts.tv_sec = 0;
     ts.tv_nsec = 80e6;
-    string command;
+    std::string command;
 
     if (_denonState.GetVolume() > value) {
         command = "irsend SEND_ONCE Denon_RC-978 KEY_VOLUMEDOWN";
@@ -244,27 +244,23 @@ void IRServer::SetVolumeTo(int value) {
     for (i = 0; i < deltaVol; i++) {
         if (_denonState.GetVolume() >= VOL_MAX_LIMIT) {
             //printf("SetVolumeTo: Maximum reached (%d dB)\n", VOL_MAX_LIMIT);
-            cout << "SetVolumeTo: Maximum reached (" << VOL_MAX_LIMIT << " dB)" << endl;
+            std::cout << "SetVolumeTo: Maximum reached (" << VOL_MAX_LIMIT << " dB)" << std::endl;
             break;
         } else {
             system(command.c_str());
-            //printf("Executing: %s (%d)\n", command, strlen(command));
-            cout << "Executing: " << command << ", length=" << command.length() << endl;
+            std::cout << "Executing: " << command << ", length=" << command.length() << std::endl;
 
             // 80 ms pause between two steps
             nanosleep(&ts, NULL);
         }
     }
 
-    // pDenonState->volume = value;
-    // printf("SetVolumeTo: set to %d\n", pDenonState->volume);
     _denonState.VolumeChangeDb(value - _denonState.GetVolume());
-    cout << "SetVolumeTo: set to " << _denonState.GetVolume() << endl;
+    std::cout << "SetVolumeTo: set to " << _denonState.GetVolume() << std::endl;
 }
 
 void IRServer::SetMinimumVolume(double timeIntervalSec) {
-    //struct timespec ts = {.tv_sec = 7, .tv_nsec = 5e8};         // for 4.5 sec delay
-    struct timespec ts; // = {.tv_sec = (int) timeIntervalSec, .tv_nsec = (timeIntervalSec - ((int) timeIntervalSec)) * 1e9};
+    struct timespec ts;
     ts.tv_sec = (int) timeIntervalSec;
     ts.tv_nsec = (timeIntervalSec - ((int) timeIntervalSec)) * 1e9;
     system("irsend SEND_START Denon_RC-978 KEY_VOLUMEDOWN");
@@ -279,7 +275,7 @@ void IRServer::SetMinimumVolume(double timeIntervalSec) {
 
 bool IRServer::SendIrCommand(int commandCode) {
     bool result = true;
-    string command;
+    std::string command;
 
     switch (commandCode) {
         case CMD_GETSTATE:
@@ -287,13 +283,9 @@ bool IRServer::SendIrCommand(int commandCode) {
             break;
         case CMD_DIMMER ... CMD_INPUT_EXTIN:
             // Execute LIRC IR command
-            // system("irsend SEND_ONCE Denon_RC-978 DIMMER");
             command = "irsend SEND_ONCE Denon_RC-978 " + _AVRCMDMAP.at(commandCode).first;
             system(command.c_str());
-            // cout << command << endl;
-            // cout << 
-            //     "irsend SEND_ONCE Denon_RC-978 " << 
-            //     _AVRCMDMAP.at(commandCode).first << endl;
+
             // Call corresponding function, pass it the state pointer
             _AVRCMDMAP.at(commandCode).second(_denonState);
             break;
@@ -339,17 +331,54 @@ void getTimeStamp(char* pTimeStamp, int buffSize) {
 }
 
 int main() {
+    bool shutDownServer = false;
+    int num_ready_fds = 0;
+
     Denon Denon;
     IRServer Server(RX_PORT, Denon);
 
-    bool shutDownServer = false;
+    /* Set up file descriptofs for select() */
+    fd_set read_fds;
+    FD_ZERO(&read_fds);
+
+    /* Add socket fd to monitoring */
+    FD_SET(Server.GetSocketFdId(), &read_fds);
+
+    /* Set up select() timeout */
+    struct timeval timeout;
+    timeout.tv_sec = 20;
+    timeout.tv_usec = 0;
+
     while (!shutDownServer) {
-        Server.ReceiveMessage();
-        Server.SendMessage();
-        if (Server.GetCmdCode() == 17) {
-            shutDownServer = true;
+        num_ready_fds = select(Server.GetSocketFdId() + 1, &read_fds, NULL, NULL, &timeout);
+
+        if (num_ready_fds < 0) {
+            std::cerr << "select() error" << std::endl;
+            std::cout 
+            << ", sfd=" << Server.GetSocketFdId() 
+            << ", numfds=" << num_ready_fds
+            << ", rfds=" << *read_fds.fds_bits
+            << std::endl;
+        } else if (num_ready_fds == 0) {
+            // Select timeout
+        } else {
+            // Check ready descriptors
+            if (FD_ISSET(Server.GetSocketFdId(), &read_fds)) {
+                Server.ReceiveMessage();
+                Server.SendMessage();
+                if (Server.GetCmdCode() == 88) {
+                    shutDownServer = true;
+                }
+            }
         }
+
+        timeout.tv_sec = 2;
+        timeout.tv_usec = 0;
+
+        FD_SET(Server.GetSocketFdId(), &read_fds);
     }
+
+    close(Server.GetSocketFdId());
     return 0;
 }
 
