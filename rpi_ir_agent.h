@@ -121,6 +121,7 @@ public:
     void PrintState();
     std::string SerializeDenonState();
     int GetVolume();
+    int GetPowerState();
     void SetVolume(int vol);
 private:
     int             _volume;

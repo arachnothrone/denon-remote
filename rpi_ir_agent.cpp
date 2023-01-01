@@ -103,6 +103,10 @@ void Denon::SetVolume(int vol) {
     _volume = vol;
 }
 
+int Denon::GetPowerState() {
+    return _power;
+}
+
 SocketConnection::SocketConnection(const int rxport) {
     _rxPort = rxport;
     _sockfd = socket(AF_INET, SOCK_DGRAM, 0); // <---- err
@@ -333,6 +337,12 @@ void getTimeStamp(char* pTimeStamp, int buffSize) {
 int main() {
     bool shutDownServer = false;
     int num_ready_fds = 0;
+    time_t currentTime;
+    struct tm* tm;
+    struct tm tm_off;
+    tm_off.tm_hour = 20;
+    tm_off.tm_min = 0;
+    tm_off.tm_sec = 15;
 
     Denon Denon;
     IRServer Server(RX_PORT, Denon);
@@ -346,7 +356,7 @@ int main() {
 
     /* Set up select() timeout */
     struct timeval timeout;
-    timeout.tv_sec = 20;
+    timeout.tv_sec = 5;
     timeout.tv_usec = 0;
 
     while (!shutDownServer) {
@@ -372,10 +382,26 @@ int main() {
             }
         }
 
-        timeout.tv_sec = 2;
+        timeout.tv_sec = 5;
         timeout.tv_usec = 0;
 
         FD_SET(Server.GetSocketFdId(), &read_fds);
+
+
+        /* Check time to switch off */
+        currentTime = time(NULL);
+        tm = localtime(&currentTime);
+
+        if ((tm->tm_sec >= tm_off.tm_sec) && (Denon.GetPowerState()) == ON) {
+            std::cout << "Automatic Switch Off (" 
+                      << tm->tm_hour << "-"
+                      << tm->tm_min << "-"
+                      << tm->tm_sec << ")"
+                      << std::endl;
+            system("irsend SEND_ONCE Denon_RC-978 PWR_OFF");
+            Denon.SetPower(OFF);
+        }
+
     }
 
     close(Server.GetSocketFdId());
