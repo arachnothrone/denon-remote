@@ -17,6 +17,7 @@
 #include <netinet/in.h>
 #include <time.h>
 #include <cstring>
+#include <getopt.h>
 #include "rpi_ir_agent.h"
 
 #include <unistd.h>     // close socket
@@ -334,15 +335,41 @@ void getTimeStamp(char* pTimeStamp, int buffSize) {
     }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     bool shutDownServer = false;
     int num_ready_fds = 0;
     time_t currentTime;
     struct tm* tm;
-    struct tm tm_off;
-    tm_off.tm_hour = 20;
-    tm_off.tm_min = 0;
-    tm_off.tm_sec = 15;
+    struct tm tm_off;       // Automatic switch off time
+    int cli_options;
+
+    while ((cli_options = getopt(argc, argv, "h:m:s:")) != -1) {
+        switch (cli_options)
+        {
+        case 'h':
+            tm_off.tm_hour = atoi(optarg);
+            break;
+        case 'm':
+            tm_off.tm_min = atoi(optarg);
+            break;
+        case 's':
+            tm_off.tm_sec = atoi(optarg);
+            break;
+        
+        default:
+            std::cout << "To start with automatic switch-off use: " << argv[0] << " [-h hour -m min -s sec]" << std::endl;
+            std::cout << "Not using automatic switch off" << std::endl;
+            tm_off.tm_hour = 0;
+            tm_off.tm_min = 0;
+            tm_off.tm_sec = 0;
+            break;
+        }
+    }
+
+    std::cout << "Automatic Power Off at: " 
+                << tm_off.tm_hour << ":" 
+                << tm_off.tm_min << ":" 
+                << tm_off.tm_sec << std::endl; 
 
     Denon Denon;
     IRServer Server(RX_PORT, Denon);
@@ -392,7 +419,7 @@ int main() {
         currentTime = time(NULL);
         tm = localtime(&currentTime);
 
-        if ((tm->tm_sec >= tm_off.tm_sec) && (Denon.GetPowerState()) == ON) {
+        if ((tm->tm_hour >= tm_off.tm_hour) && (tm->tm_min >= tm_off.tm_min) && (Denon.GetPowerState()) == ON) {
             std::cout << "Automatic Switch Off (" 
                       << tm->tm_hour << "-"
                       << tm->tm_min << "-"
@@ -408,7 +435,7 @@ int main() {
     return 0;
 }
 
-
+/* Remote control mapping functions */
 void FuncDimmer(Denon& dState) {
     dState.UpdateDimmer();
 }
