@@ -29,6 +29,8 @@
 #define RXMSGCMDDESCRSZ     11
 #define RXMSGCMDPARVAL      16
 #define RXMSGCMDPARVALSZ    2
+#define RXMSGCMDPARAPOFF    15
+#define RXMSGCMDPARAPOFFSZ  1
 
 typedef enum
 {
@@ -86,16 +88,16 @@ struct TX_MSG_T {
 
 typedef enum {
     CMD_GETSTATE,
-    CMD_DIMMER, 
-    CMD_KEY_VOLUMEUP, 
-    CMD_KEY_VOLUMEDOWN, 
+    CMD_DIMMER,
+    CMD_KEY_VOLUMEUP,
+    CMD_KEY_VOLUMEDOWN,
     CMD_PWR_ON,
     CMD_PWR_OFF,
     CMD_KEY_MUTING,
     CMD_CH5CH7STEREO,
     CMD_DSPSIMULATION,
     CMD_STANDARD,
-    CMD_CINEMA, 
+    CMD_CINEMA,
     CMD_MUSIC,
     CMD_DIRECT,
     CMD_STEREO,
@@ -103,9 +105,10 @@ typedef enum {
     CMD_INPUT_MODE,
     CMD_INPUT_ANALOG,
     CMD_INPUT_EXTIN,
-    CMD_INCREASEVOL, 
-    CMD_DECREASEVOL, 
+    CMD_INCREASEVOL,
+    CMD_DECREASEVOL,
     CMD_SERVERSTOP = 40,
+    CMD_AUTOPWROFF,
     CMD_CALIBRATE_VOL = 99
 } AVRCMD_E;
 
@@ -122,7 +125,9 @@ public:
     std::string SerializeDenonState();
     int GetVolume();
     int GetPowerState();
+    int GetAutoPowerOffEnable();
     void SetVolume(int vol);
+    void SetAutoPowerOffEnable(STATE_BINARY autoPoff);
 private:
     int             _volume;
     STATE_MODE      _stereoMode;
@@ -130,6 +135,7 @@ private:
     STATE_BINARY    _mute;
     STATE_DIM       _dimmer;
     STATE_INPUT     _input;
+    STATE_BINARY    _autoPwrOffEnable;
 };
 
 using CmdExecutor = void (*)(Denon& dstate);

@@ -104,8 +104,16 @@ void Denon::SetVolume(int vol) {
     _volume = vol;
 }
 
+void Denon::SetAutoPowerOffEnable(STATE_BINARY autoPoff) {
+    _autoPwrOffEnable = autoPoff;
+}
+
 int Denon::GetPowerState() {
     return _power;
+}
+
+int Denon::GetAutoPowerOffEnable() {
+    return _autoPwrOffEnable;
 }
 
 SocketConnection::SocketConnection(const int rxport) {
@@ -202,10 +210,17 @@ void IRServer::Deserialize(const std::string& msg) {
     int diffVolSign = 1;
     _rxMessage.msgPrefix = msg.substr(RXMSGPREF, RXMSGPREFSZ);
     _rxMessage.cmdCode = stoi(msg.substr(RXMSGCMDCODE, RXMSGCMDCODESZ));
-    _rxMessage.cmdDescription = msg.substr(RXMSGCMDDESCR, RXMSGCMDDESCRSZ);
+    _rxMessage.cmdDescription = msg.substr(RXMSGCMDDESCR, RXMSGCMDDESCRSZ); //TODO: remove description
+    
+    /* Parse Increase/decrease Volume parameter value */
     if (_rxMessage.cmdCode >= CMD_INCREASEVOL && _rxMessage.cmdCode <= CMD_DECREASEVOL) {
         if (_rxMessage.cmdCode == CMD_DECREASEVOL) {diffVolSign = -1;}
         _rxMessage.cmdParamValue = stoi(msg.substr(RXMSGCMDPARVAL, RXMSGCMDPARVALSZ)) * diffVolSign;
+    }
+
+    /* Parse Auto Power Off Enable parameter value */
+    if (_rxMessage.cmdCode == CMD_AUTOPWROFF) {
+        _rxMessage.cmdParamValue = stoi(msg.substr(RXMSGCMDPARAPOFF, RXMSGCMDPARAPOFFSZ));
     }
 }
 
@@ -296,6 +311,9 @@ bool IRServer::SendIrCommand(int commandCode) {
             break;
         case CMD_INCREASEVOL ... CMD_DECREASEVOL:
             SetVolumeTo(_denonState.GetVolume() + _rxMessage.cmdParamValue);
+            break;
+        case CMD_AUTOPWROFF:
+            _denonState.SetAutoPowerOffEnable((STATE_BINARY)_rxMessage.cmdParamValue);
             break;
         case CMD_CALIBRATE_VOL:
             SetMinimumVolume(3.75);     // 3.75 sec - time interval of sending continuous volume down command:
@@ -419,7 +437,10 @@ int main(int argc, char* argv[]) {
         currentTime = time(NULL);
         tm = localtime(&currentTime);
 
-        if ((tm->tm_hour >= tm_off.tm_hour) && (tm->tm_min >= tm_off.tm_min) && (Denon.GetPowerState()) == ON) {
+        if ((tm->tm_hour >= tm_off.tm_hour) && 
+            (tm->tm_min >= tm_off.tm_min) && 
+            (Denon.GetPowerState() == ON) && 
+            (Denon.GetAutoPowerOffEnable() == ON)) {
             std::cout << "Automatic Switch Off (" 
                       << tm->tm_hour << "-"
                       << tm->tm_min << "-"
