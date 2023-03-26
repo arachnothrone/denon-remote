@@ -456,6 +456,28 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
+/* Print Denon state to standard output */
+void printDenonState(Denon& dState) {
+    std::cout << "Power: " << dState.GetPowerState() << std::endl;
+    std::cout << "Mute: " << dState.GetMuteState() << std::endl;
+    std::cout << "Volume: " << dState.GetVolume() << std::endl;
+    std::cout << "Dimmer: " << dState.GetDimmerState() << std::endl;
+    std::cout << "Auto Power Off: " << dState.GetAutoPowerOffEnable() << std::endl;
+    std::cout << "Stereo Mode: " << dState.GetStereoMode() << std::endl;
+}
+
+/* Print Server state to standard output */
+void printServerState(IRServer& server) {
+    std::cout << "Server state:" << std::endl;
+    std::cout << "Socket fd: " << server.GetSocketFdId() << std::endl;
+    std::cout << "Command code: " << server.GetCmdCode() << std::endl;
+    std::cout << "Command: " << server.GetCmd() << std::endl;
+    std::cout << "Message: " << server.GetMessage() << std::endl;
+    std::cout << "Message length: " << server.GetMessageLength() << std::endl;
+    std::cout << "Message buffer: " << server.GetMessageBuffer() << std::endl;
+    std::cout << "Message buffer length: " << server.GetMessageBufferLength() << std::endl;
+}
+
 /* Remote control mapping functions */
 void FuncDimmer(Denon& dState) {
     dState.UpdateDimmer();
