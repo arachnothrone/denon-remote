@@ -116,9 +116,25 @@ int Denon::GetAutoPowerOffEnable() {
     return _autoPwrOffEnable;
 }
 
+int Denon::GetMuteState() {
+    return _mute;
+}
+
+int Denon::GetStereoMode() {
+    return _stereoMode;
+}
+
+int Denon::GetDimmerState() {
+    return _dimmer;
+}
+
 SocketConnection::SocketConnection(const int rxport) {
     _rxPort = rxport;
     _sockfd = socket(AF_INET, SOCK_DGRAM, 0); // <---- err
+
+    // // Set non-blocking mode
+    // int flags = fcntl(sockfd, F_GETFL, 0);
+    // fcntl(sockfd, F_SETFL, flags | O_NONBLOCK);
     
     memset(&_serverAddr, 0, sizeof(_serverAddr));
     memset(&_clientAddr, 0, sizeof(_clientAddr));
@@ -244,6 +260,26 @@ int IRServer::GetCmdCode() {
     return _rxMessage.cmdCode;
 }
 
+int IRServer::GetMessageBufferLength() {
+    return RX_BUFFER_SIZE;
+}
+
+std::string IRServer::GetCmd() {
+    return _rxMessage.cmdDescription;
+}
+
+std::string IRServer::GetMessage() {
+    return rawMessage /* TODO */;
+}
+
+std::string IRServer::GetMessageBuffer() {
+    return "" /* TODO */;
+}
+
+int IRServer::GetMessageLength() {
+    return 0 /* TODO */;
+}
+
 void IRServer::SetVolumeTo(int value) {
     int i, deltaVol;      
     struct timespec ts;     // 80 ms (was 120 ms = 12e7) delay
@@ -263,7 +299,6 @@ void IRServer::SetVolumeTo(int value) {
 
     for (i = 0; i < deltaVol; i++) {
         if (_denonState.GetVolume() >= VOL_MAX_LIMIT) {
-            //printf("SetVolumeTo: Maximum reached (%d dB)\n", VOL_MAX_LIMIT);
             std::cout << "SetVolumeTo: Maximum reached (" << VOL_MAX_LIMIT << " dB)" << std::endl;
             break;
         } else {
@@ -293,6 +328,7 @@ void IRServer::SetMinimumVolume(double timeIntervalSec) {
     _denonState.SetVolume(-70);
 }
 
+/* TODO: Rename to ExecuteCommand */
 bool IRServer::SendIrCommand(int commandCode) {
     bool result = true;
     std::string command;
@@ -310,7 +346,12 @@ bool IRServer::SendIrCommand(int commandCode) {
             _AVRCMDMAP.at(commandCode).second(_denonState);
             break;
         case CMD_INCREASEVOL ... CMD_DECREASEVOL:
-            SetVolumeTo(_denonState.GetVolume() + _rxMessage.cmdParamValue);
+            try {
+                SetVolumeTo(_denonState.GetVolume() + _rxMessage.cmdParamValue);
+            } catch(const std::exception& e) {
+                std::cerr << e.what() << '\n';
+            }
+
             break;
         case CMD_AUTOPWROFF:
             _denonState.SetAutoPowerOffEnable((STATE_BINARY)_rxMessage.cmdParamValue);

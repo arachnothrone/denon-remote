@@ -7,7 +7,8 @@ import socket
 
 USAGE = "USAGE:   python3 client.py <cmdCode> [<serverAddr> <serverPort>]\n" \
         "example: python3 client.py CMD04_PWR_ON 127.0.0.1 55000\n" \
-        "         python3 client.py CMD04_PWR_ON\n"
+        "         python3 client.py CMD04_PWR_ON\n" \
+        "         python3 client.py CMD18INCREASEVOL05 127.0.0.1 19001\n"
 
 if len(sys.argv) < 2:
     sys.exit(USAGE)

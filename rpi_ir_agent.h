@@ -126,6 +126,9 @@ public:
     int GetVolume();
     int GetPowerState();
     int GetAutoPowerOffEnable();
+    int GetStereoMode();
+    int GetMuteState();
+    int GetDimmerState();
     void SetVolume(int vol);
     void SetAutoPowerOffEnable(STATE_BINARY autoPoff);
 private:
@@ -185,6 +188,11 @@ public:
     bool    SendIrCommand(int commandCode);
     void    SetVolumeTo(int value);
     void    SetMinimumVolume(double timeIntervalSec);
+    int     GetMessageBufferLength();
+    std::string GetCmd();
+    std::string GetMessage();
+    std::string GetMessageBuffer();
+    int GetMessageLength();
 private:
     RX_MSG_T    _rxMessage;
     TX_MSG_T    _txMessage;
