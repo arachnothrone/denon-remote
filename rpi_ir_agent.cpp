@@ -30,6 +30,7 @@ Denon::Denon() {
     _mute = OFF;
     _dimmer = LEVEL0;
     _input = INPUTMODE;
+    _autoPwrOffEnable = ON;
 };
 
 void Denon::UpdateDimmer() {
@@ -82,6 +83,7 @@ void Denon::PrintState() {
         ", mute=" << _mute <<
         ", dimmer=" << _dimmer <<
         ", input=" << _input <<
+        ", autoPwrOffEnable=" << _autoPwrOffEnable <<
         std::endl;
 }
 
@@ -92,7 +94,8 @@ std::string Denon::SerializeDenonState() {
         std::to_string(_mute) + "," + 
         std::to_string(_stereoMode) + "," + 
         std::to_string(_input) + "," + 
-        std::to_string(_dimmer)
+        std::to_string(_dimmer) + "," +
+        std::to_string(_autoPwrOffEnable)
     );
 }
 
@@ -460,8 +463,14 @@ int main(int argc, char* argv[]) {
         } else {
             // Check ready descriptors
             if (FD_ISSET(Server.GetSocketFdId(), &read_fds)) {
+
+                /* Receive and process the command */
                 Server.ReceiveMessage();
+
+                /* Alway send current state when receiving any command */
                 Server.SendMessage();
+
+                /* Temporary command for debug. TODO: remove or improve */
                 if (Server.GetCmdCode() == 88) {
                     shutDownServer = true;
                 }
