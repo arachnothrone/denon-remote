@@ -358,6 +358,9 @@ bool IRServer::SendIrCommand(int commandCode) {
             break;
         case CMD_AUTOPWROFF:
             _denonState.SetAutoPowerOffEnable((STATE_BINARY)_rxMessage.cmdParamValue);
+            if (_denonState.GetAutoPowerOffEnable() == ON) {
+                std::cout << "Automatic Power Off enabled." << std::endl;
+            }
             break;
         case CMD_CALIBRATE_VOL:
             SetMinimumVolume(3.75);     // 3.75 sec - time interval of sending continuous volume down command:
@@ -428,6 +431,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    std::cout << "Starting IR server, RX_PORT=" << RX_PORT << std::endl;
     std::cout << "Automatic Power Off at: " 
                 << tm_off.tm_hour << ":" 
                 << tm_off.tm_min << ":" 
