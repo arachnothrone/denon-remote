@@ -115,6 +115,7 @@ typedef enum {
 class Denon {
 public:
     Denon();
+    Denon(int vol, STATE_MODE mode, STATE_BINARY pwr, STATE_BINARY mute, STATE_DIM dim, STATE_INPUT input, STATE_BINARY autoPwrOff);
     void UpdateDimmer();
     void VolumeChangeDb(int dbDelta);
     void SetPower(STATE_BINARY pwr);

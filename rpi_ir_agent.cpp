@@ -33,6 +33,17 @@ Denon::Denon() {
     _autoPwrOffEnable = ON;
 };
 
+Denon::Denon(int vol, STATE_MODE mode, STATE_BINARY pwr, STATE_BINARY mute, STATE_DIM dim, 
+             STATE_INPUT input, STATE_BINARY autoPwrOff) {
+    _volume = vol;
+    _stereoMode = mode;
+    _power = pwr;
+    _mute = mute;
+    _dimmer = dim;
+    _input = input;
+    _autoPwrOffEnable = autoPwrOff;
+};
+
 void Denon::UpdateDimmer() {
     if (_dimmer < LEVEL3) {
         _dimmer = (STATE_DIM)((int)_dimmer + 1);
@@ -185,17 +196,15 @@ std::string SocketConnection::Recv() {
 
     char time_stmp[] = "0000-00-00 00:00:00";
     getTimeStamp(time_stmp, sizeof(time_stmp));
-    printf("%s Received request: %s [%s:%0d]\n", 
-        time_stmp, 
-        _buffer, 
-        inet_ntop(
-            AF_INET, 
-            &_clientAddr.sin_addr.s_addr, 
-            _clientAddrString, 
-            sizeof(_clientAddrString)
-        ), 
-        ntohs(_clientAddr.sin_port)
-    );
+
+    std::cout << time_stmp << " Received request: " << _buffer
+            << " [" << inet_ntop(
+                AF_INET,
+                &_clientAddr.sin_addr.s_addr,
+                _clientAddrString,
+                sizeof(_clientAddrString))
+            << ":" << ntohs(_clientAddr.sin_port) << "]"
+            << std::endl;
 
     result = _buffer;
     return result;
@@ -405,10 +414,11 @@ int main(int argc, char* argv[]) {
     int num_ready_fds = 0;
     time_t currentTime;
     struct tm* tm;
-    struct tm tm_off;       // Automatic switch off time
+    struct tm tm_off = {.tm_sec=0, .tm_min=0, .tm_hour=0};  // Automatic switch off time
     int cli_options;
+    int initVolume = -40;                                   // Initial volume level (actual vol is not set)
 
-    while ((cli_options = getopt(argc, argv, "h:m:s:")) != -1) {
+    while ((cli_options = getopt(argc, argv, "h:m:s:v:")) != -1) {
         switch (cli_options)
         {
         case 'h':
@@ -420,13 +430,16 @@ int main(int argc, char* argv[]) {
         case 's':
             tm_off.tm_sec = atoi(optarg);
             break;
-        
+        case 'v':
+            initVolume = atoi(optarg);
+            break;
         default:
             std::cout << "To start with automatic switch-off use: " << argv[0] << " [-h hour -m min -s sec]" << std::endl;
             std::cout << "Not using automatic switch off" << std::endl;
             tm_off.tm_hour = 0;
             tm_off.tm_min = 0;
             tm_off.tm_sec = 0;
+            initVolume = -40;
             break;
         }
     }
@@ -437,7 +450,7 @@ int main(int argc, char* argv[]) {
                 << tm_off.tm_min << ":" 
                 << tm_off.tm_sec << std::endl; 
 
-    Denon Denon;
+    Denon Denon(initVolume, STANDARD, OFF, OFF, LEVEL0, INPUTMODE, ON);
     IRServer Server(RX_PORT, Denon);
 
     /* Set up file descriptofs for select() */
