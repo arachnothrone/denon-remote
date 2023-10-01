@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string.h>
+#include <string>
 #include <map>
+#include <vector>
 #include <exception>
 
 #define RX_PORT         (19001)
@@ -21,6 +22,7 @@
 #endif
 
 // RX Message
+#define BYTE_SIZE           2   /* 1 byte = ASCII symbols in the message */
 #define RXMSGPREF           0
 #define RXMSGPREFSZ         3
 #define RXMSGCMDCODE        3
@@ -29,8 +31,11 @@
 #define RXMSGCMDDESCRSZ     11
 #define RXMSGCMDPARVAL      16
 #define RXMSGCMDPARVALSZ    2
-#define RXMSGCMDPARAPOFF    15
+#define RXMSGCMDPARAPOFF    15  /* CMD41AUTOPWROFF0 */
 #define RXMSGCMDPARAPOFFSZ  1
+#define RXMSGCMDPARMINARRSZ 2   /* For multiple parameters command, the minimum number of parameters is 2 */
+#define RXMSGCMDAPOPARNUM   19  /* CMD42AUTOPWROFFTIME03HHMMSS -> 03 - number of parameters, HH - hours, etc */
+#define RXMSGCMDAPOPARNUMSZ 2
 
 typedef enum
 {
@@ -76,10 +81,11 @@ typedef struct MEM_STATE_T_TAG
 } MEM_STATE_T;
 
 struct RX_MSG_T {
-    std::string msgPrefix;
-    int         cmdCode;
-    std::string cmdDescription;
-    int         cmdParamValue;
+    std::string         msgPrefix;
+    int                 cmdCode;
+    std::string         cmdDescription;
+    int                 cmdParamValue;  /* For single-parameter command */
+    std::vector<int>    cmdParamArray;  /* Multiple parameters should be prefixed with the number of parameters */
 };
 
 struct TX_MSG_T {
@@ -87,7 +93,10 @@ struct TX_MSG_T {
 };
 
 typedef enum {
+    /* Command code 00 - get current AV parameters state */
     CMD_GETSTATE,
+
+    /* Command codes 01 - 39 reserved for direct translation into remote control IR commands */
     CMD_DIMMER,
     CMD_KEY_VOLUMEUP,
     CMD_KEY_VOLUMEDOWN,
@@ -107,8 +116,11 @@ typedef enum {
     CMD_INPUT_EXTIN,
     CMD_INCREASEVOL,
     CMD_DECREASEVOL,
+
+    /* Command codes 40 - 99 */
     CMD_SERVERSTOP = 40,
     CMD_AUTOPWROFF,
+    CMD_AUTOPWROFFTIME,
     CMD_CALIBRATE_VOL = 99
 } AVRCMD_E;
 

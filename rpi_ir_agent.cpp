@@ -246,7 +246,7 @@ void SocketConnection::Send(const std::string msgString, const int msgStrSize) {
 IRServer::IRServer(const int rxport, Denon& dstate): SocketConnection(rxport), _denonState(dstate) {};
 
 void IRServer::Deserialize(const std::string& msg) {
-    std::string::size_type sz;
+    int messageSize = msg.size();
     int diffVolSign = 1;
     _rxMessage.msgPrefix = msg.substr(RXMSGPREF, RXMSGPREFSZ);
     _rxMessage.cmdCode = stoi(msg.substr(RXMSGCMDCODE, RXMSGCMDCODESZ));
@@ -261,6 +261,21 @@ void IRServer::Deserialize(const std::string& msg) {
     /* Parse Auto Power Off Enable parameter value */
     if (_rxMessage.cmdCode == CMD_AUTOPWROFF) {
         _rxMessage.cmdParamValue = stoi(msg.substr(RXMSGCMDPARAPOFF, RXMSGCMDPARAPOFFSZ));
+    }
+
+    /* Parse Auto Power Off Time parameter value */
+    if (_rxMessage.cmdCode == CMD_AUTOPWROFFTIME) {
+        int numberOfParams = stoi(msg.substr(RXMSGCMDAPOPARNUM, BYTE_SIZE));
+        if (numberOfParams >= BYTE_SIZE &&
+            numberOfParams <= (messageSize - (RXMSGCMDAPOPARNUM + BYTE_SIZE)) / BYTE_SIZE) {
+            _rxMessage.cmdParamArray.clear();
+            _rxMessage.cmdParamArray.resize(numberOfParams);
+            for (int i = 0; i < numberOfParams; i++) {
+                _rxMessage.cmdParamArray[i] = stoi(msg.substr(RXMSGCMDAPOPARNUM + BYTE_SIZE + i * BYTE_SIZE, BYTE_SIZE));
+            }
+        } else {
+            /* TODO: Declared number of parameters can't fit in the message */
+        }
     }
 }
 
@@ -356,11 +371,13 @@ void IRServer::SetMinimumVolume(double timeIntervalSec) {
 bool IRServer::SendIrCommand(int commandCode) {
     bool result = true;
     std::string command;
+    struct tm tm_off = {.tm_sec=0, .tm_min=0, .tm_hour=0};
 
     switch (commandCode) {
         case CMD_GETSTATE:
             _denonState.PrintState();
             break;
+
         case CMD_DIMMER ... CMD_INPUT_EXTIN:
             // Execute LIRC IR command
             command = "irsend SEND_ONCE Denon_RC-978 " + _AVRCMDMAP.at(commandCode).first;
@@ -369,6 +386,7 @@ bool IRServer::SendIrCommand(int commandCode) {
             // Call corresponding function, pass it the state pointer
             _AVRCMDMAP.at(commandCode).second(_denonState);
             break;
+
         case CMD_INCREASEVOL ... CMD_DECREASEVOL:
             try {
                 SetVolumeTo(_denonState.GetVolume() + _rxMessage.cmdParamValue);
@@ -377,18 +395,29 @@ bool IRServer::SendIrCommand(int commandCode) {
             }
 
             break;
+
         case CMD_AUTOPWROFF:
             _denonState.SetAutoPowerOffEnable((STATE_BINARY)_rxMessage.cmdParamValue);
             if (_denonState.GetAutoPowerOffEnable() == ON) {
                 std::cout << "Automatic Power Off enabled." << std::endl;
             }
             break;
+
+        case CMD_AUTOPWROFFTIME:
+            tm_off.tm_hour = _rxMessage.cmdParamArray[0];
+            tm_off.tm_min = _rxMessage.cmdParamArray[1];
+            tm_off.tm_sec = _rxMessage.cmdParamArray[2];
+            _denonState.SetAutoPowerOffTime(&tm_off);
+            // TODO: std::cout << "Automatic Power Off time set to " <<  << std::endl;
+            break;
+
         case CMD_CALIBRATE_VOL:
             SetMinimumVolume(3.75);     // 3.75 sec - time interval of sending continuous volume down command:
                                         // ~ 75 ms / 1 dB, lower bound = -70 dB => from -20 to -70 (50 dB): 3750 ms
             SetVolumeTo(-40);           // set calibrated level to -40 dB, from -70 it takes ~9 sec
                                         // Calibration cycle takes ~13 sec
             break;
+
         default:
             /* Unknown command */
             break;
