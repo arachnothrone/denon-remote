@@ -122,6 +122,18 @@ void Denon::SetAutoPowerOffEnable(STATE_BINARY autoPoff) {
     _autoPwrOffEnable = autoPoff;
 }
 
+void Denon::SetAutoPowerOffTime(const struct tm* const timeinfo) {
+    _autoPwrOffTime.tm_hour = timeinfo->tm_hour;
+    _autoPwrOffTime.tm_min = timeinfo->tm_min;
+    _autoPwrOffTime.tm_sec = timeinfo->tm_sec;
+}
+
+void Denon::GetAutoPowerOffTime(struct tm* timeinfo) const {
+    timeinfo->tm_hour = _autoPwrOffTime.tm_hour;
+    timeinfo->tm_min = _autoPwrOffTime.tm_min;
+    timeinfo->tm_sec = _autoPwrOffTime.tm_sec;
+}
+
 int Denon::GetPowerState() {
     return _power;
 }
@@ -452,6 +464,7 @@ int main(int argc, char* argv[]) {
 
     Denon Denon(initVolume, STANDARD, OFF, OFF, LEVEL0, INPUTMODE, ON);
     IRServer Server(RX_PORT, Denon);
+    Denon.SetAutoPowerOffTime(&tm_off);
 
     /* Set up file descriptofs for select() */
     fd_set read_fds;
@@ -503,6 +516,7 @@ int main(int argc, char* argv[]) {
         /* Check time to switch off */
         currentTime = time(NULL);
         tm = localtime(&currentTime);
+        Denon.GetAutoPowerOffTime(&tm_off);
 
         if ((tm->tm_hour >= tm_off.tm_hour) && 
             (tm->tm_min >= tm_off.tm_min) && 

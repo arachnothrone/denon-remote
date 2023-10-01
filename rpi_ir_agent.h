@@ -132,6 +132,8 @@ public:
     int GetDimmerState();
     void SetVolume(int vol);
     void SetAutoPowerOffEnable(STATE_BINARY autoPoff);
+    void SetAutoPowerOffTime(const struct tm* const timeinfo);
+    void GetAutoPowerOffTime(struct tm* timeinfo) const;
 private:
     int             _volume;
     STATE_MODE      _stereoMode;
@@ -140,6 +142,7 @@ private:
     STATE_DIM       _dimmer;
     STATE_INPUT     _input;
     STATE_BINARY    _autoPwrOffEnable;
+    struct tm       _autoPwrOffTime;
 };
 
 using CmdExecutor = void (*)(Denon& dstate);
