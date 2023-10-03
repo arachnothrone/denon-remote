@@ -93,35 +93,37 @@ struct TX_MSG_T {
 };
 
 typedef enum {
+    /* Command codes, with client examples */
+
     /* Command code 00 - get current AV parameters state */
-    CMD_GETSTATE,
+    CMD_GETSTATE,           /* CMD00GETSTATE */
 
     /* Command codes 01 - 39 reserved for direct translation into remote control IR commands */
-    CMD_DIMMER,
-    CMD_KEY_VOLUMEUP,
-    CMD_KEY_VOLUMEDOWN,
-    CMD_PWR_ON,
-    CMD_PWR_OFF,
-    CMD_KEY_MUTING,
-    CMD_CH5CH7STEREO,
-    CMD_DSPSIMULATION,
-    CMD_STANDARD,
-    CMD_CINEMA,
-    CMD_MUSIC,
-    CMD_DIRECT,
-    CMD_STEREO,
-    CMD_VIRTSURROUND,
-    CMD_INPUT_MODE,
-    CMD_INPUT_ANALOG,
-    CMD_INPUT_EXTIN,
-    CMD_INCREASEVOL,
-    CMD_DECREASEVOL,
+    CMD_DIMMER,             /* CMD01DIMMER */
+    CMD_KEY_VOLUMEUP,       /* CMD02VOLUMEUP__ */
+    CMD_KEY_VOLUMEDOWN,     /* CMD03VOLUMEDOWN */
+    CMD_PWR_ON,             /* CMD04POWERON */
+    CMD_PWR_OFF,            /* CMD05POWEROFF */
+    CMD_KEY_MUTING,         /* CMD06MUTE */
+    CMD_CH5CH7STEREO,       /* CMD075CH7CHSTEREO */
+    CMD_DSPSIMULATION,      /* CMD08DSPSIMULATION */
+    CMD_STANDARD,           /* CMD09STANDARD */
+    CMD_CINEMA,             /* CMD10CINEMA */
+    CMD_MUSIC,              /* CMD11MUSIC */
+    CMD_DIRECT,             /* CMD12DIRECT */
+    CMD_STEREO,             /* CMD13STEREO */
+    CMD_VIRTSURROUND,       /* CMD14VIRTSURROUND */
+    CMD_INPUT_MODE,         /* CMD15INPUTMODE */
+    CMD_INPUT_ANALOG,       /* CMD16INPUTANALOG */
+    CMD_INPUT_EXTIN,        /* CMD17INPUTEXTIN */
+    CMD_INCREASEVOL,        /* CMD18INCREASEVOL10 - increase by 10 dB */
+    CMD_DECREASEVOL,        /* CMD19DECREASEVOL03 - decrease by 3 dB */
 
     /* Command codes 40 - 99 */
     CMD_SERVERSTOP = 40,
-    CMD_AUTOPWROFF,
-    CMD_AUTOPWROFFTIME,
-    CMD_CALIBRATE_VOL = 99
+    CMD_AUTOPWROFF,         /* CMD41AUTOPWROFF0 - disable auto power off */
+    CMD_AUTOPWROFFTIME,     /* CMD42AUTOPWROFFTIME03HHMMSS - set auto power off time to HH:MM:SS (24h format, 03 - number of parameters) */
+    CMD_CALIBRATE_VOL = 99  /* CMD99CALIBRATE_VOL - set real vol & state variable to -40 dB */
 } AVRCMD_E;
 
 class Denon {
