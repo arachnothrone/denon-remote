@@ -5,4 +5,5 @@ UserInterfaceState.xcuserstate
 *.xcf
 .vscode/
 *.dSYM
+__pycache__
 
