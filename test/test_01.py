@@ -6,26 +6,35 @@ def test_01_start_stop_server():
     Start server and wait for shutdown command
     '''
 
-    binpath = "../rpi_ag.out"
-    args = ["-h 19", "-m 20", "-s 22", "-v 42"]
-    command = ["../rpi_ag.out", "-h 19", "-m 20", "-s 22", "-v 42"]
+    server_command = ["../rpi_ag.out"]
+    server_args = ["-h 19", "-m 20", "-s 22", "-v -42"]
+
+    client_command = ["python3", "../client.py"]
+    cliargs = ["CMD88SHUTDOWN", "127.0.0.1", "19001"]
 
     # Create a ThreadPoolExecutor
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         # Submit the task to run the process
-        future = executor.submit(tp.start_environment, binpath, args)
+        future1 = executor.submit(tp.run_command, server_command, server_args)
+        future2 = executor.submit(tp.run_command, client_command, cliargs, delay=3)
 
-        # Wait for the task to complete
-        concurrent.futures.wait([future])
+        # Wait for all tasks to complete
+        concurrent.futures.wait([future1, future2], timeout=None, return_when='ALL_COMPLETED')
 
         # Get the result from the future
-        stdout, stderr = future.result()
+        stdout1, stderr1 = future1.result()
+        stdout2, stderr2 = future2.result()
 
-    # Print the output
-    if stdout:
-        print("Process Output:", stdout)
-    if stderr:
-        print("Process Error:", stderr)
+    for stdout, stderr in [(stdout1, stderr1), (stdout2, stderr2)]:
+        # Print the output
+        if stdout:
+            print("Process Output:", stdout)
+        if stderr:
+            print("Process Error:", stderr)
 
-    assert "Starting IR server" in stdout.decode()
-    assert "Response sent: 0,42,0,2,0,0,1" in stdout.decode()
+    assert "Starting IR server" in stdout1.decode()
+    assert "Response sent: 0,-42,0,2,0,0,1" in stdout1.decode()
+
+    # Check client received response from server
+    assert "0,-42,0,2,0,0,1" in stdout2.decode()
+    
