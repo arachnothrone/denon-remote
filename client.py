@@ -26,6 +26,7 @@ s = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
 for i in range(1):
     s.sendto("{}".format(cmd_code).encode(), (dest_addr, dest_port))
+    # TODO: receive using select() and timeout
     resp = s.recvfrom(1280)
     print(f"Command: {cmd_code}, Response: {resp}")
 

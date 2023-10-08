@@ -19,7 +19,7 @@ def test_SERVER_START_STOP():
         future2 = executor.submit(tp.run_command, client_command, cliargs, delay=3)
 
         # Wait for all tasks to complete
-        concurrent.futures.wait([future1, future2], timeout=None, return_when='ALL_COMPLETED')
+        concurrent.futures.wait([future1, future2], timeout=60, return_when='ALL_COMPLETED')
 
         # Get the result from the future
         stdout1, stderr1 = future1.result()
