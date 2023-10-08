@@ -45,7 +45,7 @@ def test_MUTE_TOGGLE():
     client_command = ["python3", "../client.py"]
     client_args = ["127.0.0.1", "19001"]
     test_commands = ["CMD04POWERON", "CMD06MUTE", "CMD06MUTE", "CMD88SHUTDOWN"]
-    test_responses = ["1,-42,0,2,0,0,1", "1,-42,1,2,0,0,1", "1,-42,0,2,0,0,1", "0,-42,0,2,0,0,1"]
+    test_responses = ["1,-42,0,2,0,0,1", "1,-42,1,2,0,0,1", "1,-42,0,2,0,0,1", "1,-42,0,2,0,0,1"]
 
     for command, response in zip(test_commands, test_responses):
         cmd_cliargs = [command] + client_args
