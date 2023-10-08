@@ -23,8 +23,10 @@ else:
     dest_port = 19001
 
 s = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+
 for i in range(1):
     s.sendto("{}".format(cmd_code).encode(), (dest_addr, dest_port))
     resp = s.recvfrom(1280)
-    print(resp)
+    print(f"Command: {cmd_code}, Response: {resp}")
 
+s.close()

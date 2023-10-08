@@ -1,7 +1,7 @@
 import test_platform as tp
 import concurrent.futures
 
-def test_01_start_stop_server():
+def test_SERVER_START_STOP():
     '''
     Start server and wait for shutdown command
     '''
