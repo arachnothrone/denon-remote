@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install PyTest
+      run: pip install pytest
+
     - name: Checkout code
       uses: actions/checkout@v2
 
