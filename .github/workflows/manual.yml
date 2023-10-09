@@ -1,9 +1,9 @@
 name: Build and Test
 
-on:
-  push:
-    branches:
-      - dev
+on: workflow_dispatch
+#   push:
+#     branches:
+#       - dev
 
 jobs:
   build-and-test:
