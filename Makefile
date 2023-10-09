@@ -40,6 +40,6 @@ debug: clean all
 test:
 	@pwd
 	@echo "Running tests..."
-	@cd test && pytest . -v
+	@cd test && pytest . -v $(PYTEST_FLAGS)
 
 .PHONY: all clean debug test
