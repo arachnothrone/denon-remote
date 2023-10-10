@@ -1,6 +1,13 @@
 name: Build and Test
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch
+    inputs:
+      pytestFlags:
+        description: 'PyTest Flags'
+        required: false
+        default: ''
+        type: string
 
 #   push:
 #     branches:
@@ -9,13 +16,6 @@ on: workflow_dispatch
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
-    inputs:
-      pytestFlags:
-        description: 'PyTest Flags'
-        required: false
-        default: ''
-        type: string
 
     steps:
     - name: Install PyTest
