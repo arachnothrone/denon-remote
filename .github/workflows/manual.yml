@@ -1,6 +1,14 @@
 name: Build and Test
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch
+    inputs:
+      pytestFlags:
+        description: 'PyTest Flags'
+        required: false
+        default: ''
+        type: string
+
 #   push:
 #     branches:
 #       - dev
@@ -23,4 +31,4 @@ jobs:
       run: sleep 10
 
     - name: Run Tests
-      run: make test
+      run: make test ${{ inputs.pytestFlags }}
