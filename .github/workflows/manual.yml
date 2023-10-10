@@ -1,13 +1,12 @@
 name: Build and Test
 
-on: 
-  workflow_dispatch
-    inputs:
-      pytestFlags:
-        description: 'PyTest Flags'
-        required: false
-        default: ''
-        type: string
+on: workflow_dispatch
+inputs:
+  pytestFlags:
+    description: 'PyTest Flags'
+    required: false
+    default: ''
+    type: string
 
 #   push:
 #     branches:
