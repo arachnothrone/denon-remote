@@ -10,6 +10,7 @@ def test_POWER_ON_OFF():
     server_thread = threading.Thread(target=tp.run_process, args=(server_command, server_args))
 
     server_thread.start()
+    time.sleep(2)
 
     client_command = ["python3", "../client.py"]
     client_args = ["127.0.0.1", "19001"]
@@ -30,6 +31,8 @@ def test_POWER_ON_OFF():
         assert command in stdout.decode()
         assert response in stdout.decode()
 
+        time.sleep(0.5)
+
     server_thread.join()
     time.sleep(2)
 
@@ -41,6 +44,7 @@ def test_MUTE_TOGGLE():
     server_thread = threading.Thread(target=tp.run_process, args=(server_command, server_args))
 
     server_thread.start()
+    time.sleep(2)
 
     client_command = ["python3", "../client.py"]
     client_args = ["127.0.0.1", "19001"]
@@ -52,12 +56,14 @@ def test_MUTE_TOGGLE():
         stdout, stderr = tp.run_command(client_command, cmd_cliargs, delay=1)
 
         if stdout:
-            print("Process Output:", stdout)
+            print(f"Command: {command}, expected response: {response}, Process Output: {stdout}")
         if stderr:
-            print("Process Error:", stderr)
+            print(f"Command: {command}, expected response: {response}, Process Error: {stderr}")
 
         assert command in stdout.decode()
         assert response in stdout.decode()
+
+        time.sleep(0.5)
 
     server_thread.join()
     time.sleep(2)
