@@ -31,4 +31,4 @@ jobs:
       run: sleep 10
 
     - name: Run Tests
-      run: make test ${{ inputs.pytestFlags }}
+      run: make test PYTEST_FLAGS="${{ inputs.pytestFlags }}"
