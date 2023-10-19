@@ -6,9 +6,13 @@ binlist=("rpi_ag.out" "ir_agent.out")
 
 # Check names in cli arguments:
 if [ $# -gt 0 ]; then
+    echo "Process names to kill: $@"
     for name in $@; do
         echo "Looking for $name ..."
-        pid=$(ps -ef | grep $name | grep -v grep | awk '{print $2}')
+        ps -ef | grep $name
+        echo "Debug: filtered output:"
+        ps -ef | grep $name | grep -v grep | grep -v killservers.sh
+        pid=$(ps -ef | grep $name | grep -v grep | grep -v killservers.sh | awk '{print $2}')
         echo "Found pid $pid"
         if ! [ -z $pid ]; then
             echo "Killing $name with pid $pid"
