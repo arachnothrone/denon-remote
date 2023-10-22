@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Kills all local running servers/clients. Takes process names from the 
 # predefined binlist if no arguments are given. 
