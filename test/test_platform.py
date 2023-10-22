@@ -34,3 +34,24 @@ def run_process(command, args, delay=0):
         return None
 
     return process
+
+def cleanup_environment(proc_names):
+    process = subprocess.Popen(["./kill_servers.sh"] + proc_names, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate(timeout=60)
+    return stdout, stderr
+
+def log_output(command, response, stdout, stderr):
+    cmd_clause = ""
+    resp_clause = ""
+    main_clause = "No output"
+
+    if command:
+        cmd_clause = f"Command: {command}, "
+    if response:
+        resp_clause = f"expected response: {response}, "    
+    if stdout:
+        main_clause = f"Process Output: {stdout}"
+    if stderr:
+        main_clause = f"Process Error: {stderr}"
+
+    print(f"{cmd_clause}{resp_clause}{main_clause}")

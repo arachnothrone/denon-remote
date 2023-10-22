@@ -1,10 +1,16 @@
 import test_platform as tp
 import concurrent.futures
+import time
 
 def test_SERVER_START_STOP():
     '''
     Start server and wait for shutdown command
     '''
+
+    # Perform cleanup in case of anything running
+    out, err = tp.cleanup_environment(["rpi_ag.out", "client.py"])
+    tp.log_output(None, None, out, err)
+    time.sleep(2)
 
     server_command = ["../rpi_ag.out"]
     server_args = ["-h 19", "-m 20", "-s 22", "-v -42"]
@@ -26,11 +32,7 @@ def test_SERVER_START_STOP():
         stdout2, stderr2 = future2.result()
 
     for stdout, stderr in [(stdout1, stderr1), (stdout2, stderr2)]:
-        # Print the output
-        if stdout:
-            print("Process Output:", stdout)
-        if stderr:
-            print("Process Error:", stderr)
+        tp.log_output(None, None, stdout, stderr)
 
     assert "Starting IR server" in stdout1.decode()
     assert "Response sent: 0,-42,0,2,0,0,1" in stdout1.decode()

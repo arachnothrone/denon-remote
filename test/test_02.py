@@ -4,6 +4,11 @@ import test_platform as tp
 
 
 def test_POWER_ON_OFF():
+    # Perform cleanup in case of anything running
+    out, err = tp.cleanup_environment(["rpi_ag.out", "client.py"])
+    tp.log_output(None, None, out, err)
+    time.sleep(2)
+
     # start server
     server_command = ["../rpi_ag.out"]
     server_args = ["-h 19", "-m 20", "-s 22", "-v -42"]
@@ -23,10 +28,7 @@ def test_POWER_ON_OFF():
         cmd_cliargs = [command] + client_args
         stdout, stderr = tp.run_command(client_command, cmd_cliargs, delay=1)
 
-        if stdout:
-            print("Process Output:", stdout)
-        if stderr:
-            print("Process Error:", stderr)
+        tp.log_output(command, response, stdout, stderr)
 
         assert command in stdout.decode()
         assert response in stdout.decode()
@@ -38,6 +40,11 @@ def test_POWER_ON_OFF():
 
 
 def test_MUTE_TOGGLE():
+    # Perform cleanup in case of anything running
+    out, err = tp.cleanup_environment(["rpi_ag.out", "client.py"])
+    tp.log_output(None, None, out, err)
+    time.sleep(2)
+
     # start server
     server_command = ["../rpi_ag.out"]
     server_args = ["-h 19", "-m 20", "-s 22", "-v -42"]
@@ -55,10 +62,7 @@ def test_MUTE_TOGGLE():
         cmd_cliargs = [command] + client_args
         stdout, stderr = tp.run_command(client_command, cmd_cliargs, delay=1)
 
-        if stdout:
-            print(f"Command: {command}, expected response: {response}, Process Output: {stdout}")
-        if stderr:
-            print(f"Command: {command}, expected response: {response}, Process Error: {stderr}")
+        tp.log_output(command, response, stdout, stderr)
 
         assert command in stdout.decode()
         assert response in stdout.decode()
