@@ -26,7 +26,7 @@ def test_POWER_ON_OFF():
     
     for command, response in zip(test_commands, test_responses):
         cmd_cliargs = [command] + client_args
-        stdout, stderr = tp.run_command(client_command, cmd_cliargs, delay=1)
+        stdout, stderr = tp.run_command(client_command, cmd_cliargs, delay=2)
 
         tp.log_output(command, response, stdout, stderr)
 
@@ -60,7 +60,7 @@ def test_MUTE_TOGGLE():
 
     for command, response in zip(test_commands, test_responses):
         cmd_cliargs = [command] + client_args
-        stdout, stderr = tp.run_command(client_command, cmd_cliargs, delay=1)
+        stdout, stderr = tp.run_command(client_command, cmd_cliargs, delay=2)
 
         tp.log_output(command, response, stdout, stderr)
 

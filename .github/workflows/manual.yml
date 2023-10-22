@@ -21,6 +21,9 @@ jobs:
     - name: Install PyTest
       run: pip install pytest
 
+    - name: Local date and time
+      run: date
+
     - name: Checkout code
       uses: actions/checkout@v3
 
