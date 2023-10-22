@@ -1,6 +1,7 @@
 import test_platform as tp
 import concurrent.futures
 import time
+import pytest
 
 def test_SERVER_START_STOP():
     '''
@@ -39,4 +40,19 @@ def test_SERVER_START_STOP():
 
     # Check client received response from server
     assert "0,-42,0,2,0,0,1" in stdout2.decode()
-    
+
+@pytest.mark.skip(reason="Not implemented")
+def test_SERVER_START_AFTER_APO_TIME_WITH_APO_ENABLED():
+    '''
+    Start the server with APO time past current time,
+    send POWERON command and check if power is OFF
+    '''
+    pass
+
+@pytest.mark.skip(reason="Not implemented")
+def test_SERVER_START_BEFORE_APO_TIME_WITH_APO_DISABLED():
+    '''
+    Start the server with APO time before current time,
+    send POWERON command and check if the power is ON
+    '''
+    pass

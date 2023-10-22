@@ -57,3 +57,11 @@ def log_output(command, response, stdout, stderr):
         main_clause = f"Process Error: {stderr}"
 
     print(f"{cmd_clause}{resp_clause}{main_clause}")
+
+
+def get_local_time():
+    l_time = time.localtime()
+    hour = l_time.tm_hour
+    minute = l_time.tm_min
+    second = l_time.tm_sec
+    return hour, minute, second

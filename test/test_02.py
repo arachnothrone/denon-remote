@@ -9,9 +9,12 @@ def test_POWER_ON_OFF():
     tp.log_output(None, None, out, err)
     time.sleep(2)
 
+    # get local environment time
+    hours, _, _ = tp.get_local_time()
+
     # start server
     server_command = ["../rpi_ag.out"]
-    server_args = ["-h 19", "-m 20", "-s 22", "-v -42"]
+    server_args = [f"-h {hours + 1}", "-m 20", "-s 22", "-v -42"]
     server_thread = threading.Thread(target=tp.run_process, args=(server_command, server_args))
 
     server_thread.start()
@@ -45,9 +48,12 @@ def test_MUTE_TOGGLE():
     tp.log_output(None, None, out, err)
     time.sleep(2)
 
+    # get local environment time
+    hours, _, _ = tp.get_local_time()
+
     # start server
     server_command = ["../rpi_ag.out"]
-    server_args = ["-h 19", "-m 20", "-s 22", "-v -42"]
+    server_args = [f"-h {hours + 1}", "-m 20", "-s 22", "-v -42"]
     server_thread = threading.Thread(target=tp.run_process, args=(server_command, server_args))
 
     server_thread.start()
