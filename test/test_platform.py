@@ -35,10 +35,12 @@ def run_process(command, args, delay=0):
 
     return process
 
+
 def cleanup_environment(proc_names):
-    process = subprocess.Popen(["./kill_servers.sh"] + proc_names, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(["../killservers.sh"] + proc_names, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
     stdout, stderr = process.communicate(timeout=60)
     return stdout, stderr
+
 
 def log_output(command, response, stdout, stderr):
     cmd_clause = ""
