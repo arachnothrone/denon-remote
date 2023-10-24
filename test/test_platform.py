@@ -50,9 +50,12 @@ def log_output(command, response, stdout, stderr):
     if command:
         cmd_clause = f"Command: {command}, "
     if response:
-        resp_clause = f"expected response: {response}, "    
+        resp_clause = f"expected response: {response}"
     if stdout:
-        main_clause = f"Process Output: {stdout}"
+        # Make a multiline output - convert to string and remove a trailing newline
+        bytestr = stdout.rstrip(b'\n')
+        stdout_string = b'\n\t'.join(bytestr.split(b'\n')).decode()
+        main_clause = f"\nProcess Output:\n\t{stdout_string}"
     if stderr:
         main_clause = f"Process Error: {stderr}"
 
