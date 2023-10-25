@@ -57,7 +57,7 @@ def log_output(command, response, stdout, stderr):
         stdout_string = b'\n\t'.join(bytestr.split(b'\n')).decode()
         main_clause = f"\nProcess Output:\n\t{stdout_string}"
     if stderr:
-        main_clause = f"Process Error: {stderr}"
+        main_clause += f"\nProcess Error:\n\t{stderr}"
 
     print(f"{cmd_clause}{resp_clause}{main_clause}")
 
