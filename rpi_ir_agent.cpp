@@ -486,8 +486,11 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    std::cout << "Starting IR server, RX_PORT=" << RX_PORT << std::endl;
-    std::cout << "Automatic Power Off at: " 
+    char time_stmp[] = "0000-00-00 00:00:00";
+    getTimeStamp(time_stmp, sizeof(time_stmp));
+
+    std::cout << time_stmp << " Starting IR server, RX_PORT=" << RX_PORT << std::endl;
+    std::cout << "                    Automatic Power Off at: "
                 << tm_off.tm_hour << ":" 
                 << tm_off.tm_min << ":" 
                 << tm_off.tm_sec << std::endl; 
@@ -527,7 +530,7 @@ int main(int argc, char* argv[]) {
                 /* Receive and process the command */
                 Server.ReceiveMessage();
 
-                /* Alway send current state when receiving any command */
+                /* Always send current state when receiving any command */
                 Server.SendMessage();
 
                 /* Temporary command for debug. TODO: remove or improve */
@@ -541,7 +544,6 @@ int main(int argc, char* argv[]) {
         timeout.tv_usec = 0;
 
         FD_SET(Server.GetSocketFdId(), &read_fds);
-
 
         /* Check time to switch off */
         currentTime = time(NULL);
@@ -560,7 +562,11 @@ int main(int argc, char* argv[]) {
         }
 
         if (performAPO) {
-            std::cout << "Automatic Switch Off (" 
+            char time_stmp[] = "0000-00-00 00:00:00";
+            getTimeStamp(time_stmp, sizeof(time_stmp));
+
+            std::cout << time_stmp
+                      << " Automatic Switch Off ("
                       << tm->tm_hour << "-"
                       << tm->tm_min << "-"
                       << tm->tm_sec << ")"

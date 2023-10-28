@@ -67,4 +67,5 @@ def get_local_time():
     hour = l_time.tm_hour
     minute = l_time.tm_min
     second = l_time.tm_sec
+    print("Current time: {:02}:{:02}:{:02}".format(hour, minute, second))
     return hour, minute, second
