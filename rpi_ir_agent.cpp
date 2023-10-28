@@ -452,6 +452,7 @@ void getTimeStamp(char* pTimeStamp, int buffSize) {
 
 int main(int argc, char* argv[]) {
     bool shutDownServer = false;
+    bool performAPO = false;
     int num_ready_fds = 0;
     time_t currentTime;
     struct tm* tm;
@@ -547,10 +548,18 @@ int main(int argc, char* argv[]) {
         tm = localtime(&currentTime);
         Denon.GetAutoPowerOffTime(&tm_off);
 
-        if ((tm->tm_hour >= tm_off.tm_hour) && 
-            (tm->tm_min >= tm_off.tm_min) && 
-            (Denon.GetPowerState() == ON) && 
-            (Denon.GetAutoPowerOffEnable() == ON)) {
+        /* TODO: Add Time class for comparison */
+        if ((Denon.GetPowerState() == ON) && (Denon.GetAutoPowerOffEnable() == ON)) {
+            if (tm->tm_hour > tm_off.tm_hour) {
+                performAPO = true;
+            } else if (tm->tm_hour == tm_off.tm_hour) {
+                if (tm->tm_min > tm_off.tm_min) {
+                    performAPO = true;
+                }
+            }
+        }
+
+        if (performAPO) {
             std::cout << "Automatic Switch Off (" 
                       << tm->tm_hour << "-"
                       << tm->tm_min << "-"
@@ -558,8 +567,8 @@ int main(int argc, char* argv[]) {
                       << std::endl;
             system("irsend SEND_ONCE Denon_RC-978 PWR_OFF");
             Denon.SetPower(OFF);
+            performAPO = false;
         }
-
     }
 
     close(Server.GetSocketFdId());
