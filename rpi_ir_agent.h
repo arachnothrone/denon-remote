@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <map>
 #include <vector>
 #include <exception>
@@ -89,7 +92,8 @@ struct RX_MSG_T {
 };
 
 struct TX_MSG_T {
-    ;
+    uint8_t msgType;
+    std::string msgString;
 };
 
 typedef enum {
@@ -238,4 +242,4 @@ private:
     };
 };
 
-void getTimeStamp(char* pTimeStamp, int buffSize);
+std::string getTimeStamp(void);

@@ -206,10 +206,7 @@ std::string SocketConnection::Recv() {
     if (n >= RX_BUFFER_SIZE) n = RX_BUFFER_SIZE - 1; // <--- err if <0, close sock
     _buffer[n] = '\0';
 
-    char time_stmp[] = "0000-00-00 00:00:00";
-    getTimeStamp(time_stmp, sizeof(time_stmp));
-
-    std::cout << time_stmp << " Received request: " << _buffer
+    std::cout << getTimeStamp() << " Received request: " << _buffer
             << " [" << inet_ntop(
                 AF_INET,
                 &_clientAddr.sin_addr.s_addr,
@@ -223,9 +220,6 @@ std::string SocketConnection::Recv() {
 }
 
 void SocketConnection::Send(const std::string msgString, const int msgStrSize) {
-    char time_stmp[] = "0000-00-00 00:00:00";
-    getTimeStamp(time_stmp, sizeof(time_stmp));
-
     sendto(
         _sockfd, 
         &msgString[0], 
@@ -236,7 +230,7 @@ void SocketConnection::Send(const std::string msgString, const int msgStrSize) {
     ); // <-- err, close sock
     
     printf("%s Response sent: %s [%s:%0d]\n", 
-        time_stmp, 
+        getTimeStamp().c_str(),
         msgString.c_str(),
         inet_ntop(AF_INET, &_clientAddr.sin_addr.s_addr, _clientAddrString, sizeof(_clientAddrString)), 
         ntohs(_clientAddr.sin_port)
@@ -429,25 +423,23 @@ bool IRServer::SendIrCommand(int commandCode) {
 /**
  * @brief Get the Time Stamp
  * 
- * @param pTimeStamp 
- * @param buffSize 
+ * @return  std::string
  */
-void getTimeStamp(char* pTimeStamp, int buffSize) {
-    time_t currentTime;
+std::string getTimeStamp(void) {
+    std::ostringstream sstimestamp;
+    time_t currentTime = time(nullptr);
     struct tm* tm;
-    currentTime = time(NULL);
+
     tm = localtime(&currentTime);
-    
-    if (buffSize >= TS_BUF_SIZE) { 
-        sprintf(pTimeStamp, "%04d-%02d-%02d %02d:%02d:%02d", 
-            tm->tm_year + 1900, 
-            tm->tm_mon + 1, 
-            tm->tm_mday, 
-            tm->tm_hour, 
-            tm->tm_min, 
-            tm->tm_sec
-        );
-    }
+    sstimestamp 
+        << std::setw(4) << std::setfill('0') << tm->tm_year + 1900 << "-"
+        << std::setw(2) << std::setfill('0') << tm->tm_mon + 1 << "-"
+        << std::setw(2) << std::setfill('0') << tm->tm_mday << " "
+        << std::setw(2) << std::setfill('0') << tm->tm_hour << ":"
+        << std::setw(2) << std::setfill('0') << tm->tm_min << ":"
+        << std::setw(2) << std::setfill('0') << tm->tm_sec;
+
+    return sstimestamp.str();
 }
 
 int main(int argc, char* argv[]) {
@@ -486,10 +478,7 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    char time_stmp[] = "0000-00-00 00:00:00";
-    getTimeStamp(time_stmp, sizeof(time_stmp));
-
-    std::cout << time_stmp << " Starting IR server, RX_PORT=" << RX_PORT << std::endl;
+    std::cout << getTimeStamp() << " Starting IR server, RX_PORT=" << RX_PORT << std::endl;
     std::cout << "                    Automatic Power Off at: "
                 << tm_off.tm_hour << ":" 
                 << tm_off.tm_min << ":" 
@@ -562,10 +551,7 @@ int main(int argc, char* argv[]) {
         }
 
         if (performAPO) {
-            char time_stmp[] = "0000-00-00 00:00:00";
-            getTimeStamp(time_stmp, sizeof(time_stmp));
-
-            std::cout << time_stmp
+            std::cout << getTimeStamp()
                       << " Automatic Switch Off ("
                       << tm->tm_hour << "-"
                       << tm->tm_min << "-"
