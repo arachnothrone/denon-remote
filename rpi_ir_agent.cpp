@@ -348,7 +348,7 @@ void IRServer::SetVolumeTo(int value) {
 }
 
 void IRServer::SetMinimumVolume(double timeIntervalSec) {
-    struct timespec ts;
+    struct timespec ts = {0, 0};
     ts.tv_sec = (int) timeIntervalSec;
     ts.tv_nsec = (timeIntervalSec - ((int) timeIntervalSec)) * 1e9;
     system("irsend SEND_START Denon_RC-978 KEY_VOLUMEDOWN");
@@ -365,7 +365,9 @@ void IRServer::SetMinimumVolume(double timeIntervalSec) {
 bool IRServer::SendIrCommand(int commandCode) {
     bool result = true;
     std::string command;
-    struct tm tm_off = {.tm_sec=0, .tm_min=0, .tm_hour=0};
+    struct tm tm_off = {.tm_sec=0, .tm_min=0, .tm_hour=0,
+                        .tm_mday=0, .tm_mon=0, .tm_year=0,
+                        .tm_wday=0, .tm_yday=0, .tm_isdst=0};
 
     switch (commandCode) {
         case CMD_GETSTATE:
@@ -423,12 +425,12 @@ bool IRServer::SendIrCommand(int commandCode) {
 /**
  * @brief Get the Time Stamp
  * 
- * @return  std::string
+ * @return  std::string Timestamp in format "YYYY-MM-DD HH:MM:SS"
  */
 std::string getTimeStamp(void) {
-    std::ostringstream sstimestamp;
+    std::ostringstream sstimestamp = std::ostringstream();
     time_t currentTime = time(nullptr);
-    struct tm* tm;
+    struct tm* tm = NULL;
 
     tm = localtime(&currentTime);
     sstimestamp 
@@ -446,10 +448,10 @@ int main(int argc, char* argv[]) {
     bool shutDownServer = false;
     bool performAPO = false;
     int num_ready_fds = 0;
-    time_t currentTime;
-    struct tm* tm;
-    struct tm tm_off = {.tm_sec=0, .tm_min=0, .tm_hour=0};  // Automatic switch off time
-    int cli_options;
+    time_t currentTime = time(nullptr);
+    struct tm* tm = NULL;
+    struct tm tm_off = {};  // Automatic switch off time
+    int cli_options = 0;
     int initVolume = -40;                                   // Initial volume level (actual vol is not set)
 
     while ((cli_options = getopt(argc, argv, "h:m:s:v:")) != -1) {
