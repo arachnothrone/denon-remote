@@ -112,7 +112,7 @@ def test_SERVER_START_AFTER_APO_TIME_WITH_APO_ENABLED():
 
 
 # @pytest.mark.skip(reason="Not implemented")
-def test_SERVER_START_BEFORE_APO_TIME_WITH_APO_DISABLED():
+def test_SERVER_START_AFTER_APO_TIME_WITH_APO_DISABLED():
     '''
     Start the server with APO past current time, send APO disable (CMD41AUTOPWROFF0)
     then POWERON command and check if the power is still ON (server should ignore APO time)
